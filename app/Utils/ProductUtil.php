@@ -36,7 +36,7 @@ class ProductUtil extends Util
      * @param $combo_variations = []
      * @return bool
      */
-    public function createSingleProductVariation($product, $sku, $purchase_price, $dpp_inc_tax, $profit_percent, $selling_price, $selling_price_inc_tax, $combo_variations = [])
+    public function createSingleProductVariation($product, $sku, $mrp, $purchase_price, $dpp_inc_tax, $profit_percent, $selling_price, $selling_price_inc_tax, $combo_variations = [])
     {
         if (! is_object($product)) {
             $product = Product::find($product);
@@ -54,6 +54,7 @@ class ProductUtil extends Util
             'name' => 'DUMMY',
             'product_id' => $product->id,
             'sub_sku' => $sku,
+            'mrp' => $mrp,
             'default_purchase_price' => $this->num_uf($purchase_price),
             'dpp_inc_tax' => $this->num_uf($dpp_inc_tax),
             'profit_percent' => $this->num_uf($profit_percent),
@@ -80,9 +81,6 @@ class ProductUtil extends Util
         if (! is_object($product)) {
             $product = Product::find($product);
         }
-
-
-
 
         //create product variations
         foreach ($input_variations as $key => $value) {
@@ -165,6 +163,7 @@ class ProductUtil extends Util
                         'variation_value_id' => $variation_value_id,
                         'product_id' => $product->id,
                         'sub_sku' => $sub_sku,
+                        'mrp' => $v['mrp'],
                         'default_purchase_price' => $this->num_uf($v['default_purchase_price']),
                         'dpp_inc_tax' => $this->num_uf($v['dpp_inc_tax']),
                         'profit_percent' => $this->num_uf($v['profit_percent']),
@@ -212,6 +211,7 @@ class ProductUtil extends Util
                 foreach ($value['variations_edit'] as $k => $v) {
                     $data = [
                         'name' => $v['value'],
+                        'mrp' => $this->num_uf($v['mrp']),
                         'default_purchase_price' => $this->num_uf($v['default_purchase_price']),
                         'dpp_inc_tax' => $this->num_uf($v['dpp_inc_tax']),
                         'profit_percent' => $this->num_uf($v['profit_percent']),
@@ -268,6 +268,7 @@ class ProductUtil extends Util
                         'default_purchase_price' => $this->num_uf($v['default_purchase_price']),
                         'dpp_inc_tax' => $this->num_uf($v['dpp_inc_tax']),
                         'profit_percent' => $this->num_uf($v['profit_percent']),
+                        'mrp' => $this->num_uf($v['mrp']),
                         'default_sell_price' => $this->num_uf($v['default_sell_price']),
                         'sell_price_inc_tax' => $this->num_uf($v['sell_price_inc_tax']),
                     ];
@@ -526,7 +527,7 @@ class ProductUtil extends Util
             'pv.name as product_variation_name',
             'pv.is_dummy as is_dummy',
             'variations.name as variation_name',
-            'variations.sub_sku',
+            'variations.sub_sku','variations.mrp',
             'p.barcode_type',
             'vld.qty_available',
             'variations.default_sell_price',
@@ -909,18 +910,20 @@ class ProductUtil extends Util
 
             //Set default purchase price inc. tax
             $variation_details->dpp_inc_tax = $this->calc_percentage($variation_details->default_purchase_price, $tax_rate, $variation_details->default_purchase_price);
-
             //Set default sell price inc. tax
             $variation_details->sell_price_inc_tax = $variation_data['sell_price_inc_tax'];
+            $variation_details->mrp = $variation_data['mrp'];
 
             //set sell price inc. tax
             $variation_details->default_sell_price = $this->calc_percentage_base($variation_details->sell_price_inc_tax, $tax_rate);
 
             //set profit margin
             $variation_details->profit_percent = $this->get_percent($variation_details->default_purchase_price, $variation_details->default_sell_price);
-
             $variation_details->save();
         }
+        
+        $variation_details->mrp = $variation_data['mrp'];
+        $variation_details->save();
     }
 
     /**
@@ -1265,6 +1268,7 @@ class ProductUtil extends Util
                 $variation_data['pp_without_discount'] = ($this->num_uf($data['pp_without_discount'], $currency_details) * $exchange_rate) / $multiplier;
                 $variation_data['variation_id'] = $purchase_line->variation_id;
                 $variation_data['purchase_price'] = $purchase_line->purchase_price;
+                $variation_data['mrp'] = $data['mrp'];
 
                 $this->updateProductFromPurchase($variation_data);
             }
@@ -1721,7 +1725,7 @@ class ProductUtil extends Util
                 'variations.name as variation',
                 'VLD.qty_available',
                 'variations.sell_price_inc_tax as selling_price',
-                'variations.sub_sku',
+                'variations.sub_sku','variations.mrp',
                 'U.short_name as unit'
             );
 
@@ -1840,7 +1844,7 @@ class ProductUtil extends Util
                   WHERE (transactions.status='received' OR transactions.type='purchase_return')  AND transactions.location_id=vld.location_id 
                   AND (pl.variation_id=variations.id)) as stock_price"),
             DB::raw('SUM(vld.qty_available) as stock'),
-            'variations.sub_sku as sku',
+            'variations.sub_sku as sku','variations.mrp as mrp',
             'p.name as product',
             'p.type',
             'p.alert_quantity',
@@ -1931,7 +1935,7 @@ class ProductUtil extends Util
                         DB::raw('SUM(pl.quantity_adjusted) as total_adjusted'),
                         DB::raw("SUM(IF(t.type='opening_stock', pl.quantity, 0)) as total_opening_stock"),
                         DB::raw("SUM(IF(t.type='purchase_transfer', pl.quantity, 0)) as total_purchase_transfer"),
-                        'variations.sub_sku as sub_sku',
+                        'variations.sub_sku as sub_sku','variations.mrp as mrp',
                         'p.name as product',
                         'p.type',
                         'p.sku',
@@ -2246,7 +2250,7 @@ class ProductUtil extends Util
                     WHERE transactions.status='final' AND transactions.type='production_sell' AND transactions.location_id=$location_id 
                     AND TSL.variation_id=variations.id) as total_ingredients_used"),
             DB::raw('SUM(vld.qty_available) as stock'),
-            'variations.sub_sku as sub_sku',
+            'variations.sub_sku as sub_sku','variations.mrp as mrp',
             'p.name as product',
             'p.id as product_id',
             'p.type',
@@ -2374,7 +2378,7 @@ class ProductUtil extends Util
             'p.sku',
             'pv.name as product_variation',
             'v.name as variation',
-            'v.sub_sku',
+            'v.sub_sku', 'v.mrp',
             'l.name as location',
             'variation_location_details.qty_available as stock',
             'u.short_name as unit'

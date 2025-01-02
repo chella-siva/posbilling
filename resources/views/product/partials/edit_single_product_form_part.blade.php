@@ -20,6 +20,7 @@
           <th>@lang('product.default_purchase_price')</th>
           <th>@lang('product.profit_percent') @show_tooltip(__('tooltip.profit_percent'))</th>
           <th>@lang('product.default_selling_price')</th>
+          <th>@lang('lang_v1.mrp_price')</th>
           <th>@lang('lang_v1.product_image')</th>
         </tr>
         @foreach($product_deatails->variations as $variation )
@@ -55,6 +56,9 @@
 
                         {!! Form::text('single_dsp_inc_tax', @num_format($variation->sell_price_inc_tax), ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
                     </td>
+                    <td> 
+                    {!! Form::text('single_mrp', @num_format($variation->mrp), ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'mrp', 'required']); !!}
+                   </td>
                     <td>
                         @php 
                             $action = !empty($action) ? $action : '';

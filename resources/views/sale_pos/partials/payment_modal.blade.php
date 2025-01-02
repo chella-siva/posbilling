@@ -15,7 +15,7 @@
                             'data-error-msg' => __('lang_v1.required_advance_balance_not_available'),
                         ]) !!}
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-8">
                         <div class="row">
                             <div id="payment_rows_div">
                                 @php
@@ -47,7 +47,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm tw-w-full"
+                                <button type="button" class="bg-blue-gradient tw-dw-btn tw-dw-btn-primarys tw-text-white tw-dw-btn-sm tw-w-full"
                                     id="add-payment-row">@lang('sale.add_payment_row')</button>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                         <div class="row @if ($change_return['amount'] == 0) hide @endif payment_row"
                             id="change_return_payment_data">
                             <div class="col-md-12">
-                                <div class="box box-solid payment_row bg-lightgray">
+                                <div class="box box-solid payment_row bg-lightgray mb-10">
                                     <div class="box-body">
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -130,41 +130,79 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="box box-solid bg-orange">
+                    <div class="col-md-4">
+                        <div class="box box-solid bg-navy">
                             <div class="box-body">
-                                <div class="col-md-12">
-                                    <strong>
+
+                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
+                                    <div class="">
+                                        <span class="col-md-5 text-left">@lang('lang_v1.total_items'):</span>
+                                        <span class="col-md-7 text-right text-bold lead total_quantity">0</span>
+                                    </div>
+                                </div> -->
+                                
+                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
+                                    <span>
                                         @lang('lang_v1.total_items'):
-                                    </strong>
+                                    </span>
                                     <br />
                                     <span class="lead text-bold total_quantity">0</span>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <hr>
-                                    <strong>
+                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base bg-red">
+                                    <div class="">
+                                        <span class="col-md-5 text-left">@lang('sale.total_payable'):</span>
+                                        <span class="col-md-7 text-right lead text-bold total_payable_span">0</span>
+                                    </div>
+                                </div>  -->
+                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-red">
+                                    <!-- <hr> -->
+                                    <span>
                                         @lang('sale.total_payable'):
-                                    </strong>
+                                    </span>
                                     <br />
                                     <span class="lead text-bold total_payable_span">0</span>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <hr>
-                                    <strong>
+                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
+                                    <div class="">
+                                        <span class="col-md-5 text-left">@lang('lang_v1.total_paying'):</span>
+                                        <span class="col-md-7 text-right lead text-bold total_paying">0</span>
+                                        <input type="hidden" id="total_paying_input">
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
+                                    <!-- <hr> -->
+                                    <span>
                                         @lang('lang_v1.total_paying'):
-                                    </strong>
+                                    </span>
                                     <br />
                                     <span class="lead text-bold total_paying">0</span>
                                     <input type="hidden" id="total_paying_input">
                                 </div>
 
-                                <div class="col-md-12">
-                                    <hr>
-                                    <strong>
+                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base bg-yellow">
+                                    <div class="">
+                                        <span class="col-md-5 text-left">@lang('lang_v1.change_return'):</span>
+                                        <span class="col-md-7 text-right lead text-bold change_return_span">0</span> 
+                                        {!! Form::hidden('change_return', $change_return['amount'], [
+                                            'class' => 'form-control change_return input_number',
+                                            'required',
+                                            'id' => 'change_return',
+                                        ]) !!} 
+                                        @if (!empty($change_return['id']))
+                                            <input type="hidden" name="change_return_id"
+                                                value="{{ $change_return['id'] }}">
+                                        @endif
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-yellow">
+                                    <!-- <hr> -->
+                                    <span>
                                         @lang('lang_v1.change_return'):
-                                    </strong>
+                                    </span>
                                     <br />
                                     <span class="lead text-bold change_return_span">0</span>
                                     {!! Form::hidden('change_return', $change_return['amount'], [
@@ -178,18 +216,25 @@
                                             value="{{ $change_return['id'] }}">
                                     @endif
                                 </div>
+                                
+                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
+                                    <div class="">
+                                        <span class="col-md-5 text-left">@lang('lang_v1.balance'):</span>
+                                        <span class="col-md-7 text-right lead text-bold balance_due">0</span>
+                                        <input type="hidden" id="in_balance_due" value=0>
+                                    </div>
+                                </div> -->
 
-                                <div class="col-md-12">
-                                    <hr>
-                                    <strong>
+                                <div class="col-md-12 mt-10 text-center tw-text-sm md:tw-text-base">
+                                    <!-- <hr> -->
+                                    <span>
                                         @lang('lang_v1.balance'):
-                                    </strong>
+                                    </span>
                                     <br />
                                     <span class="lead text-bold balance_due">0</span>
                                     <input type="hidden" id="in_balance_due" value=0>
                                 </div>
-
-
+ 
 
                             </div>
                             <!-- /.box-body -->
@@ -198,8 +243,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white" data-dismiss="modal">@lang('messages.close')</button>
-                <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white" id="pos-save">@lang('sale.finalize_payment')</button>
+                <button type="button" class="tw-dw-btn tw-dw-btn-neutrals tw-dw-btn-md bg-red-gradient tw-text-white" data-dismiss="modal">@lang('messages.close')</button>
+                <button type="submit" class="tw-dw-btn tw-dw-btn-primarys tw-dw-btn-md bg-green-gradient tw-text-white" id="pos-save">@lang('sale.finalize_payment')</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -289,7 +334,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white" id="pos-save-card">@lang('sale.finalize_payment')</button>
+                <button type="button" class="tw-dw-btn tw-dw-btn-primarys tw-dw-btn-md bg-green-gradient tw-text-white" id="pos-save-card">@lang('sale.finalize_payment')</button>
             </div>
         </div>
     </div>

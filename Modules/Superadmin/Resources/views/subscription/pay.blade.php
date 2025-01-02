@@ -17,9 +17,22 @@
         <div class="box-body">
     		<div class="col-md-8">
         		<h3>
+					@php 
+						$baseAmount = $package->price;
+						$gstRate = 18; 
+						$gstAmount = $baseAmount * ($gstRate / 100);
+						$payableamnt = ($baseAmount + $gstAmount);
+					@endphp
+					 
+					<span style="font-size: 12px;"> Amount -</span>
+					<span style="font-size: 12px;" class="display_currency" data-currency_symbol="true"> {{$baseAmount}}</span><br/>
+					
+					<span style="font-size: 12px;"> GST 18% -</span>
+					<span style="font-size: 12px;" class="display_currency" data-currency_symbol="true"> {{$gstAmount}}</span><br/>
+
         			{{$package->name}}
 
-        			(<span class="display_currency" data-currency_symbol="true">{{$package->price}}</span>
+        			(<span class="display_currency" data-currency_symbol="true">{{$payableamnt}}</span>
 
 					<small>
 						/ {{$package->interval_count}} {{ucfirst($package->interval)}}

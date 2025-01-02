@@ -327,6 +327,103 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                      @php 
+                        $disable_mrp = (isset($pos_settings['disable_mrp'])) ? $pos_settings['disable_mrp'] : 0;
+                        $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
+                        $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
+                        $disable_brand = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
+                        $disable_image = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
+                        $disable_lotandexp = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;
+                        $disable_unit = (isset($pos_settings['disable_unit'])) ? $pos_settings['disable_unit'] : 0;
+
+                      @endphp
+                    {!! Form::checkbox('pos_settings[disable_mrp]', 1,  $disable_mrp , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_mrp' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+        
+             <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_stock]', 1,  $pos_settings['disable_stock'] , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_stock' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_sku]', 1,  $pos_settings['disable_sku'] , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_sku' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_brand]', 1,  $pos_settings['disable_brand'] , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_brand' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_image]', 1,  $disable_image , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_image' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_lotandexp]', 1,  $disable_lotandexp , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_lotandexp' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="checkbox">
+                <br>
+                  <label>
+                    {!! Form::checkbox('pos_settings[disable_unit]', 1,  $disable_unit , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_unit' ) }}
+                  </label>
+                </div>
+            </div>
+        </div>
+
+
     </div>    
     <hr>
     @include('business.partials.settings_weighing_scale')

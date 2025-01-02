@@ -11,7 +11,7 @@
                     <table class="table no-border">
                         <tr>
                             @if(!empty($transaction->business->logo))
-                                <td class="width-50 text-center">
+                                <td class="text-center"  style="width:33%;">
                                     <img src="{{ asset( 'uploads/business_logos/' . $transaction->business->logo ) }}" alt="Logo" style="max-width: 80%;">
                                 </td>
                             @endif
@@ -57,12 +57,12 @@
                         </tr>
                         <tr>
                             <td>
-                                <h4>@lang('sale.total_amount'): <span>{{$total_amount}}</span></h4>
+                                <h4 style="margin:0px;">@lang('sale.total_amount'): <span>{{$total_amount}}</span></h4>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <h4>@lang('sale.total_paid'): <span>{{$total_paid}}</span></h4>
+                                <h4 style="margin:0px;">@lang('sale.total_paid'): <span>{{$total_paid}}</span></h4>
                             </td>
                         </tr>
                     </table>
@@ -70,11 +70,11 @@
                     @if($transaction->payment_status != 'paid')
                     <table class="table no-border">
                         <tr>
-                            <td><h4>@lang('sale.total_payable'): <span>{{$total_payable_formatted}}</span></h4></td>
+                            <td><h4 style="margin:0px;">@lang('sale.total_payable'): <span>{{$total_payable_formatted}}</span></h4></td>
                         </tr>
                     </table>
                     <div class="spacer"></div>
-                    <div class="spacer"></div>
+                    <!-- <div class="spacer"></div> -->
                     <div class="width-50 text-center f-left">
                         <form action="{{route('confirm_payment', ['id' => $transaction->id])}}" method="POST">
                             <input type="hidden" name="gateway" value="razorpay">
@@ -126,3 +126,35 @@
     </div>
 </div>
 @endsection
+
+<style>
+    .razorpay-payment-button{
+        padding: 10px 15px;
+        font-size: 1.125rem;
+        background:#062251;
+        color:#fff;
+        border-radius:5px;
+        border: 1px solid #062251;
+        background-image: -webkit-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -moz-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -ms-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -o-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -webkit-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -moz-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -ms-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: -o-linear-gradient(#062251, #008cdd 85%, #1c4790);
+        background-image: linear-gradient(#062251, #008cdd 85%, #1c4790);
+
+    } 
+    .razorpay-payment-button:hover{
+        background:#1c4790;
+        border: 1px solid #1c4790;
+    }
+    .stripe-button-el span{
+        padding: 10px 15px !important;
+        font-size: 1.125rem !important;
+        height: auto !important;
+        line-height: inherit !important;
+    }
+    /* #584ede */
+</style>

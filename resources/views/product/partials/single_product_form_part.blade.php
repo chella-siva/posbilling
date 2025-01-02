@@ -16,6 +16,7 @@
           <th>@lang('product.default_purchase_price')</th>
           <th>@lang('product.profit_percent') @show_tooltip(__('tooltip.profit_percent'))</th>
           <th>@lang('product.default_selling_price')</th>
+          <th>@lang('lang_v1.mrp_price')</th>
           @if(empty($quick_add))
             <th>@lang('lang_v1.product_image')</th>
           @endif
@@ -46,6 +47,10 @@
 
             {!! Form::text('single_dsp_inc_tax', $default, ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
           </td>
+          <td> 
+          {!! Form::text('single_mrp', $default, ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'single_mrp', 'required']); !!}
+
+        </td>
           @if(empty($quick_add))
           <td>
               <div class="form-group">

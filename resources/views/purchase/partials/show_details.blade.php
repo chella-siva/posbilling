@@ -158,6 +158,7 @@
               <th class="no-print text-right">@lang('purchase.subtotal_before_tax')</th>
               <th class="text-right">@lang('sale.tax')</th>
               <th class="text-right">@lang('purchase.unit_cost_after_tax')</th>
+              <th>@lang('lang_v1.mrp_price')</th>
               @if($purchase->type != 'purchase_order')
               @if(session('business.enable_lot_number'))
                 <th>@lang('lang_v1.lot_number')</th>
@@ -190,6 +191,8 @@
                   {{ $purchase_line->product->sku }}
                  @endif
               </td>
+
+              
               @if($purchase->type == 'purchase_order')
                 <td>
                   <span class="display_currency" data-is_quantity="true" data-currency_symbol="false">{{ $purchase_line->quantity - $purchase_line->po_quantity_purchased }}</span> @if(!empty($purchase_line->actual_name)) {{$purchase_line->sub_unit->actual_name}} @else {{$purchase_line->product->unit->actual_name}} @endif
@@ -217,6 +220,8 @@
               <td class="no-print text-right"><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->quantity * $purchase_line->purchase_price }}</span></td>
               <td class="text-right"><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->item_tax }} </span> <br/><small>@if(!empty($taxes[$purchase_line->tax_id])) ( {{ $taxes[$purchase_line->tax_id]}} ) </small>@endif</td>
               <td class="text-right"><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax }}</span></td>
+              <td>  {{ $purchase_line->variations->mrp }} </td>
+
               @if($purchase->type != 'purchase_order')
               @if(session('business.enable_lot_number'))
                 <td>{{$purchase_line->lot_number}}</td>

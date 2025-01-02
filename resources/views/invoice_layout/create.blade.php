@@ -613,7 +613,7 @@
         <div class="col-sm-3">
           <div class="form-group">
             {!! Form::label('item_discount_label', __('lang_v1.item_discount_label') . ':' ) !!}
-            {!! Form::text('common_settings[item_discount_label]', 'Discount', ['class' => 'form-control',
+            {!! Form::text('common_settings[item_discount_label]', 'Dis(%)', ['class' => 'form-control',
               'placeholder' => __('lang_v1.item_discount_label'), 'id' => 'item_discount_label' ]); !!}
           </div>
         </div>
@@ -621,7 +621,7 @@
         <div class="col-sm-3">
           <div class="form-group">
             {!! Form::label('discounted_unit_price_label', __('lang_v1.discounted_unit_price_label') . ':' ) !!}
-            {!! Form::text('common_settings[discounted_unit_price_label]', 'Price after discount', ['class' => 'form-control',
+            {!! Form::text('common_settings[discounted_unit_price_label]', 'Inc.tax', ['class' => 'form-control',
               'placeholder' => __('lang_v1.discounted_unit_price_label'), 'id' => 'discounted_unit_price_label' ]); !!}
           </div>
         </div>
@@ -641,7 +641,7 @@
           <div class="form-group">
             <div class="checkbox">
               <label>
-                {!! Form::checkbox('show_sku', 1, true, ['class' => 'input-icheck']); !!} @lang('lang_v1.show_sku')</label>
+                {!! Form::checkbox('show_sku', 1, false, ['class' => 'input-icheck']); !!} @lang('lang_v1.show_sku')</label>
               </div>
           </div>
         </div>
@@ -875,6 +875,24 @@
               </div>
           </div>
         </div>
+        
+          <div class="col-sm-3">
+          <div class="form-group">
+            {!! Form::label('opening_bal_label', __('Total Opening Balance Lable') . ' (' . __('lang_v1.all_sales') . '):' ) !!}
+            {!! Form::text('opening_bal_label', '', ['class' => 'form-control',
+              'placeholder' => __('invoice.opening_bal_label') ]); !!}
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_opening_bal', 1, false, ['class' => 'input-icheck']); !!} Show Opening Balance Due</label>
+                @show_tooltip('Show Opening Balance Due')
+              </div>
+          </div>
+        </div>
+        
         <div class="col-sm-3">
           <div class="form-group">
             {!! Form::label('change_return_label', __('lang_v1.change_return_label') . ':' ) !!} @show_tooltip(__('lang_v1.change_return_help'))

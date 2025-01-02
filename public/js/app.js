@@ -1364,6 +1364,11 @@ $(document).ready(function() {
         init_tinymce('footer_text');
     }
 
+
+    if ($('#bank_details').length) {
+        init_tinymce('bank_details');
+    }
+
     //Start: CRUD for expense category
     //Expense category table
     var expense_cat_table = $('#expense_category_table').DataTable({

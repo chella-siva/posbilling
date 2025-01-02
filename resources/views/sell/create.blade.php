@@ -406,6 +406,9 @@
 								<th class="text-center {{$hide_tax}}">
 									@lang('sale.price_inc_tax')
 								</th>
+								<th class="text-center {{$hide_tax}}">
+								@lang('lang_v1.mrp_price')
+								</th>
 								@if(!empty($common_settings['enable_product_warranty']))
 									<th>@lang('lang_v1.warranty')</th>
 								@endif

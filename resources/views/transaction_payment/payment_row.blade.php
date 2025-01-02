@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
 
     {!! Form::open(['url' => action([\App\Http\Controllers\TransactionPaymentController::class, 'store']), 'method' => 'post', 'id' => 'transaction_payment_add_form', 'files' => true ]) !!}
@@ -15,7 +15,7 @@
       <div class="row">
       @if(!empty($transaction->contact))
         <div class="col-md-4">
-          <div class="well">
+          <div class="well well-sm">
             <strong>
             @if(in_array($transaction->type, ['purchase', 'purchase_return']))
               @lang('purchase.supplier') 
@@ -28,7 +28,7 @@
         </div>
         @endif
         <div class="col-md-4">
-          <div class="well">
+          <div class="well well-sm">
           @if(in_array($transaction->type, ['sell', 'sell_return']))
             <strong>@lang('sale.invoice_no'): </strong>{{ $transaction->invoice_no }}
           @else
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('sale.total_amount'): </strong><span class="display_currency" data-currency_symbol="true">{{ $transaction->final_total }}</span><br>
             <strong>@lang('purchase.payment_note'): </strong>
             @if(!empty($transaction->additional_notes))
@@ -162,7 +162,7 @@
             </div>
           </div>
         @endif
-        <div class="col-md-4">
+        <div class="col-md-6">
           <div class="form-group">
             {!! Form::label('document', __('purchase.attach_document') . ':') !!}
             {!! Form::file('document', ['accept' => implode(',', array_keys(config('constants.document_upload_mimes_types')))]); !!}
@@ -182,8 +182,8 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white">@lang( 'messages.save' )</button>
-      <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white" data-dismiss="modal">@lang( 'messages.close' )</button>
+      <button type="submit" class="tw-dw-btn tw-dw-btn-primarys tw-dw-btn-md bg-green-gradient tw-text-white">@lang( 'messages.save' )</button>
+      <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-dw-btn-md tw-text-white" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
 
     {!! Form::close() !!}

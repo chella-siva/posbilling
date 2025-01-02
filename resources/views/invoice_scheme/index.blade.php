@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" id="invoice_table">
+                                    <table class="table table-bordered table-striped" id="invoice_table" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>@lang( 'invoice.name' ) @show_tooltip(__('tooltip.invoice_scheme_name'))</th>

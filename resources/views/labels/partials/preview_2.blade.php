@@ -53,7 +53,7 @@
 							</span>
 						@endif
 					@endforeach
-					<br>
+					 
 
 					{{-- Price --}}
 					@if(!empty($print['price']))
@@ -68,20 +68,21 @@
 							{{@num_format($page_product->default_sell_price)}}
 						@endif</b>
 					</span>
+					<br>
 					@endif
 					@if(!empty($print['exp_date']) && !empty($page_product->exp_date))
-						<br>
+						 
 						<span style="font-size: {{$print['exp_date_size']}}px">
 							<b>@lang('product.exp_date'):</b>
 							{{$page_product->exp_date}}
 						</span>
 						@if($barcode_details->is_continuous)
-						<br>
+						
 						@endif
 					@endif
 
 					@if(!empty($print['packing_date']) && !empty($page_product->packing_date))
-						<span style="font-size: {{$print['packing_date_size']}}px">
+						 <span style="font-size: {{$print['packing_date_size']}}px">
 							<b>@lang('lang_v1.packing_date'):</b>
 							{{$page_product->packing_date}}
 						</span>
@@ -104,7 +105,9 @@
 </table>
 
 <style type="text/css">
-
+	*{
+		font-family: sans-serif;
+	}
 	td{
 		border: 1px dotted lightgray;
 	}

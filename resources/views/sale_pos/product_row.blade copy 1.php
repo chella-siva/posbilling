@@ -26,8 +26,8 @@
 		@endphp
 
 		@if( ($edit_price || $edit_discount) && empty($is_direct_sell) )
-		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline">
-		<span class="text-link text-info cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}">
+		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline-block;float: left;">
+		<span class="text-link text-primary cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}" style="color:#161616 !important;;">
 			{!! $product_name !!}
 			&nbsp;<i class="fa fa-info-circle"></i>
 		</span>
@@ -35,13 +35,18 @@
 		@else
 			{!! $product_name !!}
 		@endif
-		<img src="@if(count($product->media) > 0)
+		<div style="display: inline;">
+		    
+		    	<img src="@if(count($product->media) > 0)
 						{{$product->media->first()->display_url}}
 					@elseif(!empty($product->product_image))
 						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
 					@else
 						{{asset('/img/default.png')}}
-					@endif" alt="product-img" loading="lazy"style="height: 100%;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
+					@endif" alt="product-img" loading="lazy"style="height: 100%;display: inline;margin-left: 5px; border: black;border-radius: 5px; margin-top: 0px; width: 50px;object-fit: cover;">
+		    
+		</div>
+	
 
 
 		<input type="hidden" class="enable_sr_no" value="{{$product->enable_sr_no}}">
@@ -110,14 +115,17 @@
 			@include('sale_pos.partials.row_edit_product_price_modal')
 		</div> 
 		@endif
-<br>
-		<small class="text-muted p-1">
-			@if($product->enable_stock)
-			{{ @num_format($product->qty_available) }} {{$product->unit}} @lang('lang_v1.in_stock')
-			@else
-				--
-			@endif
-		</small>
+
+        <div class="py-0" style="display:block;clear: both;">
+            <small class="text-muted p-1">
+        			@if($product->enable_stock)
+        			{{ @num_format($product->qty_available) }} {{$product->unit}} @lang('lang_v1.in_stock')
+        			@else
+        				--
+        			@endif
+        		</small>
+        </div>
+		
 
 		<!-- Description modal end -->
 		@if(in_array('modifiers' , $enabled_modules))
@@ -242,7 +250,7 @@
         		@endphp
         	@endif
         @endforeach
-		<div class="input-group input-number">
+		<div class="input-group input-number mb-5">
 			<span class="input-group-btn"><button type="button" class="btn btn-default btn-flat quantity-down"><i class="fa fa-minus text-danger"></i></button></span>
 		<input type="text" data-min="1" 
 			class="form-control pos_quantity input_number mousetrap input_quantity" 
@@ -265,8 +273,7 @@
 		</div>
 		
 		<input type="hidden" name="products[{{$row_count}}][product_unit_id]" value="{{$product->unit_id}}">
-		@if(count($sub_units) > 0)
-			<br>
+		@if(count($sub_units) > 0) 
 			<select name="products[{{$row_count}}][sub_unit_id]" class="form-control input-sm sub_unit">
                 @foreach($sub_units as $key => $value)
                     <option value="{{$key}}" data-multiplier="{{$value['multiplier']}}" data-unit_name="{{$value['name']}}" data-allow_decimal="{{$value['allow_decimal']}}" @if(!empty($product->sub_unit_id) && $product->sub_unit_id == $key) selected @endif>
@@ -402,6 +409,9 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
+	<td>
+				<input type="text" readonly class="form-control input_number" value="{{@num_format($product->mrp)}}">
+	</td>
 	<td class="text-center">
 		@php
 			$subtotal_type = !empty($pos_settings['is_pos_subtotal_editable']) ? 'text' : 'hidden';

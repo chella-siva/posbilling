@@ -13,6 +13,13 @@
         @endif
         @php
             $is_discount_enabled = $pos_settings['disable_discount'] != 1 ? true : false;
+            $is_mrp_enabled = $pos_settings['disable_mrp'] != 1 ? true : false;
+            $is_stock_enabled = $pos_settings['disable_stock'] != 1 ? true : false;
+            $is_brand_enabled = $pos_settings['disable_brand'] != 1 ? true : false;
+            $is_sku_enabled = $pos_settings['disable_sku'] != 1 ? true : false;
+            $is_unit_enabled = $pos_settings['disable_unit'] != 1 ? true : false;
+            $is_prdimage_enabled = $pos_settings['disable_image'] != 1 ? true : false;
+            $is_lotandexp_enabled = $pos_settings['disable_lotandexp'] != 1 ? true : false;
             $is_rp_enabled = session('business.enable_rp') == 1 ? true : false;
         @endphp
         {!! Form::open([
@@ -29,7 +36,7 @@
                         <div class="tw-shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] tw-rounded-2xl tw-bg-white tw-mb-2 md:tw-mb-8 tw-p-2">
 
                             {{-- <div class="box box-solid mb-12 @if (!isMobile()) mb-40 @endif"> --}}
-                                <div class="box-body pb-0">
+                                <div class="box-body pb-0 p-0">
                                     {!! Form::hidden('location_id', $default_location->id ?? null, [
                                         'id' => 'location_id',
                                         'data-receipt_printer_type' => !empty($default_location->receipt_printer_type)

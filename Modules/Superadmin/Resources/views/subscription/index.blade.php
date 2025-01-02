@@ -30,10 +30,25 @@
 
 						</div>
 						<div class="box-body text-center">
-							@lang('superadmin::lang.start_date') : {{@format_date($active->start_date)}} <br/>
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-left text-bold"> @lang('superadmin::lang.start_date') :</span> 
+                                    <span class="pull-right text-bold">{{ @format_date($active->start_date) }}</span>
+                                </div> 
+
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-left text-bold"> @lang('superadmin::lang.end_date') :</span> 
+                                    <span class="pull-right text-bold">{{ @format_date($active->end_date) }}</span>
+                                </div> 
+                                
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-center text-bold" style="color:#ff5722;">@lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)])</span>
+                                </div>  
+
+							<!-- @lang('superadmin::lang.start_date') : {{@format_date($active->start_date)}} <br/>
 							@lang('superadmin::lang.end_date') : {{@format_date($active->end_date)}} <br/>
 
-							@lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)])
+							@lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)]) -->
+
 
 						</div>
 					</div>
@@ -119,12 +134,20 @@
                                 </div>
 
                             </div>
-                            <div class="box-body text-center">
-                                @lang('superadmin::lang.start_date') : {{ @format_date($active->start_date) }} <br />
-                                @lang('superadmin::lang.end_date') : {{ @format_date($active->end_date) }} <br />
+                            <div class="box-body">
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-left text-bold"> @lang('superadmin::lang.start_date') :</span> 
+                                    <span class="pull-right text-bold">{{ @format_date($active->start_date) }}</span>
+                                </div> 
 
-                                @lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)])
-
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-left text-bold"> @lang('superadmin::lang.end_date') :</span> 
+                                    <span class="pull-right text-bold">{{ @format_date($active->end_date) }}</span>
+                                </div> 
+                                
+                                <div style="background:#f5f5f5;border:1px solid #e4e4e4;padding:5px 10px">
+                                    <span class="text-center text-bold" style="color:#ff5722;">@lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)])</span>
+                                </div>  
                             </div>
                         </div>
                     </div>

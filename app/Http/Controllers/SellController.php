@@ -965,7 +965,7 @@ class SellController extends Controller
                             'pv.name as product_variation_name',
                             'pv.is_dummy as is_dummy',
                             'variations.name as variation_name',
-                            'variations.sub_sku',
+                            'variations.sub_sku','variations.mrp',
                             'p.barcode_type',
                             'p.enable_sr_no',
                             'variations.id as variation_id',

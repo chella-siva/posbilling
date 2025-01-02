@@ -276,6 +276,11 @@
                         <td>@lang('lang_v1.product_locations_ins')
                         </td>
                     </tr>
+                    <tr>
+                        <td>38</td>
+                        <td>@lang('lang_v1.mrp_price') <small class="text-muted">(@lang('lang_v1.optional'))</small></td>
+                        <td>Maximum Retail Price of the product</td>
+                    </tr>
 
                 </table>
             @endcomponent

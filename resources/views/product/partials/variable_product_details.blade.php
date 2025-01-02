@@ -22,6 +22,7 @@
 			        @if(!empty($allowed_group_prices))
 			        	<th>@lang('lang_v1.group_prices')</th>
 			        @endif
+					<th>@lang('lang_v1.mrp_price')<th>
 			        <th>@lang('lang_v1.variation_images')</th>
 				</tr>
 				@foreach($product->variations as $variation)
@@ -71,6 +72,7 @@
 			        		@endforeach
 			        	</td>
 			        @endif
+					<td> {{ $variation->mrp  }} </td>
 			        <td>
 			        	@foreach($variation->media as $media)
 			        		{!! $media->thumbnail([60, 60], 'img-thumbnail') !!}

@@ -3,10 +3,15 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-        body {
+    body {
             background-color: #243949;
             height: 100%;
-    min-height: 100vh;
+            min-height: 100vh; 
+            background: url(../img/1.jpg) #2b2b2c;   
+            background-size: 10%;
+            background-repeat: repeat;
+            background-position: top;
+            background-image: linear-gradient(45deg, rgba(18, 105, 168, 0.80),rgba(213, 44, 42, 0.90) ), url('../img/1.jpg');
         }
 
         h1 {
@@ -79,16 +84,7 @@
             transform: rotate(315deg);
         }
     </style>
-    <style>
-        body {
-           /* background: linear-gradient(to right, #6366f1, #3b82f6); */
-           /* background-color: #243949; */
-        }
-
-        h1 {
-            color: #fff;
-        }
-    </style>
+    
     <style>
         .action-link[data-v-1552a5b6] {
             cursor: pointer;

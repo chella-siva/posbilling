@@ -1,5 +1,5 @@
 <div class="table-responsive">
-	<table class="table table-bordered table-striped" id="subscriptions_table">
+	<table class="table table-bordered table-striped" id="subscriptions_table" style="width: 100%;">
 		<thead>
 			<tr>
 				<th>@lang('messages.date')</th>

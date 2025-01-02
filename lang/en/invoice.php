@@ -11,6 +11,7 @@ return [
     |
     */
     'invoice_settings' => 'Invoice Settings',
+    'bank_details' => 'Bank Details',
     'manage_your_invoices' => 'Manage your invoice settings',
     'all_your_invoice_schemes' => 'All your invoice schemes',
     'added_success' => 'Invoice setting added successfully',

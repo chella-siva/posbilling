@@ -6,6 +6,8 @@ use App\InvoiceLayout;
 use App\Utils\Util;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Facades\File; // <-- Import the File facade
+
 
 class InvoiceLayoutController extends Controller
 {
@@ -62,10 +64,10 @@ class InvoiceLayoutController extends Controller
             ]);
 
             $input = $request->only(['name', 'header_text',
-                'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
+                'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text','bank_details', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
                 'sub_heading_line3', 'sub_heading_line4', 'sub_heading_line5',
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
-                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
+                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
 
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
@@ -144,6 +146,8 @@ class InvoiceLayoutController extends Controller
      */
     public function edit($id)
     {
+//         $user = auth()->user()->username;
+// dd($user);
         if (! auth()->user()->can('invoice_settings.access')) {
             abort(403, 'Unauthorized action.');
         }
@@ -179,27 +183,30 @@ class InvoiceLayoutController extends Controller
             ]);
 
             $input = $request->only(['name', 'header_text',
-                'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
+                'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text','bank_details', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
                 'sub_heading_line3', 'sub_heading_line4', 'sub_heading_line5',
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
                 'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design',
                 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label',
-                'sales_person_label', 'prev_bal_label', 'date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
+                'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
             $business_id = $request->session()->get('user.business_id');
+
 
             $checkboxes = ['show_business_name', 'show_location_name', 'show_landmark', 'show_city', 'show_state', 'show_country', 'show_zip_code', 'show_mobile_number', 'show_alternate_number', 'show_email', 'show_tax_1', 'show_tax_2', 'show_logo', 'show_barcode', 'show_payments', 'show_customer', 'show_client_id',
                 'show_brand', 'show_sku', 'show_cat_code', 'show_sale_description', 'show_sales_person',
-                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point',
+                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point','show_opening_bal',
                 'show_qr_code', 'show_commission_agent', 'show_letter_head', ];
             foreach ($checkboxes as $name) {
                 $input[$name] = ! empty($request->input($name)) ? 1 : 0;
             }
+            
 
             //Upload Logo
             $logo_name = $this->commonUtil->uploadFile($request, 'logo', 'invoice_logos', 'image');
             if (! empty($logo_name)) {
                 $input['logo'] = $logo_name;
             }
+
 
             //Upload letter head
             $letter_head = $this->commonUtil->uploadFile($request, 'letter_head', 'invoice_logos', 'image');
@@ -246,15 +253,79 @@ class InvoiceLayoutController extends Controller
 
         return redirect('invoice-schemes')->with('status', $output);
     }
+    
+     public function removeletterheadImage(Request $request, $invlayid)
+    {
+        try {
+            $product = InvoiceLayout::find($invlayid);
+    
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Layout not found.']);
+            }
+    
+            // Check if the product has an image and the image file exists
+            if ($product->letter_head && file_exists(public_path('uploads/invoice_logos/' . $product->letter_head))) {
+                // Delete the image file from the server
+                File::delete(public_path('uploads/img/' . $product->letter_head));
+                
+                // Remove the image record in the database
+                $product->letter_head = null;
+                $product->save();
+    
+                return response()->json(['success' => true, 'message' => 'Image removed successfully.']);
+            }
+    
+            return response()->json(['success' => false, 'message' => 'Image not found.']);
+        } catch (\Exception $e) {
+            Log::error('Error removing image: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Server Error.']);
+        }
+    }
+
+   public function removelogoImage(Request $request, $invlayid)
+    {
+        try {
+            $product = InvoiceLayout::find($invlayid);
+    
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Layout not found.']);
+            }
+    
+            // Check if the product has an image and the image file exists
+            if ($product->letter_head && file_exists(public_path('uploads/invoice_logos/' . $product->logo))) {
+                // Delete the image file from the server
+                File::delete(public_path('uploads/img/' . $product->logo));
+                
+                // Remove the image record in the database
+                $product->logo = null;
+                $product->save();
+    
+                return response()->json(['success' => true, 'message' => 'Image removed successfully.']);
+            }
+    
+            return response()->json(['success' => false, 'message' => 'Image not found.']);
+        } catch (\Exception $e) {
+            Log::error('Error removing image: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Server Error.']);
+        }
+    }
 
     private function getDesigns()
     {
         return ['classic' => __('lang_v1.classic').' ('.__('lang_v1.for_normal_printer').')',
             'elegant' => __('lang_v1.elegant').' ('.__('lang_v1.for_normal_printer').')',
+            // 'thirutest' => __('lang_v1.thirutest').' ('.__('lang_v1.for_normal_printer').')',
+            // 'invoice_one' => __('lang_v1.invoice_one').' ('.__('lang_v1.for_normal_printer').')',
+            'invoice_two' => __('lang_v1.invoice_two').' ('.__('lang_v1.for_normal_printer').')',
+            'invoice_three' => __('lang_v1.invoice_three').' ('.__('lang_v1.for_normal_printer').')',
+            'invoice_four' => __('lang_v1.invoice_four').' ('.__('lang_v1.for_normal_printer').')',
+            // 'invoice_five' => __('lang_v1.invoice_five').' ('.__('lang_v1.for_normal_printer').')',
+            // 'quotation' => __('lang_v1.quotation_inv').' ('.__('lang_v1.for_normal_printer').')',
             'detailed' => __('lang_v1.detailed').' ('.__('lang_v1.for_normal_printer').')',
             'columnize-taxes' => __('lang_v1.columnize_taxes').' ('.__('lang_v1.for_normal_printer').')',
             'slim' => __('lang_v1.slim').' ('.__('lang_v1.recomended_for_80mm').')',
             'slim2' => __('lang_v1.slim').' 2 ('.__('lang_v1.recomended_for_58mm').')',
+            // 'slim_mrp' => __('lang_v1.slim_mrp').' ('.__('lang_v1.recomended_for_108mm').')',
         ];
     }
 }

@@ -47,7 +47,7 @@
 			<td>
 
 <!-- business information here -->
-<div class="row invoice-info">
+<div class="row invoice-infos">
 
 	<div class="col-md-6 invoice-col width-50">
 
@@ -56,7 +56,7 @@
 				<span class="pull-left">{!! $receipt_details->invoice_no_prefix !!}:</span>
 			@endif
 
-			{{$receipt_details->invoice_no}}
+			<strong>{{$receipt_details->invoice_no}}</strong>
 		</div>
 
 		<!-- Total Due-->
@@ -182,18 +182,44 @@
 
 			<!-- Display type of service details -->
 			@if(!empty($receipt_details->types_of_service))
+			<br/>
 				<span class="pull-left text-left">
 					<strong>{!! $receipt_details->types_of_service_label !!}:</strong>
 					{{$receipt_details->types_of_service}}
 					<!-- Waiter info -->
 					@if(!empty($receipt_details->types_of_service_custom_fields))
-						<br>
+						<br/>
 						@foreach($receipt_details->types_of_service_custom_fields as $key => $value)
 							<strong>{{$key}}: </strong> {{$value}}@if(!$loop->last), @endif
 						@endforeach
 					@endif
 				</span>
 			@endif
+
+			<!-- Table information-->
+			@if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
+			<br/>
+				<span class="pull-left text-left">
+				
+					@if(!empty($receipt_details->table_label))
+					<strong>{!! $receipt_details->table_label !!}</strong>
+					@endif
+					{{$receipt_details->table}}
+				</span>
+			@endif
+
+			<!-- Waiter info -->
+			@if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
+			<br/>
+				<span class="pull-left text-left"> 
+					@if(!empty($receipt_details->service_staff_label))
+					<strong>{!! $receipt_details->service_staff_label !!}</strong>
+					@endif
+					{{$receipt_details->service_staff}}
+				</span>
+			@endif
+
+
 		</div>
 
 	</div>
@@ -202,7 +228,7 @@
 		@if(empty($receipt_details->letter_head))
 		<!-- Logo -->
 		@if(!empty($receipt_details->logo))
-			<img style="max-height: 130px; width: auto;" src="{{$receipt_details->logo}}" class="img center-block">
+			<img style="max-height: 80px; width: auto;" src="{{$receipt_details->logo}}" class="img center-block">
 			<!-- <br/> -->
 		@endif
 
@@ -240,26 +266,7 @@
 				@endif
 			</span>
 		@endif
-		<!-- Table information-->
-        @if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
-        	<p>
-				@if(!empty($receipt_details->table_label))
-					{!! $receipt_details->table_label !!}
-				@endif
-				{{$receipt_details->table}}
-			</p>
-        @endif
-
-		<!-- Waiter info -->
-		@if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
-        	<p>
-				@if(!empty($receipt_details->service_staff_label))
-					{!! $receipt_details->service_staff_label !!}
-				@endif
-				{{$receipt_details->service_staff}}
-			</p>
-        @endif
-
+		
 
 
         <div class="word-wrap">
@@ -378,11 +385,11 @@
 	<div class="col-xs-12">
 		<table class="table table-bordered table-no-top-cell-border table-slim mb-12">
 			<thead>
-				<tr style="background-color: #357ca5 !important; color: white !important; font-size: 18px !important" class="table-no-side-cell-border table-no-top-cell-border text-center">
-					<td style="background-color: #357ca5 !important; color: white !important; width: 5% !important">#</td>
+				<tr style="background-color: #357ca5 !important; color: white !important; font-size: 14px !important;font-weight:bold;" class="table-no-side-cell-border table-no-top-cell-border text-center">
+					<td style="background-color: #357ca5 !important; color: white !important; width: 4% !important">#</td>
 					
 					@php
-						$p_width = 40;
+						$p_width = 46;
 					@endphp
 					@if($receipt_details->show_cat_code == 1)
 						@php
@@ -410,11 +417,11 @@
 					<td style="background-color: #357ca5 !important; color: white !important; width: 15% !important;">
 						{{$receipt_details->table_qty_label}}
 					</td>
-					<td style="background-color: #357ca5 !important; color: white !important; width: 15% !important;">
+					<td style="background-color: #357ca5 !important; color: white !important; width: 12% !important;">
 						{{$receipt_details->table_unit_price_label}}
 					</td>
 					@if(!empty($receipt_details->discounted_unit_price_label))
-					<td style="background-color: #357ca5 !important; color: white !important; width: 10% !important;">
+					<td style="background-color: #357ca5 !important; color: white !important; width: 12% !important;">
 						{{$receipt_details->discounted_unit_price_label}}
 					</td>
 					@endif
@@ -423,7 +430,7 @@
 						{{$receipt_details->item_discount_label}}
 					</td>
 					@endif
-					<td style="background-color: #357ca5 !important; color: white !important; width: 10% !important;">
+					<td style="background-color: #357ca5 !important; color: white !important; width: 12% !important;">
 						{{$receipt_details->table_subtotal_label}}
 					</td>
 				</tr>
@@ -468,14 +475,14 @@
                         </td>
 
 						@if($receipt_details->show_cat_code == 1)
-	                        <td>
+	                        <td class="text-center">
 	                        	@if(!empty($line['cat_code']))
 	                        		{{$line['cat_code']}}
 	                        	@endif
 	                        </td>
 	                    @endif
 
-						<td class="text-right">
+						<td class="text-center">
 							{{$line['quantity']}} {{$line['units']}}
 
 							@if($receipt_details->show_base_unit_details && $line['quantity'] && $line['base_unit_multiplier'] !== 1)
@@ -484,7 +491,7 @@
                             </small>
                             @endif
 						</td>
-						<td class="text-right">
+						<td class="text-center">
 							{{$line['unit_price_before_discount']}} 
 						</td>
 						@if(!empty($receipt_details->discounted_unit_price_label))
@@ -525,10 +532,10 @@
 			                        </td>
 			                    @endif
 
-								<td class="text-right">
+								<td class="text-center">
 									{{$modifier['quantity']}} {{$modifier['units']}}
 								</td>
-								<td class="text-right">
+								<td class="text-center">
 									{{$modifier['unit_price_exc_tax']}}
 								</td>
 								@if(!empty($receipt_details->discounted_unit_price_label))
@@ -740,10 +747,10 @@
 				
 				<!-- Total -->
 				<tr>
-					<th style="background-color: #357ca5 !important; color: white !important" class="font-20 padding-10">
+					<th style="background-color: #357ca5 !important; color: white !important; font-weight:bold;" class="font-20 padding-5">
 						{!! $receipt_details->total_label !!}
 					</th>
-					<td class="text-right font-20 padding-10" style="background-color: #357ca5 !important; color: white !important">
+					<td class="text-right font-20 padding-5" style="background-color: #357ca5 !important; color: white !important;font-weight:bold;">
 						{{$receipt_details->total}}
 					</td>
 				</tr>
@@ -810,3 +817,14 @@
 		</tr>
 	</tbody>
 </table>
+
+<style type="text/css">
+	body {
+		color: #000000;
+	}
+	@media print{
+		*{
+			-webkit-print-color-adjust: exact;
+		}
+	}
+</style>

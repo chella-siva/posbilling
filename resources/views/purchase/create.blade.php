@@ -255,29 +255,30 @@
 						<thead>
 							<tr>
 								<th>#</th>
-								<th>@lang( 'product.product_name' )</th>
-								<th>@lang( 'purchase.purchase_quantity' )</th>
-								<th>@lang( 'lang_v1.unit_cost_before_discount' )</th>
-								<th>@lang( 'lang_v1.discount_percent' )</th>
-								<th>@lang( 'purchase.unit_cost_before_tax' )</th>
-								<th class="{{$hide_tax}}">@lang( 'purchase.subtotal_before_tax' )</th>
-								<th class="{{$hide_tax}}">@lang( 'purchase.product_tax' )</th>
-								<th class="{{$hide_tax}}">@lang( 'purchase.net_cost' )</th>
-								<th>@lang( 'purchase.line_total' )</th>
-								<th class="@if(!session('business.enable_editing_product_from_purchase')) hide @endif">
+								<th class="min_width200">@lang( 'product.product_name' )</th>
+								<th class="min_width">@lang( 'purchase.purchase_quantity' )</th>
+								<th class="min_width">@lang( 'lang_v1.unit_cost_before_discount' )</th>
+								<th class="min_width">@lang( 'lang_v1.discount_percent' )</th>
+								<th class="min_width">@lang( 'purchase.unit_cost_before_tax' )</th>
+								<th class="{{$hide_tax}} min_width">@lang( 'purchase.subtotal_before_tax' )</th>
+								<th class="{{$hide_tax}} min_width180">@lang( 'purchase.product_tax' )</th>
+								<th class="{{$hide_tax}} min_width">@lang( 'purchase.net_cost' )</th>
+								<th class="min_width">@lang( 'purchase.line_total' )</th>
+								<th class="min_width @if(!session('business.enable_editing_product_from_purchase')) hide @endif">
 									@lang( 'lang_v1.profit_margin' )
 								</th>
-								<th>
+								<th class="min_width">
 									@lang( 'purchase.unit_selling_price' )
 									<small>(@lang('product.inc_of_tax'))</small>
 								</th>
 								@if(session('business.enable_lot_number'))
-									<th>
+									<th class="min_width">
 										@lang('lang_v1.lot_number')
 									</th>
 								@endif
+								<th class="min_width">@lang('lang_v1.mrp_price')</th>
 								@if(session('business.enable_product_expiry'))
-									<th>
+									<th class="min_width150">
 										@lang('product.mfg_date') / @lang('product.exp_date')
 									</th>
 								@endif

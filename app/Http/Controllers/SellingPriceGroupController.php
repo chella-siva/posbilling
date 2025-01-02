@@ -247,7 +247,7 @@ class SellingPriceGroupController extends Controller
                             ->join('product_variations as pv', 'variations.product_variation_id', '=', 'pv.id')
                             ->where('p.business_id', $business_id)
                             ->whereIn('p.type', ['single', 'variable'])
-                            ->select('sub_sku', 'p.name as product_name', 'variations.name as variation_name', 'p.type', 'variations.id', 'pv.name as product_variation_name', 'sell_price_inc_tax')
+                            ->select('sub_sku', 'p.name as product_name', 'variations.mrp','variations.name as variation_name', 'p.type', 'variations.id', 'pv.name as product_variation_name', 'sell_price_inc_tax')
                             ->with(['group_prices'])
                             ->get();
         $export_data = [];
@@ -255,6 +255,7 @@ class SellingPriceGroupController extends Controller
             $temp = [];
             $temp['product'] = $variation->type == 'single' ? $variation->product_name : $variation->product_name.' - '.$variation->product_variation_name.' - '.$variation->variation_name;
             $temp['sku'] = $variation->sub_sku;
+             
             $temp['Selling Price Including Tax'] = $variation->sell_price_inc_tax;
 
             foreach ($price_groups as $price_group) {
@@ -265,6 +266,7 @@ class SellingPriceGroupController extends Controller
 
                 $temp[$price_group->name] = $variation_pg->isNotEmpty() ? $variation_pg->first()->price_inc_tax : '';
             }
+             $temp['mrp'] = $variation->mrp;
             $export_data[] = $temp;
         }
 
@@ -336,6 +338,7 @@ class SellingPriceGroupController extends Controller
                     if($variation->sell_price_inc_tax != $value[2]){
                         //update price for base selling price, adjust default_sell_price, profit %
                         $variation->sell_price_inc_tax = $value[2];
+                         $variation->mrp = $value[4];
                         $tax = $variation->product->product_tax()->get();
                         $tax_percent = !empty($tax) && !empty($tax->first()) ? $tax->first()->amount : 0;
                         $variation->default_sell_price = $this->commonUtil->calc_percentage_base($value[2], $tax_percent);

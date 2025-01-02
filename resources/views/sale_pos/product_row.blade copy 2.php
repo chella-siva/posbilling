@@ -21,27 +21,32 @@
 			value="{{$so_line->id}}">
 		@endif
 		@php
-			$product_name = $product->product_name . '<br/>' . $product->sub_sku ;
+			$product_name = $product->product_name . '-' . $product->sub_sku ;
 			if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ;}
 		@endphp
 
 		@if( ($edit_price || $edit_discount) && empty($is_direct_sell) )
-		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline">
-		<span class="text-link text-info cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}">
+		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline-block;float: left;">
+		<span class="text-link text-primary cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}" style="color:#161616 !important;;">
 			{!! $product_name !!}
-			&nbsp;<i class="fa fa-info-circle"></i>
+			&nbsp;<i class="fa fa-edit" style="color:blue;"></i>
 		</span>
 		</div>
 		@else
 			{!! $product_name !!}
 		@endif
-		<img src="@if(count($product->media) > 0)
+		
+		<div style="display: inline;">
+		    
+		    	<img src="@if(count($product->media) > 0)
 						{{$product->media->first()->display_url}}
 					@elseif(!empty($product->product_image))
 						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
 					@else
 						{{asset('/img/default.png')}}
-					@endif" alt="product-img" loading="lazy"style="height: 100%;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
+					@endif" alt="product-img" loading="lazy"style="width:100%;height: 50px;display: inline;margin-left: 5px; border: black;border-radius: 5px; margin-top: 0px; width: 50px;object-fit: cover;">
+		</div>
+	
 
 
 		<input type="hidden" class="enable_sr_no" value="{{$product->enable_sr_no}}">
@@ -111,7 +116,7 @@
 		</div> 
 		@endif
 
-        <div class="py-0">
+        <div class="py-0" style="display:block;clear: both;">
             <small class="text-muted p-1">
         			@if($product->enable_stock)
         			{{ @num_format($product->qty_available) }} {{$product->unit}} @lang('lang_v1.in_stock')
@@ -404,6 +409,9 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
+	<td>
+		<input type="text" readonly class="form-control input_number pos_mrp_text" value="{{@num_format($product->mrp)}}">
+	</td>
 	<td class="text-center">
 		@php
 			$subtotal_type = !empty($pos_settings['is_pos_subtotal_editable']) ? 'text' : 'hidden';

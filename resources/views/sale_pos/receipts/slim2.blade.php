@@ -13,7 +13,7 @@
 			@if(empty($receipt_details->letter_head))
 				@if(!empty($receipt_details->logo))
 					<div class="text-box centered text-center">
-						<img style="max-height: 100px; width: auto; margin:0 auto;" src="{{$receipt_details->logo}}" alt="Logo">
+						<img style="max-height: 70px; width: auto; margin:0 auto;" src="{{$receipt_details->logo}}" alt="Logo">
 					</div>
 				@endif
 				<div class="text-box">
@@ -237,10 +237,12 @@
 
 	        <!-- customer info -->
 	        <div class="textbox-info">
-	        	<div style="vertical-align: top;"><span>
+	        	<div style="vertical-align: top;">
+					<span>
 	        		{{$receipt_details->customer_label ?? ''}}
-	        	</span></div>
-	        	 <div>
+	        		</span>
+				</div>
+	        	<div>
 	        		@if(!empty($receipt_details->customer_info))
 	        			<div class="bw">
 						{!! $receipt_details->customer_info !!}
@@ -373,15 +375,25 @@
 				</div>
 			@endif
 			<!-- <div class="bb-lg mt-15 mb-5"></div> -->
-			<div class="border-bottom">&nbsp;</div>
-            <table style="padding-top: 0px !important" class="border-bottom width-100 table-f-12">
+			<!-- <div class="border-bottom">&nbsp;</div> -->
+            <table style="padding-top: 0px !important mt-2" class="border-bottom width-100 table-f-12" style="width:100%;">
+				<thead class="border-top border-bottom" style="background-color:#E8F3FD!important;">
+                    <tr>
+                        <th class="serial_number">
+							<span class="pull-left"># {{$receipt_details->table_product_label}}</span>
+							<span class="pull-right">{{$receipt_details->table_subtotal_label}}</span>
+						</th>				
+						
+                        <!-- <th class="price text-right">{{$receipt_details->table_subtotal_label}}</th> -->
+                    </tr>
+                </thead>
                 <tbody>
                 	@forelse($receipt_details->lines as $line)
-	                    <tr class="bb-lg">
+	                    <tr class="bb-lgs" style="border-bottom:0.1px dashed #ccc !important;" >
 	                        <td class="description">
 	                        	<div style="display:flex; width: 100%;">
-	                        		<p class="m-0 mt-0" style="white-space: nowrap;">{{$loop->iteration}}.&nbsp;</p>
-	                        		<p class="text-left m-0 mt-0 pull-left">{{$line['name']}}  
+	                        		<p class="mb-0 mt-0" style="white-space: nowrap;">{{$loop->iteration}}.&nbsp;</p>
+	                        		<p class="text-left mb-0 mt-0 pull-left">{{$line['name']}}  
 			                        	@if(!empty($line['sub_sku'])), {{$line['sub_sku']}} @endif @if(!empty($line['brand'])), {{$line['brand']}} @endif @if(!empty($line['cat_code'])), {{$line['cat_code']}}@endif
 			                        	@if(!empty($line['product_custom_fields'])), {{$line['product_custom_fields']}} @endif
 			                        	@if(!empty($line['product_description']))
@@ -424,52 +436,81 @@
 				                            </small>
 				                            @endif
 	                        		</p>
-	                        	</div>
+	                        	</div> 
+
 	                        	<div style="display:flex; width: 100%;">
-	                        		<p class="text-left width-60 quantity m-0 bw" style="direction: ltr;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	                        			{{$line['quantity']}} 
-	                        			@if(empty($receipt_details->hide_price))
-	                        			x {{$line['unit_price_before_discount']}}
-	                        			
-	                        			@if(!empty($line['total_line_discount']) && $line['total_line_discount'] != 0)
-	                        				- {{$line['total_line_discount']}}
-	                        			@endif
-	                        			@endif
-	                        		</p>
-	                        		@if(empty($receipt_details->hide_price))
-	                        		<p class="text-right width-40 price m-0 bw">{{$line['line_total']}}</p>
-	                        		@endif
+	                        		<p class="text-left quantity m-0 bw" style="direction: ltr;width: 100%;">&nbsp;&nbsp;&nbsp;
+										<span class="pull-lefts">
+											<small>{{$line['quantity']}} 
+											@if(empty($receipt_details->hide_price))
+											x {{$line['unit_price_before_discount']}}
+											
+											@if(!empty($line['total_line_discount']) && $line['total_line_discount'] != 0)
+												- {{$line['total_line_discount']}}
+											@endif
+											@endif
+											</small>
+										</span>
+
+										<span class="pull-right" >
+											@if(empty($receipt_details->hide_price))
+											<span class="text-right price m-0 bw">{{$line['line_total']}}</span>
+											@endif
+										</span>
+	                        		</p> 
+	                        		
 	                        	</div>
+
+								
+								
 	                        </td>
+							<!-- <td>
+								@if(empty($receipt_details->hide_price))
+	                        		<p class="text-right price m-0 bw">{{$line['line_total']}}</p>
+	                        		@endif
+							</td> -->
 	                    </tr>
 	                    @if(!empty($line['modifiers']))
 							@foreach($line['modifiers'] as $modifier)
-								<tr>
-									<td>
+								<tr style="border-bottom:0.1px dashed #ccc !important;" >
+									<td>										
 										<div style="display:flex;">
-	                        				<p style="width: 28px;" class="m-0">
-	                        				</p>
+											<p style="width: 5px;" class="m-0"></p>
 	                        				<p class="text-left width-60 m-0" style="margin:0;">
-	                        					{{$modifier['name']}} 
+												<small>{{$modifier['name']}} 
 	                        					@if(!empty($modifier['sub_sku'])), {{$modifier['sub_sku']}} @endif @if(!empty($modifier['cat_code'])), {{$modifier['cat_code']}}@endif
 			                            		@if(!empty($modifier['sell_line_note']))({!!$modifier['sell_line_note']!!}) @endif
-	                        				</p>
-	                        				<p class="text-right width-40 m-0">
-	                        					{{$modifier['variation']}}
-	                        				</p>
-	                        			</div>	
-	                        			<div style="display:flex;">
-	                        				<p style="width: 28px;"></p>
-	                        				<p class="text-left width-50 quantity">
-	                        					{{$modifier['quantity']}}
+												</small>
+												
+												<small>{{$modifier['variation']}}</small> 
+											</p>
+
+											<p class="width-40 quantity">
+												<small class="pull-left">{{$modifier['quantity']}}
 	                        					@if(empty($receipt_details->hide_price))
 	                        					x {{$modifier['unit_price_inc_tax']}}
 	                        					@endif
+												</small>
+												<small class="pull-right text-right price">{{$modifier['line_total']}}</small> 
+	                        				</p>
+	                        				<!-- <p class="text-left width-40 m-0">
+												<small>{{$modifier['variation']}}</small> 
+	                        				</p> -->
+	                        			</div>	
+	                        			<!-- <div style="display:flex;">
+	                        				<p style="width: 15px;"></p>
+	                        				<p class="text-left width-50 quantity">
+												<small>{{$modifier['quantity']}}
+	                        					@if(empty($receipt_details->hide_price))
+	                        					x {{$modifier['unit_price_inc_tax']}}
+	                        					@endif
+												</small> 
 	                        				</p>
 	                        				<p class="text-right width-50 price">
-	                        					{{$modifier['line_total']}}
+											<small>{{$modifier['line_total']}}</small> 
 	                        				</p>
-	                        			</div>		                             
+	                        			</div>		 -->
+										                            
 			                        </td>
 			                    </tr>
 							@endforeach
@@ -477,6 +518,7 @@
                     @endforeach
                 </tbody>
             </table>
+			<div class="border-bottom width-100"> </div>
             @if(!empty($receipt_details->total_quantity_label))
 				<div class="flex-box">
 					<div class="width-50 text-left">
@@ -638,6 +680,16 @@
 						</div>
 					</div>
 				@endif
+							@if(!empty($receipt_details->show_opening_bal) && $receipt_details->openbal_due != 0)
+					<div class="flex-box">
+						<div class="width-50 text-right">
+							{!! $receipt_details->opening_bal_label !!}:
+						</div>
+						<div class="width-50 text-right">
+					        {{ $receipt_details->openbal_due }}
+						</div>
+					</div>
+				@endif
 
 				<!-- Total Due-->
 				@if(!empty($receipt_details->total_due) && !empty($receipt_details->total_due_label))
@@ -646,7 +698,7 @@
 							{!! $receipt_details->total_due_label !!}:
 						</div>
 						<div class="width-50 text-right">
-							{{$receipt_details->total_due}}
+							{{$receipt_details->total_due}} 
 						</div>
 					</div>
 				@endif
@@ -657,12 +709,12 @@
 							{!! $receipt_details->all_bal_label !!}:
 						</div>
 						<div class="width-50 text-right">
-							{{$receipt_details->all_due}}
+							{{$receipt_details->all_due}} 
 						</div>
 					</div>
 				@endif
 			@endif
-            <div class="border-bottom width-100">&nbsp;</div>
+            <div class="border-bottom width-100"> </div>
             @if(empty($receipt_details->hide_price) && !empty($receipt_details->tax_summary_label) )
 	            <!-- tax -->
 	            @if(!empty($receipt_details->taxes))
@@ -701,7 +753,7 @@
 					{!! $receipt_details->footer_text !!}
 				</div>
 			@endif
-			<div class="border-bottom width-100">&nbsp;</div>
+			<div class="border-bottom width-100"> </div>
 			<div class="center-block mt-0 mb-12"><i>Powered by - Namma Billing</i></div>
         </div>
         <!-- <button id="btnPrint" class="hidden-print">Print</button>
@@ -725,6 +777,7 @@ body {
     	/* font-family: "Mohave", sans-serif; */
 		/* font-family: "Inria Sans", sans-serif; */
 		word-break: break-all;
+		-webkit-print-color-adjust: exact;
 	}
 	.f-8 {
 		font-size: 8px !important;

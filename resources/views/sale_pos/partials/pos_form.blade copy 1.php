@@ -174,7 +174,7 @@
 	
 	<!-- Call restaurant module if defined -->
     @if(in_array('tables' ,$enabled_modules) || in_array('service_staff' ,$enabled_modules))
-    	<div class="clearfix"></div>
+    	<!--<div class="clearfix"></div>-->
     	<span id="restaurant_module_span">
       		<div class="col-md-3"></div>
     	</span>
@@ -216,29 +216,37 @@
 			}
 		@endphp
 		<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
-			<thead>
+			<thead class="tw-bg-sky-800 tw-text-sm tw-font-medium tw-text-white">
 				<tr>
-					<th class="tex-center tw-text-sm md:!tw-text-base tw-font-bold @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
+					<th class="tex-center tw-text-sm md:!tw-text-base tw-font-medium @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
 						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
 					</th>
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-bold col-md-3">
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
 						@lang('sale.qty')
 					</th>
 					@if(!empty($pos_settings['inline_service_staff']))
-						<th class="text-center tw-text-sm md:!tw-text-base tw-font-bold col-md-2">
+						<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
 							@lang('restaurant.service_staff')
 						</th>
 					@endif
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-bold col-md-2 {{$hide_tax}}">
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2 {{$hide_tax}}">
 						@lang('sale.price_inc_tax')
 					</th>
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-bold col-md-2">
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2 ">
+					MRP
+					</th>
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
 						@lang('sale.subtotal')
 					</th>
-					<th class="text-center"><i class="fas fa-times tw-text-base" aria-hidden="true"></i></th>
+					<th class="text-center col-md-1"><i class="fas fa-times tw-text-sm md:!tw-text-base tw-font-medium " aria-hidden="true"></i></th>
 				</tr>
 			</thead>
 			<tbody></tbody>
 		</table>
 	</div>
 </div>
+<style>
+    #pos_table >tbody>tr>td {
+    border: 1px dashed #d7d7d7 !important; 
+}
+</style>

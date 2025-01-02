@@ -71,7 +71,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[name_size]" 
-									value="15">
+									value="10">
 							</div>
 						</td>
 
@@ -86,7 +86,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[variations_size]" 
-									value="17">
+									value="10">
 							</div>
 						</td>
 
@@ -101,7 +101,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[price_size]" 
-									value="17">
+									value="10">
 							</div>
 
 						</td>
@@ -135,7 +135,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[business_name_size]" 
-									value="20">
+									value="10">
 							</div>
 						</td>
 
@@ -150,7 +150,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[packing_date_size]" 
-									value="12">
+									value="10">
 							</div>
 						</td>
 
@@ -167,7 +167,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 									<input type="text" class="form-control" 
 										name="print[lot_number_size]" 
-										value="12">
+										value="10">
 								</div>
 							@endif
 						</td>
@@ -184,7 +184,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 									<input type="text" class="form-control" 
 										name="print[exp_date_size]" 
-										value="12">
+										value="10">
 								</div>
 							@endif
 						</td>						

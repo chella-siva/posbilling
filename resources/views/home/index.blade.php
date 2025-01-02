@@ -651,7 +651,7 @@
                                         <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
                                             <input type="hidden" id="stock_expiry_alert_days"
                                                 value="{{ \Carbon::now()->addDays(session('business.stock_expiry_alert_days', 30))->format('Y-m-d') }}">
-                                            <table class="table table-bordered table-striped" id="stock_expiry_alert_table">
+                                            <table class="table table-bordered table-striped" id="stock_expiry_alert_table" style="100%">
                                                 <thead>
                                                     <tr>
                                                         <th>@lang('business.product')</th>
@@ -706,7 +706,7 @@
                                 <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
                                     <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
                                         <table class="table table-bordered table-striped ajax_view"
-                                            id="sales_order_table">
+                                            id="sales_order_table" style="width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>@lang('messages.action')</th>
@@ -897,7 +897,7 @@
                             <div class="tw-flow-root tw-mt-5  tw-border-gray-200">
                                 <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
                                     <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                                        <table class="table table-bordered table-striped ajax_view" id="shipments_table">
+                                        <table class="table table-bordered table-striped ajax_view" id="shipments_table" style="width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>@lang('messages.action')</th>
@@ -974,7 +974,7 @@
                             <div class="tw-flow-root tw-mt-5  tw-border-gray-200">
                                 <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
                                     <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                                        <table class="table table-bordered table-striped" id="cash_flow_table">
+                                        <table class="table table-bordered table-striped" id="cash_flow_table" style="100%">
                                             <thead>
                                                 <tr>
                                                     <th>@lang('messages.date')</th>

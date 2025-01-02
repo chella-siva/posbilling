@@ -183,12 +183,13 @@
 
 			<!-- Display type of service details -->
 			@if(!empty($receipt_details->types_of_service))
+			<br/>
 				<span class="pull-left text-left">
 					<strong>{!! $receipt_details->types_of_service_label !!}:</strong>
 					{{$receipt_details->types_of_service}}
 					<!-- Waiter info -->
 					@if(!empty($receipt_details->types_of_service_custom_fields))
-						<br>
+						<br/>
 						@foreach($receipt_details->types_of_service_custom_fields as $key => $value)
 							<strong>{{$key}}: </strong> {{$value}}@if(!$loop->last), @endif
 						@endforeach
@@ -805,5 +806,15 @@
 <style type="text/css">
 	body {
 		color: #000000;
+	}
+	@media print{
+		*{
+			-webkit-print-color-adjust: exact;
+		}
+		body {
+            padding: 0px;
+            margin: 0;
+            -webkit-print-color-adjust: exact;
+         } 
 	}
 </style>

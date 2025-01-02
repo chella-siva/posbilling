@@ -169,5 +169,8 @@
         tinymce.init({
             selector: 'textarea#footer_text',
         });
+        tinymce.init({
+            selector: 'textarea#bank_details',
+        });
     </script>
 @endsection

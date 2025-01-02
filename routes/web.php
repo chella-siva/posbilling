@@ -75,9 +75,13 @@ use Illuminate\Support\Facades\Route;
 include_once 'install_r.php';
 
 Route::middleware(['setData'])->group(function () {
-    Route::get('/', function () {
-        // return view('welcome');
-        return view('auth/login');
+    // Route::get('/', function () {
+    //     // return view('welcome');
+    //     return view('auth/login');
+    // });
+    
+     Route::get('/', function () {
+        return redirect('/login');
     });
 
     Auth::routes();
@@ -310,6 +314,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     //Invoice layouts..
     Route::resource('invoice-layouts', InvoiceLayoutController::class);
+    Route::post('/product/{product_id}/remove-image', [ProductController::class, 'removeImage'])->name('product.remove-image');
+Route::post('/invoice/{invlayid}/remove-letterheadImage', [InvoiceLayoutController::class, 'removeletterheadImage'])->name('invoice.remove-letterheadimage');
+Route::post('/invoice/{invlayid}/remove-logoImage', [InvoiceLayoutController::class, 'removelogoImage'])->name('invoice.remove-logoimage');
+
 
     Route::post('get-expense-sub-categories', [ExpenseCategoryController::class, 'getSubCategories']);
 
@@ -501,6 +509,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 });
+
 
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
     Route::get('/load-more-notifications', [HomeController::class, 'loadMoreNotifications']);

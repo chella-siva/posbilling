@@ -3,7 +3,7 @@
 		<div class="form-group">
 			<div class="input-group">
 				<span class="input-group-addon">
-					<i class="fa fa-user"></i>
+					<i class="fas fa-user"></i>
 				</span>
 				<input type="hidden" id="default_customer_id" 
 				value="{{ $walk_in_customer['id'] ?? ''}}" >
@@ -20,7 +20,7 @@
 				{!! Form::select('contact_id', 
 					[], null, ['class' => 'form-control mousetrap', 'id' => 'customer_id', 'placeholder' => 'Enter Customer name / phone', 'required']); !!}
 				<span class="input-group-btn">
-					<button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""  @if(!auth()->user()->can('customer.create')) disabled @endif><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+					<button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""  @if(!auth()->user()->can('customer.create')) disabled @endif><i class="fas fa-plus-circle text-primary fa-lg"></i></button>
 				</span>
 			</div>
 			<small class="text-danger hide contact_due_text"><strong>@lang('account.customer_due'):</strong> <span></span></small>
@@ -42,11 +42,11 @@
 					<!-- Show button for weighing scale modal -->
 					@if(isset($pos_settings['enable_weighing_scale']) && $pos_settings['enable_weighing_scale'] == 1)
 						<button type="button" class="btn btn-default bg-white btn-flat" id="weighing_scale_btn" data-toggle="modal" data-target="#weighing_scale_modal" 
-						title="@lang('lang_v1.weighing_scale')"><i class="fa fa-digital-tachograph text-primary fa-lg"></i></button>
+						title="@lang('lang_v1.weighing_scale')"><i class="fas fa-digital-tachograph text-primary fa-lg"></i></button>
 					@endif
 					
 
-					<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+					<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" data-container=".quick_add_product_modal"><i class="fas fa-plus-circle text-primary fa-lg"></i></button>
 				</span>
 			</div>
 		</div>
@@ -80,7 +80,7 @@
 			<div class="form-group">
 				<div class="input-group">
 					<span class="input-group-addon">
-						<i class="fa fa-calendar"></i>
+						<i class="fas fa-calendar-alt"></i>
 					</span>
 					{!! Form::text('transaction_date', $default_datetime, ['class' => 'form-control', 'readonly', 'required', 'id' => 'transaction_date']); !!}
 				</div>
@@ -202,8 +202,8 @@
         @endif
     @endforeach
 @endif
-<div class="row">
-	<div class="col-sm-12 pos_product_div">
+<div class="rows">
+	<div class="col-sm-12s pos_product_div">
 		<input type="hidden" name="sell_price_tax" id="sell_price_tax" value="{{$business_details->sell_price_tax}}">
 
 		<!-- Keeps count of product rows -->
@@ -218,24 +218,31 @@
 		<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
 			<thead class="tw-bg-sky-800 tw-text-sm tw-font-medium tw-text-white">
 				<tr>
-					<th class="tex-center tw-text-sm md:!tw-text-base tw-font-medium @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
+					<th class="tex-center tw-text-sm md:!tw-text-base tw-font-medium @if(!empty($pos_settings['inline_service_staff'])) width-30 @else width-35 @endif min_width">	
 						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
 					</th>
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-18 min_width">
 						@lang('sale.qty')
 					</th>
 					@if(!empty($pos_settings['inline_service_staff']))
-						<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
+						<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-15 min_width">
 							@lang('restaurant.service_staff')
 						</th>
 					@endif
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2 {{$hide_tax}}">
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-15 {{$hide_tax}} min_width">
 						@lang('sale.price_inc_tax')
 					</th>
-					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium col-md-2">
+					@if($is_mrp_enabled)
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-12 min_width">
+					MRP
+					</th>
+					@endif
+					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-15 min_width">
 						@lang('sale.subtotal')
 					</th>
-					<th class="text-center col-md-1"><i class="fas fa-times tw-text-sm md:!tw-text-base tw-font-medium " aria-hidden="true"></i></th>
+					<th class="text-center width-5 min_width50">
+						<i class="fas fa-trash-alt tw-text-sm md:!tw-text-base tw-font-medium " aria-hidden="true""></i> 
+					</th>
 				</tr>
 			</thead>
 			<tbody></tbody>

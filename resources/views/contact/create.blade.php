@@ -239,6 +239,9 @@
                 <div class="col-md-4">
                     <div class="form-group">
                       {!! Form::label('tax_number', __('contact.tax_no') . ':') !!}
+                        <span class="pull-right">
+                            <a class="pointer text-bold" target="_blank" href="https://services.gst.gov.in/services/searchtp">Verify</a>
+                        </span>
                         <div class="input-group">
                           <span class="input-group-addon">
                               <i class="fa fa-info"></i>

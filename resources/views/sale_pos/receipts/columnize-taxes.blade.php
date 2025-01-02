@@ -61,7 +61,7 @@
 				<span class="pull-left">{!! $receipt_details->invoice_no_prefix !!}:</span>
 			@endif
 
-			{{$receipt_details->invoice_no}}
+			<strong>{{$receipt_details->invoice_no}}</strong>
 		</div>
 
 		<!-- Total Due-->
@@ -187,6 +187,7 @@
 
 			<!-- Display type of service details -->
 			@if(!empty($receipt_details->types_of_service))
+			<br/>
 				<span class="pull-left text-left">
 					<strong>{!! $receipt_details->types_of_service_label !!}:</strong>
 					{{$receipt_details->types_of_service}}
@@ -197,6 +198,29 @@
 							<strong>{{$key}}: </strong> {{$value}}@if(!$loop->last), @endif
 						@endforeach
 					@endif
+				</span>
+			@endif
+
+				
+			<!-- Table information-->
+			@if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
+			<br/>
+				<span class="pull-left text-left">
+					@if(!empty($receipt_details->table_label))
+					<strong>{!! $receipt_details->table_label !!}</strong>
+					@endif
+					{{$receipt_details->table}}
+				</span>
+			@endif
+
+			<!-- Waiter info -->
+			@if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
+			<br/>
+				<span class="pull-left text-left">
+					@if(!empty($receipt_details->service_staff_label))
+					<strong>{!! $receipt_details->service_staff_label !!}</strong>
+					@endif
+					{{$receipt_details->service_staff}}
 				</span>
 			@endif
 
@@ -243,28 +267,7 @@
 				@endif
 			</div>
 		@endif
-
-		<!-- Table information-->
-        @if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
-        	<p>
-				@if(!empty($receipt_details->table_label))
-					{!! $receipt_details->table_label !!}
-				@endif
-				{{$receipt_details->table}}
-			</p>
-        @endif
-
-		<!-- Waiter info -->
-		@if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
-        	<p>
-				@if(!empty($receipt_details->service_staff_label))
-					{!! $receipt_details->service_staff_label !!}
-				@endif
-				{{$receipt_details->service_staff}}
-			</p>
-        @endif
-
-
+ 
 
         <div class="word-wrap">
 
@@ -381,44 +384,49 @@
 <div class="row ">
 	<div class="col-xs-12">
 		<!-- <br/> -->
-		<table class="table table-bordered table-no-top-cell-border table-slim">
+		<table class="table table-bordered table-no-top-cell-border table-slim" style="margin-bottom:5px;">
 			<thead>
-				<tr style="background-color: #357ca5 !important; color: white !important; font-size: 15px !important font-weight: bold;" class="table-no-side-cell-border table-no-top-cell-border text-center">
-					<td style="background-color: #357ca5 !important; color: white !important;">#</td>
+				<tr style="color: white !important;" class="table-no-side-cell-border table-no-top-cell-border text-center">
+
+					<td width="4%" style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
+                         # 
+                    </td>
 					
-					<td style="background-color: #357ca5 !important; color: white !important;" class="text-left" width="30%">
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center" width="30%" colspan="2">
 						{!! $receipt_details->table_product_label !!}
 					</td>
 
 					@if($receipt_details->show_cat_code == 1)
-						<td style="background-color: #357ca5 !important; color: white !important;" class="text-right">{!! $receipt_details->cat_code_label !!}</td>
+						<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">{!! $receipt_details->cat_code_label !!}</td>
 					@endif
 					
-					<td style="background-color: #357ca5 !important; color: white !important;" class="text-right">
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
 						{!! $receipt_details->table_qty_label !!}
 					</td>
-					<td style="background-color: #357ca5 !important; color: white !important;" class="text-right">
-						{!! $receipt_details->table_unit_price_label !!} <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span>
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
+						{!! $receipt_details->table_unit_price_label !!} 
+						<!-- <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span> -->
 					</td>
 					@if(!empty($receipt_details->discounted_unit_price_label))
-					<td style="background-color: #357ca5 !important; color: white !important;">
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
 						{{$receipt_details->discounted_unit_price_label}}
 					</td>
 					@endif
 					@if(!empty($receipt_details->item_discount_label))
-					<td style="background-color: #357ca5 !important; color: white !important;">
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
 						{!! $receipt_details->item_discount_label !!}
 					</td>
 					@endif
-					<td style="background-color: #357ca5 !important; color: white !important;" class="text-right">
+					<!-- <td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-right">
 						Taxable Value <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span>
-					</td>
+					</td> -->
 
 					@if(!empty($receipt_details->table_tax_headings))
 					
 						@foreach($receipt_details->table_tax_headings as $tax_heading)
-							<td style="background-color: #357ca5 !important; color: white !important;" class="word-wrap text-right">
-								{{$tax_heading}} <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span>
+							<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="word-wrap text-center">
+								{{$tax_heading}} 
+								<!-- <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span> -->
 							</td>
 
 							@php
@@ -428,8 +436,9 @@
 
 					@endif
 					
-					<td style="background-color: #357ca5 !important; color: white !important;" class="text-right">
-						{!! $receipt_details->table_subtotal_label !!}  <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span>
+					<td style="background-color: #357ca5 !important;color: white !important;font-weight: 500;padding:4px 2px 4px 2px;border:1px solid #ccc !important;" class="text-center">
+						{!! $receipt_details->table_subtotal_label !!}  
+						<!-- <span class="small color-white"> ({{$receipt_details->currency['symbol']}})</span> -->
 					</td>
 				</tr>
 			</thead>
@@ -439,7 +448,7 @@
 						<td class="text-center">
 							{{$loop->iteration}}
 						</td>
-						<td class="text-left" style="word-break: break-all;">
+						<td class="text-left" style="word-break: break-all;" colspan="2">
 							@if(!empty($line['image']))
 								<img src="{{$line['image']}}" alt="Image" width="50" style="float: left; margin-right: 8px;">
 							@endif
@@ -478,25 +487,29 @@
 	                        </td>
 	                    @endif
 
-						<td class="text-right">
-							{{$line['quantity']}} {{$line['units']}}
+						<td class="text-center">
+							{{$line['quantity']}} 
+							
+							<!-- {{$line['units']}} -->
 
 							@if($receipt_details->show_base_unit_details && $line['quantity'] && $line['base_unit_multiplier'] !== 1)
-                            <br><small>
-                            	{{$line['quantity']}} x {{$line['base_unit_multiplier']}} = {{$line['orig_quantity']}} {{$line['base_unit_name']}}
+                            <br>
+							<small>
+                            	{{$line['quantity']}} x {{$line['base_unit_multiplier']}} = {{$line['orig_quantity']}}
+								 {{$line['base_unit_name']}}
                             </small>
                             @endif
 						</td>
-						<td class="text-right">
+						<td class="text-center">
 							{{$line['unit_price_before_discount']}}
 						</td>
 						@if(!empty($receipt_details->discounted_unit_price_label))
-							<td class="text-right">
+							<td class="text-center">
 								{{$line['unit_price_inc_tax']}} 
 							</td>
 						@endif
 						@if(!empty($receipt_details->item_discount_label))
-						<td class="text-right">
+						<td class="text-center">
 							{{$line['total_line_discount'] ?? 00}}
 
 							@if(!empty($line['line_discount_percent']))
@@ -504,7 +517,7 @@
 							@endif
 						</td>
 						@endif
-						<td class="text-right">
+						<!-- <td class="text-center">
 							<span class="display_currency" data-currency_symbol="false">
 								{{$line['price_exc_tax']}}
 							</span>
@@ -512,12 +525,12 @@
 							@php
 								$totals['taxable_value'] += $line['price_exc_tax'];
 							@endphp
-						</td>
+						</td> -->
 
 						@if(!empty($receipt_details->table_tax_headings))
 					
 						@foreach($receipt_details->table_tax_headings as $tax_heading)
-							<td class="text-right word-wrap">
+							<td class="text-center word-wrap" style="line-height: 12px;">
 								@if(!empty($line['group_tax_details']))
 								
 								@foreach($line['group_tax_details'] as $tax_detail)
@@ -529,10 +542,9 @@
 
 										<span class="display_currency" data-currency_symbol="false">
 										{{$tax_detail['calculated_tax']}}
-										</span>
-										<br/>
+										</span> 
 										<span class="small">
-											{{$tax_detail['amount']}}%
+											({{$tax_detail['amount']}}%)
 										</span>
 									@endif
 								@endforeach
@@ -585,7 +597,7 @@
 		                        </td>
 
 								@if($receipt_details->show_cat_code == 1)
-			                        <td>
+			                        <td class="text-center">
 			                        	@if(!empty($modifier['cat_code']))
 			                        		{{$modifier['cat_code']}}
 			                        	@endif
@@ -622,10 +634,10 @@
 				@for ($i = $lines; $i < 5; $i++)
     				<tr>
     					<td>&nbsp;</td>
+    					<td colspan="2">&nbsp;</td>
     					<td>&nbsp;</td>
     					<td>&nbsp;</td>
-    					<td>&nbsp;</td>
-    					<td>&nbsp;</td>
+    					<!-- <td>&nbsp;</td> -->
     					<td>&nbsp;</td>
     					@if(!empty($receipt_details->discounted_unit_price_label))
 							<td>&nbsp;</td>
@@ -646,7 +658,7 @@
 				@endfor
 				<tr>
 					@php
-						$colspan = 4;
+						$colspan = 5;
 					@endphp
 					@if($receipt_details->show_cat_code == 1)
 						@php
@@ -666,20 +678,21 @@
 						@endphp
 					@endif
 					<th colspan="{{$colspan}}" class="text-right" 
-						style="background-color: #d2d6de !important;">
+						style="background-color: #d2d6de !important;padding:2px 4px 2px 2px;">
 						Total
 					</th>
-					<th class="text-right" style="background-color: #d2d6de !important;">
+					<!-- <th>&nbsp;</th> -->
+					<!-- <th class="text-right" style="background-color: #d2d6de !important;padding:2px 2px 2px 2px;">
 						<span class="display_currency" data-currency_symbol="false">
 							{{$totals['taxable_value']}}
 						</span>
-					</th>
+					</th> -->
 					
 					<!-- <td>&nbsp;</td> -->
 
 					@if(!empty($receipt_details->table_tax_headings))
 					@foreach($receipt_details->table_tax_headings as $tax_heading)
-						<th class="text-right" style="background-color: #d2d6de !important;">
+						<th class="text-center" style="background-color: #d2d6de !important;padding:2px 2px 2px 2px;">
 							<span class="display_currency" data-currency_symbol="false">
 							{{$totals[$tax_heading]}}
 							</span>
@@ -687,7 +700,7 @@
 					@endforeach
 					@endif
 
-					<th class="text-right" style="background-color: #d2d6de !important;">
+					<th class="text-right" style="background-color: #d2d6de !important;padding:2px 2px 2px 2px;">
 						<span class="display_currency" data-currency_symbol="false">
 							{{$receipt_details->subtotal_unformatted}}
 						</span>
@@ -711,7 +724,16 @@
 				@endforeach
 			@endif
 		</table>
-		<b class="pull-left">@lang('lang_v1.authorized_signatory')</b>
+		<!-- <b class="pull-left">@lang('lang_v1.authorized_signatory')</b> -->
+
+		<div style="padding:0px 2px 0px 2px;position: relative;height:110px;">
+			<!-- <p class="s9" style="color:#413bd4 !important;font-style:italic; text-align: center;">For {{$receipt_details->display_name}}</p>  -->
+			<div style="margin:0 auto;text-align: center;"> 
+				<!-- <img src="https://app.nammabilling.com/uploads/signature/marcos2.jpg" width="70%" height="auto" style="margin:0 auto;text-align: center;"> -->
+			</div>  
+			<b class="pull-left s9" style="position: absolute;bottom: 0%;left: 5%;">@lang('lang_v1.authorized_signatory')</b>
+		</div> 
+
 	</div>
 
 	<div class="col-md-6 invoice-col width-50">
@@ -858,11 +880,11 @@
 
 				<!-- Total -->
 				<tr>
-					<th style="background-color: #357ca5 !important; color: white !important" class="font-20 padding-5">
+					<th style="background-color: #357ca5 !important; color: white !important" class="font-23 padding-5">
 						{!! $receipt_details->total_label !!}
 					</th>
-					<td class="text-right font-20 padding-5" style="background-color: #357ca5 !important; color: white !important">
-						{{$receipt_details->total}}
+					<td class="text-right font-23 padding-5" style="background-color: #357ca5 !important; color: white !important">
+						<b style="color:#fff !important;">{{$receipt_details->total}}</b>
 					</td>
 				</tr>
 				@if(!empty($receipt_details->total_in_words))
@@ -898,9 +920,8 @@
 
 @if(!empty($receipt_details->additional_notes))
 	<div class="row ">
-		<div class="col-xs-12">
-			<br>
-			<p>{!! nl2br($receipt_details->additional_notes) !!}</p>
+		<div class="col-xs-12"> 
+			<p style="margin:0;">{!! nl2br($receipt_details->additional_notes) !!}</p>
 		</div>
 	</div>
 @endif
@@ -929,3 +950,35 @@
 		</tr>
 	</tbody>
 </table>
+
+<style type="text/css">
+	body {
+		color: #000000;
+	}
+	@media print{
+		*{
+			-webkit-print-color-adjust: exact;
+		}
+	 
+		.table>tbody>tr>td {
+			border: 1px solid #d7d7d7;
+			padding: .2rem;
+			color: #222539;
+			font-weight: 400;
+		}
+
+		.table>tbody>tr>td, .table>thead>tr>th {
+			/* white-space: nowrap; */
+			vertical-align: middle;
+			font-size: 14px;
+		}
+		.table>thead>tr>th {
+			font-weight: 600 !important;
+			padding: .2rem;
+			border: 1px solid #ccc !important;
+			background: #ccc !important; 
+			color: #000;
+		}
+	}
+	
+</style>

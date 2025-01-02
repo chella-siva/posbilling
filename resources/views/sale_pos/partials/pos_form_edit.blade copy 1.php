@@ -189,12 +189,12 @@
 			}
 		@endphp
 		<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
-			<thead>
+			<thead class="tw-items-center tw-justify-center tw-w-full tw-border-r tw-h-5 tw-bg-orange-800 tw-shrink-0 tw-border-primary-500/30">
 				<tr>
 					<th class="tex-center @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
 						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
 					</th>
-					<th class="text-center col-md-3">
+					<th class="text-center col-md-2">
 						@lang('sale.qty')
 					</th>
 					@if(!empty($pos_settings['inline_service_staff']))
@@ -204,6 +204,9 @@
 					@endif
 					<th class="text-center col-md-2 {{$hide_tax}}">
 						@lang('sale.price_inc_tax')
+					</th>
+					<th class="text-center col-md-2">
+					MRP
 					</th>
 					<th class="text-center col-md-2">
 						@lang('sale.subtotal')

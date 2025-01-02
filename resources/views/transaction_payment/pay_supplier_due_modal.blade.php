@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
 
     {!! Form::open(['url' => action([\App\Http\Controllers\TransactionPaymentController::class, 'postPayContactDue']), 'method' => 'post', 'id' => 'pay_contact_due_form', 'files' => true ]) !!}
@@ -14,13 +14,13 @@
       <div class="row">
         @if($due_payment_type == 'purchase')
         <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('purchase.supplier'): </strong>{{ $contact_details->name }}<br>
             <strong>@lang('business.business'): </strong>{{ $contact_details->supplier_business_name }}<br><br>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('report.total_purchase'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_purchase }}</span><br>
             <strong>@lang('contact.total_paid'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_paid }}</span><br>
             <strong>@lang('contact.total_purchase_due'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_purchase - $contact_details->total_paid }}</span><br>
@@ -36,13 +36,13 @@
         </div>
         @elseif($due_payment_type == 'purchase_return')
         <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('purchase.supplier'): </strong>{{ $contact_details->name }}<br>
             <strong>@lang('business.business'): </strong>{{ $contact_details->supplier_business_name }}<br><br>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('lang_v1.total_purchase_return'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_purchase_return }}</span><br>
             <strong>@lang('lang_v1.total_purchase_return_paid'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_return_paid }}</span><br>
             <strong>@lang('lang_v1.total_purchase_return_due'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_purchase_return - $contact_details->total_return_paid }}</span>
@@ -50,13 +50,13 @@
         </div>
         @elseif(in_array($due_payment_type, ['sell']))
           <div class="col-md-6">
-            <div class="well">
+            <div class="well well-sm">
               <strong>@lang('sale.customer_name'): </strong>{{ $contact_details->name }}<br>
               <br><br>
             </div>
           </div>
           <div class="col-md-6">
-            <div class="well">
+            <div class="well well-sm">
               <strong>@lang('report.total_sell'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_invoice }}</span><br>
               <strong>@lang('contact.total_paid'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_paid }}</span><br>
               <strong>@lang('contact.total_sale_due'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_invoice - $contact_details->total_paid }}</span><br>
@@ -72,13 +72,13 @@
           </div>
          @elseif(in_array($due_payment_type, ['sell_return']))
          <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('sale.customer_name'): </strong>{{ $contact_details->name }}<br>
               <br><br>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="well">
+          <div class="well well-sm">
             <strong>@lang('lang_v1.total_sell_return'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_sell_return }}</span><br>
             <strong>@lang('lang_v1.total_sell_return_paid'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_return_paid }}</span><br>
             <strong>@lang('lang_v1.total_sell_return_due'): </strong><span class="display_currency" data-currency_symbol="true">{{ $contact_details->total_sell_return - $contact_details->total_return_paid }}</span>
@@ -204,7 +204,7 @@
         @endif
 
         <div class="clearfix"></div>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <div class="form-group">
             {!! Form::label('document', __('purchase.attach_document') . ':') !!}
             {!! Form::file('document', ['accept' => implode(',', array_keys(config('constants.document_upload_mimes_types')))]); !!}
@@ -238,8 +238,8 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white">@lang( 'messages.save' )</button>
-      <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white" data-dismiss="modal">@lang( 'messages.close' )</button>
+      <button type="submit" class="tw-dw-btn tw-dw-btn-primarys tw-dw-btn-md bg-green-gradient tw-text-white">@lang( 'messages.save' )</button>
+      <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-dw-btn-md tw-text-white" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
 
     {!! Form::close() !!}

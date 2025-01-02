@@ -158,12 +158,39 @@
             </div>
             <div class="col-sm-4">
               <div class="form-group">
-                {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
+                {!! Form::label('image', __('lang_v1.product_image') . ':') !!} 
                 {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*', 'required' => $is_image_required]); !!}
                 <small><p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)]). @lang('lang_v1.aspect_ratio_should_be_1_1') @if(!empty($product->image)) <br> @lang('lang_v1.previous_image_will_be_replaced') @endif</p></small>
               </div>
+               @php $image = $product->image; @endphp
+            <div class="image-container">
+                @if ($image && file_exists(public_path('uploads/img/' . $image)))
+                    <img src="{{ asset('uploads/img/' . $image) }}" alt="Product Image" style="width: 150px; height: auto;">
+                    <!-- Close button to remove image -->
+                    <button type="button" class="btn btn-danger" onclick="removeImage()">X</button>
+                @else
+                    <img src="{{ asset('img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">
+                @endif
             </div>
             </div>
+            </div>
+            @php $image = $product->image; @endphp
+            <div class="image-container" style="
+    height: 50px;
+    width: 50px;
+">
+                @if ($image && file_exists(public_path('uploads/img/' . $image)))
+                    <img src="{{ asset('uploads/img/' . $image) }}" alt="Product Image" style="width: 150px; height: auto;">
+                    <!-- Close button to remove image -->
+                    <button type="button" class="btn btn-danger" onclick="removeImage()">X</button>
+                @else
+                    <img src="{{ asset('img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">
+                @endif
+            </div>
+
+
+
+
             <div class="col-sm-4">
               <div class="form-group">
                 {!! Form::label('product_brochure', __('lang_v1.product_brochure') . ':') !!}
@@ -386,5 +413,33 @@
     $(document).ready( function(){
       __page_leave_confirmation('#product_add_form');
     });
+
+    function removeImage() {
+    // Confirm the user wants to remove the image
+    if (confirm('Are you sure you want to remove the image?')) {
+        // Make an AJAX request to remove the image
+        $.ajax({
+            url: '{{ route("product.remove-image", $product->id) }}',  // Define this route in web.php
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',  // CSRF token for security
+                product_id: '{{ $product->id }}', // Pass the product ID
+            },
+            success: function(response) {
+                if (response.success) {
+                    // On success, remove the image and close button
+                    $('.image-container').html('<img src="{{ asset('uploads/img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">');
+                    alert('Image removed successfully.');
+                } else {
+                    alert('There was an error removing the image.');
+                }
+            },
+            error: function() {
+                alert('Error while removing the image.');
+            }
+        });
+    }
+}
+
   </script>
 @endsection

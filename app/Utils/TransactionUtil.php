@@ -1492,6 +1492,17 @@ class TransactionUtil extends Util
                     $output['all_due'] = $this->num_f($all_due, $show_currency, $business_details);
                 }
             }
+            $output['opening_bal_label'] = $il->opening_bal_label;
+            $output['show_opening_bal'] = $il->show_opening_bal;
+            $all_due = $this->getContactDue($transaction->contact_id);
+           
+            $ad= $all_due;
+            $td = ($due == 0) ? 0 : $due;
+             $amountNumber = (float) str_replace(['₹', ',', ' '], '', $td);
+             $amountNumber1 = (float) str_replace(['₹', ',', ' '], '', $ad);
+
+            $output['openbal_due'] =  $amountNumber1 - $amountNumber;
+            $output['openbal_due'] =$this->num_f($output['openbal_due'], $show_currency, $business_details);
 
             //Get payment details
             $output['payments'] = [];
@@ -1576,6 +1587,7 @@ class TransactionUtil extends Util
         //Additional notes
         $output['additional_notes'] = $transaction->additional_notes;
         $output['footer_text'] = $invoice_layout->footer_text;
+        $output['bank_details'] = $invoice_layout->bank_details;
 
         //Barcode related information.
         $output['show_barcode'] = ! empty($il->show_barcode) ? true : false;
@@ -1911,7 +1923,6 @@ class TransactionUtil extends Util
 
         $output['design'] = $il->design;
         $output['table_tax_headings'] = ! empty($il->table_tax_headings) ? array_filter(json_decode($il->table_tax_headings), 'strlen') : null;
-
         return (object) $output;
     }
 

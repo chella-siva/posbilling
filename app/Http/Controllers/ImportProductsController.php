@@ -324,6 +324,13 @@ class ImportProductsController extends Controller
                         $product_array['sku'] = ' ';
                     }
 
+                    $mrp = trim($value[37]);
+                    if (! empty($mrp)) {
+                        $product_array['mrp'] = $mrp;
+                    } else {
+                        $product_array['mrp'] = ' ';
+                    }
+
                     //Add product expiry
                     $expiry_period = trim($value[9]);
                     $expiry_period_type = strtolower(trim($value[10]));
@@ -661,6 +668,7 @@ class ImportProductsController extends Controller
                             $this->productUtil->createSingleProductVariation(
                                 $product,
                                 $product->sku,
+                                $imported_data[$index][37],
                                 $variation_data['dpp_exc_tax'],
                                 $variation_data['dpp_inc_tax'],
                                 $variation_data['profit_percent'],

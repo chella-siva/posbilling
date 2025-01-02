@@ -88,11 +88,13 @@ class BusinessUtil extends Util
             'show_country' => 1,
             'highlight_color' => '#000000',
             'footer_text' => '',
+            'bank_details' => '',
             'is_default' => 1,
             'business_id' => $business_id,
             'invoice_heading_not_paid' => '',
             'invoice_heading_paid' => '',
             'total_due_label' => 'Total Due',
+            'opening_bal_label' => 'Opening Balance',
             'paid_label' => 'Total Paid',
             'show_payments' => 1,
             'show_customer' => 1,
@@ -416,7 +418,7 @@ class BusinessUtil extends Util
      */
     public function defaultPosSettings()
     {
-        return ['disable_pay_checkout' => 0, 'disable_draft' => 0, 'disable_express_checkout' => 0, 'hide_product_suggestion' => 0, 'hide_recent_trans' => 0, 'disable_discount' => 0, 'disable_order_tax' => 0, 'is_pos_subtotal_editable' => 0];
+        return ['disable_pay_checkout' => 0, 'disable_draft' => 0, 'disable_express_checkout' => 0, 'hide_product_suggestion' => 0, 'hide_recent_trans' => 0, 'disable_discount' => 0, 'disable_order_tax' => 0, 'is_pos_subtotal_editable' => 0,'disable_mrp' => 0,'disable_stock' => 0,'disable_brand' => 0,'disable_sku' => 0,'disable_image' => 0,'disable_lotandexp' => 0,'disable_unit' => 0];
     }
 
     /**

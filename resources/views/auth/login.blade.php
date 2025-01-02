@@ -130,8 +130,7 @@
                                 <input
                                     class="tw-border tw-border-[#D1D5DA] tw-outline-none tw-h-12 tw-bg-transparent tw-rounded-lg tw-px-3 tw-font-medium tw-text-black placeholder:tw-text-gray-500 placeholder:tw-font-medium"
                                     name="username" required autofocus placeholder="@lang('lang_v1.username')"
-                                    data-last-active-input="" id="username" type="text" name="username"
-                                    value="{{ $username }}" />
+                                    data-last-active-input="" id="username" type="text" name="username" @if(Cookie::has('adminuser')) value="{{ Cookie::get('adminuser') }}" @endif />
                                 @if ($errors->has('username'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('username') }}</strong>
@@ -154,7 +153,7 @@
 
                                 <input
                                     class="tw-border tw-border-[#D1D5DA] tw-outline-none tw-h-12 tw-bg-transparent tw-rounded-lg tw-px-3 tw-font-medium tw-text-black placeholder:tw-text-gray-500 placeholder:tw-font-medium"
-                                    id="password" type="password" name="password" value="{{ $password }}" required
+                                    id="password" type="password" name="password" @if(Cookie::has('adminpwd')) value="{{ Cookie::get('adminpwd') }}" @endif required
                                     placeholder="@lang('lang_v1.password')" />
                                 <button type="button" id="show_hide_icon" class="show_hide_icon"
                                     style="position: absolute; top:48px;right:5px;">
@@ -175,7 +174,7 @@
 
                         <div class="tw-dw-form-control">
                             <label class="tw-dw-cursor-pointer tw-dw-label tw-self-start tw-gap-2">
-                                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}
+                                <input type="checkbox" id="remember" name="remember" @if(Cookie::has('adminuser')) Checked @endif
                                     class="tw-dw-checkbox">
                                 <span
                                     class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black tw-mt-[0.2rem]">@lang('lang_v1.remember_me')</span>

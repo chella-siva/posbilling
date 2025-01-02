@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\ProductsCreatedOrModified;
 use App\TransactionSellLine;
+use Illuminate\Support\Facades\File; // <-- Import the File facade
+
 
 class ProductController extends Controller
 {
@@ -60,6 +62,35 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function removeImage(Request $request, $product_id)
+    {
+        try {
+            $product = Product::find($product_id);
+    
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found.']);
+            }
+    
+            // Check if the product has an image and the image file exists
+            if ($product->image && file_exists(public_path('uploads/img/' . $product->image))) {
+                // Delete the image file from the server
+                File::delete(public_path('uploads/img/' . $product->image));
+                
+                // Remove the image record in the database
+                $product->image = null;
+                $product->save();
+    
+                return response()->json(['success' => true, 'message' => 'Image removed successfully.']);
+            }
+    
+            return response()->json(['success' => false, 'message' => 'Image not found.']);
+        } catch (\Exception $e) {
+            Log::error('Error removing image: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Server Error.']);
+        }
+    }
+
     public function index()
     {
         if (! auth()->user()->can('product.view') && ! auth()->user()->can('product.create')) {
@@ -134,7 +165,9 @@ class ProductController extends Controller
                 DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
                 DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
                 DB::raw('MAX(v.dpp_inc_tax) as max_purchase_price'),
-                DB::raw('MIN(v.dpp_inc_tax) as min_purchase_price')
+                DB::raw('MIN(v.dpp_inc_tax) as min_purchase_price'),
+                DB::raw('MAX(v.mrp) as max_mrp'),
+                DB::raw('MIN(v.mrp) as min_mrp')
                 );
 
             //if woocomerce enabled add field to query
@@ -287,6 +320,10 @@ class ProductController extends Controller
                 ->addColumn(
                     'purchase_price',
                     '<div style="white-space: nowrap;">@format_currency($min_purchase_price) @if($max_purchase_price != $min_purchase_price && $type == "variable") -  @format_currency($max_purchase_price)@endif </div>'
+                )
+                ->addColumn(
+                    'mrp',
+                    '@format_currency($min_mrp) @if($max_mrp != $min_mrp && $type == "variable") -  @format_currency($max_mrp)@endif'
                 )
                 ->addColumn(
                     'selling_price',
@@ -511,7 +548,7 @@ class ProductController extends Controller
             }
 
             if ($product->type == 'single') {
-                $this->productUtil->createSingleProductVariation($product->id, $product->sku, $request->input('single_dpp'), $request->input('single_dpp_inc_tax'), $request->input('profit_percent'), $request->input('single_dsp'), $request->input('single_dsp_inc_tax'));
+                $this->productUtil->createSingleProductVariation($product->id, $product->sku, $request->input('single_mrp'), $request->input('single_dpp'), $request->input('single_dpp_inc_tax'), $request->input('profit_percent'), $request->input('single_dsp'), $request->input('single_dsp_inc_tax'));
             } elseif ($product->type == 'variable') {
                 if (! empty($request->input('product_variation'))) {
                     $input_variations = $request->input('product_variation');
@@ -802,7 +839,7 @@ class ProductController extends Controller
             $product->product_locations()->sync($product_locations);
 
             if ($product->type == 'single') {
-                $single_data = $request->only(['single_variation_id', 'single_dpp', 'single_dpp_inc_tax', 'single_dsp_inc_tax', 'profit_percent', 'single_dsp']);
+                $single_data = $request->only(['single_variation_id', 'single_dpp', 'single_dpp_inc_tax', 'single_dsp_inc_tax', 'profit_percent', 'single_dsp','single_mrp']);
                 $variation = Variation::find($single_data['single_variation_id']);
 
                 $variation->sub_sku = $product->sku;
@@ -810,6 +847,7 @@ class ProductController extends Controller
                 $variation->dpp_inc_tax = $this->productUtil->num_uf($single_data['single_dpp_inc_tax']);
                 $variation->profit_percent = $this->productUtil->num_uf($single_data['profit_percent']);
                 $variation->default_sell_price = $this->productUtil->num_uf($single_data['single_dsp']);
+                $variation->mrp = $this->productUtil->num_uf($single_data['single_mrp']);
                 $variation->sell_price_inc_tax = $this->productUtil->num_uf($single_data['single_dsp_inc_tax']);
                 $variation->save();
 
@@ -1515,6 +1553,7 @@ class ProductController extends Controller
             $this->productUtil->createSingleProductVariation(
                 $product->id,
                 $product->sku,
+                $request->input('single_mrp'),
                 $request->input('single_dpp'),
                 $request->input('single_dpp_inc_tax'),
                 $request->input('profit_percent'),

@@ -21,20 +21,29 @@
 			value="{{$so_line->id}}">
 		@endif
 		@php
-			$product_name = $product->product_name . '<br/>' . $product->sub_sku ;
-			if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ;}
+			$product_name = $product->product_name;
+			
+			if($pos_settings['disable_sku'] == 0) {
+			    if(!empty($product->sub_sku)){ $product_name .= '-' . $product->sub_sku ; }
+			}
+			
+			if($pos_settings['disable_brand'] == 0) {
+			    if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ; }
+			}
 		@endphp
 
 		@if( ($edit_price || $edit_discount) && empty($is_direct_sell) )
 		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline-block;float: left;">
 		<span class="text-link text-primary cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}" style="color:#161616 !important;;">
 			{!! $product_name !!}
-			&nbsp;<i class="fa fa-info-circle"></i>
+			&nbsp;<i class="fas fa-edit" style="color:blue;"></i>
 		</span>
 		</div>
 		@else
 			{!! $product_name !!}
 		@endif
+		
+		@if($pos_settings['disable_image'] == 0)
 		<div style="display: inline;">
 		    
 		    	<img src="@if(count($product->media) > 0)
@@ -43,9 +52,9 @@
 						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
 					@else
 						{{asset('/img/default.png')}}
-					@endif" alt="product-img" loading="lazy"style="height: 100%;display: inline;margin-left: 5px; border: black;border-radius: 5px; margin-top: 0px; width: 50px;object-fit: cover;">
-		    
+					@endif" alt="product-img" loading="lazy"style="width:100%;height: 50px;display: inline;margin-left: 5px; border: black;border-radius: 5px; margin-top: 0px; width: 50px;object-fit: cover;">
 		</div>
+		@endif
 	
 
 
@@ -116,6 +125,7 @@
 		</div> 
 		@endif
 
+		@if($pos_settings['disable_stock'] == 0)
         <div class="py-0" style="display:block;clear: both;">
             <small class="text-muted p-1">
         			@if($product->enable_stock)
@@ -125,6 +135,7 @@
         			@endif
         		</small>
         </div>
+        @endif
 		
 
 		<!-- Description modal end -->
@@ -168,6 +179,7 @@
 			}
 		@endphp
 		@if(!empty($product->lot_numbers) && empty($is_sales_order))
+		@if($pos_settings['disable_lotandexp'] == 0)
 			<select class="form-control lot_number input-sm" name="products[{{$row_count}}][lot_no_line_id]" @if(!empty($product->transaction_sell_lines_id)) disabled @endif>
 				<option value="">@lang('lang_v1.lot_n_expiry')</option>
 				@foreach($product->lot_numbers as $lot_number)
@@ -198,6 +210,7 @@
 					<option value="{{$lot_number->purchase_line_id}}" data-qty_available="{{$lot_number->qty_available}}" data-msg-max="@lang('lang_v1.quantity_error_msg_in_lot', ['qty'=> $lot_number->qty_formated, 'unit' => $product->unit  ])" {{$selected}}>@if(!empty($lot_number->lot_number) && $lot_enabled == 1){{$lot_number->lot_number}} @endif @if($lot_enabled == 1 && $exp_enabled == 1) - @endif @if($exp_enabled == 1 && !empty($lot_number->exp_date)) @lang('product.exp_date'): {{@format_date($lot_number->exp_date)}} @endif {{$expiry_text}}</option>
 				@endforeach
 			</select>
+		@endif
 		@endif
 	@endif
 	@if(!empty($is_direct_sell))
@@ -273,6 +286,7 @@
 		</div>
 		
 		<input type="hidden" name="products[{{$row_count}}][product_unit_id]" value="{{$product->unit_id}}">
+		@if($pos_settings['disable_unit'] == 0)
 		@if(count($sub_units) > 0) 
 			<select name="products[{{$row_count}}][sub_unit_id]" class="form-control input-sm sub_unit">
                 @foreach($sub_units as $key => $value)
@@ -283,6 +297,7 @@
            </select>
 		@else
 			{{$product->unit}}
+		@endif
 		@endif
 
 		@if(!empty($product->second_unit))
@@ -409,6 +424,11 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
+	@if($pos_settings['disable_mrp'] == 0)
+	<td>
+		<input type="text" readonly class="form-control input_number pos_mrp_text" value="{{@num_format($product->mrp)}}">
+	</td>
+	@endif
 	<td class="text-center">
 		@php
 			$subtotal_type = !empty($pos_settings['is_pos_subtotal_editable']) ? 'text' : 'hidden';
@@ -417,7 +437,7 @@
 		<input type="{{$subtotal_type}}" class="form-control pos_line_total @if(!empty($pos_settings['is_pos_subtotal_editable'])) input_number @endif" value="{{@num_format($product->quantity_ordered*$unit_price_inc_tax )}}">
 		<span class="display_currency pos_line_total_text @if(!empty($pos_settings['is_pos_subtotal_editable'])) hide @endif" data-currency_symbol="true">{{$product->quantity_ordered*$unit_price_inc_tax}}</span>
 	</td>
-	<td class="text-center v-center">
-		<i class="fa fa-times text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
+	<td class="text-center v-center"  title="Delete Items">
+		<i class="fas fa-backspace text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i> 
 	</td>
 </tr>

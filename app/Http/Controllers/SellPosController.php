@@ -871,7 +871,7 @@ class SellPosController extends Controller
                 'pv.name as product_variation_name',
                 'pv.is_dummy as is_dummy',
                 'variations.name as variation_name',
-                'variations.sub_sku',
+                'variations.sub_sku','variations.mrp',
                 'p.barcode_type',
                 'p.enable_sr_no',
                 'variations.id as variation_id',
@@ -1694,7 +1694,6 @@ class SellPosController extends Controller
                 $edit_discount = auth()->user()->can('edit_product_discount_from_pos_screen');
                 $edit_price = auth()->user()->can('edit_product_price_from_pos_screen');
             }
-
             $output['html_content'] = view('sale_pos.product_row')
                 ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line'))
                 ->render();
@@ -2007,7 +2006,7 @@ class SellPosController extends Controller
                 'variations.name as variation',
                 'VLD.qty_available',
                 'variations.default_sell_price as selling_price',
-                'variations.sub_sku',
+                'variations.sub_sku','variations.mrp',
                 'u.short_name as unit'
             )
                 ->with(['media', 'group_prices'])
@@ -3141,7 +3140,7 @@ class SellPosController extends Controller
             ->where('transaction_sell_lines.transaction_id', $transaction->id)
             ->select(
                 DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
-                'variations.sub_sku',
+                'variations.sub_sku',  'variations.mrp',
                 'transaction_sell_lines.id',
                 'transaction_sell_lines.res_service_staff_id',
             )
