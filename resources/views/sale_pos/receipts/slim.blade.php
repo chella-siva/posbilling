@@ -427,6 +427,11 @@
                         <th class="quantity text-center" width="8%">
                         	{{$receipt_details->table_qty_label}}
                         </th>
+						@if($receipt_details->show_mrp != 0)
+						<th class="mrp text-center" width="8%">
+                        	MRP
+                        </th>
+						@endif
                         @if(empty($receipt_details->hide_price))
                         <th class="unit_price text-center" width="8%">
                         	{{$receipt_details->table_unit_price_label}}
@@ -444,6 +449,7 @@
                     </tr>
                 </thead>
                 <tbody>
+					@php $savedval = 0; @endphp
                 	@forelse($receipt_details->lines as $line)
 	                    <tr>
 	                        <td class="serial_number" style="vertical-align: middle;">
@@ -501,8 +507,13 @@
                             </small>
                             @endif</td>
 
+							@if($receipt_details->show_mrp != 0)
+							<td class= "text-center"> {{$line['mrp']}} </td>
+							@endif
+							@php $savedval += $line['mrp'] - $line['unit_price_before_discount']; @endphp
+
 	                        @if(empty($receipt_details->hide_price))
-	                        <td class="unit_price text-center">{{$line['unit_price_before_discount']}}</td>
+	                        <td class="unit_price text-center">{{$line['unit_price_before_discount']}} </td>
 
 	                        @if(!empty($receipt_details->discounted_unit_price_label))
 								<td class="text-center">
@@ -689,6 +700,8 @@
 						{{$receipt_details->total}}
 					</div>
 				</div>
+
+				
 				@if(!empty($receipt_details->total_in_words))
 				<div colspan="2" class="text-right mb-0">
 					<small>
@@ -771,6 +784,13 @@
 	            	</table>
 	            @endif
             @endif
+
+			<div class="flex-box">
+					<div class="width-50 text-right">
+						Totally you saved : ₹ {{$savedval}}
+					</div>
+				</div>
+
 
             @if(!empty($receipt_details->additional_notes))
 	            <p class="centered">

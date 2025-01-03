@@ -67,7 +67,7 @@ class InvoiceLayoutController extends Controller
                 'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text','bank_details', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
                 'sub_heading_line3', 'sub_heading_line4', 'sub_heading_line5',
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
-                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
+                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_website','date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
 
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
@@ -188,13 +188,13 @@ class InvoiceLayoutController extends Controller
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
                 'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design',
                 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label',
-                'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
+                'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_website','date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
             $business_id = $request->session()->get('user.business_id');
 
 
             $checkboxes = ['show_business_name', 'show_location_name', 'show_landmark', 'show_city', 'show_state', 'show_country', 'show_zip_code', 'show_mobile_number', 'show_alternate_number', 'show_email', 'show_tax_1', 'show_tax_2', 'show_logo', 'show_barcode', 'show_payments', 'show_customer', 'show_client_id',
                 'show_brand', 'show_sku', 'show_cat_code', 'show_sale_description', 'show_sales_person',
-                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point','show_opening_bal',
+                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point','show_opening_bal','show_mrp','show_tax','show_unit','show_website',
                 'show_qr_code', 'show_commission_agent', 'show_letter_head', ];
             foreach ($checkboxes as $name) {
                 $input[$name] = ! empty($request->input($name)) ? 1 : 0;

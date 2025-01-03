@@ -336,7 +336,7 @@
                       @php 
                         $disable_mrp = (isset($pos_settings['disable_mrp'])) ? $pos_settings['disable_mrp'] : 0;
                         $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
-                        $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
+                        $disable_sku = (isset($pos_settings['disable_sku'])) ? $pos_settings['disable_sku'] : 0;
                         $disable_brand = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
                         $disable_image = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
                         $disable_lotandexp = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;

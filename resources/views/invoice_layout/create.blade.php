@@ -892,6 +892,43 @@
               </div>
           </div>
         </div>
+
+        <div class="col-sm-5">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_mrp', 1, false, ['class' => 'input-icheck']); !!} Show MRP</label>
+                @show_tooltip('show mrp')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_tax', 1, false, ['class' => 'input-icheck']); !!} Show tax</label>
+                @show_tooltip('Show tax')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_unit', 1, false, ['class' => 'input-icheck']); !!} Show Unit</label>
+                @show_tooltip('Show Unit')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_website', 1, false, ['class' => 'input-icheck']); !!} Show website</label>
+                @show_tooltip('Show Website')
+              </div>
+          </div>
+        </div>
         
         <div class="col-sm-3">
           <div class="form-group">

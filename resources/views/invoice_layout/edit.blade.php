@@ -83,20 +83,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 letter_head_input">
-                <div class="form-group">
-                    {!! Form::label('letter_head', __('lang_v1.letter_head') . ':') !!}
-                    {!! Form::file('letter_head', ['accept' => 'image/*']); !!}
-                    <span class="help-block">@lang('lang_v1.letter_head_help') <br> @lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB']) <br> @lang('lang_v1.letter_head_help2')</span>
-                </div>
-                 
-            </div>
-            
-             @php $image = $invoice_layout->letter_head;  @endphp
-            <div class="col-sm-4 image-container letter_head_input" style="
-    height: 150px;
-    width: 150px;
-">
+
+            <div class="col-sm-4 ">
+            @php $image = $invoice_layout->letter_head;  @endphp
+            <div class=" image-container letter_head_input" style="
+                height: 150px;
+                width: 150px;
+            ">
                 @if ($image && file_exists(public_path('uploads/invoice_logos/' . $image)))
                     <img src="{{ asset('uploads/invoice_logos/' . $image) }}" alt="Product Image" style="width: 150px; height: auto;">
                     <!-- Close button to remove image -->
@@ -105,50 +98,64 @@
                     <img src="{{ asset('img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">
                 @endif
             </div>
-             
-      </div>
-     <div class="row hide-for-letterhead">
-         
-           <!-- Show Logo Section -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <div class="checkbox">
-                <label>
-                    {!! Form::checkbox('show_logo', 1, $invoice_layout->show_logo, ['class' => 'input-icheck']); !!} @lang('invoice.show_logo')
-                </label>
+           </div>
+
+            <div class="col-sm-4 letter_head_input">
+                <div class="form-group">
+                    {!! Form::label('letter_head', __('lang_v1.letter_head') . ':') !!}
+                    {!! Form::file('letter_head', ['accept' => 'image/*']); !!}
+                    <span class="help-block">@lang('lang_v1.letter_head_help') <br> @lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB']) <br> @lang('lang_v1.letter_head_help2')</span>
+                </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Logo Section -->
-    <div class="col-sm-6"> <!-- Adjusted to col-sm-6 to allow more space for the logo -->
-        <div class="form-group">
-            {!! Form::label('logo', __('invoice.invoice_logo') . ':') !!}
-            {!! Form::file('logo', ['accept' => 'image/*']); !!}
-            <span class="help-block">@lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB'])<br> @lang('lang_v1.invoice_logo_help2')</span>
+      </div>
+      <div class="row hide-for-letterhead">
+        <!-- Logo -->
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_logo', 1, $invoice_layout->show_logo, ['class' => 'input-icheck']); !!} @lang('invoice.show_logo')</label>
+              </div>
+          </div>
         </div>
 
+        <div class="col-sm-4">
         @php $image1 = $invoice_layout->logo; @endphp
+          <div class="form-group">
         <div class="image-container" style="height: 120px; max-width: 120px;"> <!-- Increased the size of the image container -->
+            <div class="checkbox">
             @if ($image1 && file_exists(public_path('uploads/invoice_logos/' . $image1)))
                 <img src="{{ asset('uploads/invoice_logos/' . $image1) }}" alt="Product Image" style="width: 150px; height: auto;">
                 <!-- Close button to remove image -->
                 <button type="button" class="btn btn-danger" onclick="removeImagelogo()">X</button>
             @else
+              <label>
                 <img src="{{ asset('img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">
             @endif
+              </div>
+          </div>
         </div>
-    </div>
-    
-     <!-- Header Text Section -->
-    <div class="col-sm-12"> <!-- Adjusted for balance in the layout -->
-        <div class="form-group">
-            {!! Form::label('header_text', __('invoice.header_text') . ':' ) !!}
-            {!! Form::textarea('header_text', $invoice_layout->header_text, ['class' => 'form-control', 'placeholder' => __('invoice.header_text'), 'rows' => 6]); !!} <!-- Increased row count for bigger text area -->
         </div>
-    </div>
-</div>
 
+        <div class="col-sm-4">
+          <div class="form-group">
+            {!! Form::label('logo', __('invoice.invoice_logo') . ':') !!}
+            {!! Form::file('logo', ['accept' => 'image/*']); !!}
+            <span class="help-block">@lang('lang_v1.invoice_logo_help', ['max_size' => '1 MB'])<br> @lang('lang_v1.invoice_logo_help2')</span
+
+          </div>
+        </div>
+        </div>
+        <div class="row">
+        
+        <div class="col-sm-12">
+          <div class="form-group">
+            {!! Form::label('header_text', __('invoice.header_text') . ':' ) !!}
+              {!! Form::textarea('header_text', $invoice_layout->header_text, ['class' => 'form-control',
+              'placeholder' => __('invoice.header_text'), 'rows' => 3]); !!}
+          </div>
+        </div>
         <div class="clearfix"></div>
         <div class="col-sm-3">
           <div class="form-group">
@@ -187,8 +194,10 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
+
   <div class="box box-solid">
     <div class="box-body">
       <div class="row">
@@ -902,15 +911,15 @@
               </div>
           </div>
         </div>
-        
-         <div class="col-sm-3">
+
+        <div class="col-sm-3">
           <div class="form-group">
             {!! Form::label('opening_bal_label',  __('Total Opening Balance Lable') . ' (' . __('lang_v1.all_sales') . '):' ) !!}
             {!! Form::text('opening_bal_label', $invoice_layout->opening_bal_label, ['class' => 'form-control',
               'placeholder' => __('invoice.total_due_label') ]); !!}
           </div>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-3">
           <div class="form-group">
             <div class="checkbox">
               <label>
@@ -920,6 +929,42 @@
           </div>
         </div>
 
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_mrp', 1, $invoice_layout->show_mrp, ['class' => 'input-icheck']); !!} Show MRP</label>
+                @show_tooltip('Show MRP')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_tax', 1, $invoice_layout->show_tax, ['class' => 'input-icheck']); !!} Show Tax</label>
+                @show_tooltip('Show Tax')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_unit', 1, $invoice_layout->show_unit, ['class' => 'input-icheck']); !!} Show Unit</label>
+                @show_tooltip('Show unit')
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_website', 1, $invoice_layout->show_website, ['class' => 'input-icheck']); !!} Show Website</label>
+                @show_tooltip('Show website')
+              </div>
+          </div>
+        </div>
 
         <div class="col-sm-4">
           <div class="form-group">
@@ -1211,8 +1256,13 @@
             $('.letter_head_input').addClass('hide');
         }
     }
-    
-     function removeImagelogo() {
+
+  
+
+    $(document).ready(function(){
+        letter_head_changed();
+
+        function removeImagelogo() {
     // Confirm the user wants to remove the image
     if (confirm('Are you sure you want to remove the image?')) {
         // Make an AJAX request to remove the image
@@ -1266,9 +1316,6 @@
     }
     }
     
-
-    $(document).ready(function(){
-        letter_head_changed();
     })
 </script>
 @endsection

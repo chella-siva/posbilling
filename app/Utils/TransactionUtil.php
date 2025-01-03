@@ -1494,6 +1494,12 @@ class TransactionUtil extends Util
             }
             $output['opening_bal_label'] = $il->opening_bal_label;
             $output['show_opening_bal'] = $il->show_opening_bal;
+
+            $output['show_mrp'] = $il->show_mrp;
+            $output['show_tax'] = $il->show_tax;
+            $output['show_unit'] = $il->show_unit;
+            $output['show_website'] = $il->show_website;
+
             $all_due = $this->getContactDue($transaction->contact_id);
            
             $ad= $all_due;
@@ -2004,6 +2010,7 @@ class TransactionUtil extends Util
             $line_array = [
                 //Field for 1st column
                 'name' => $product->name,
+                'mrp' => $product->mrp,
                 'product_description' => ! empty($show_product_description) ? $product->product_description : null,
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 'product_variation' => (empty($product_variation->name) || $product_variation->name == 'DUMMY') ? '' : $product_variation->name,

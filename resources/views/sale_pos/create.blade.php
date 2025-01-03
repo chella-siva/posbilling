@@ -12,6 +12,11 @@
             <input type="hidden" id="reward_point_enabled">
         @endif
         @php
+
+            $pos_settings['disable_stock'] = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
+            $pos_settings['disable_brand'] = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
+            $pos_settings['disable_sku'] = (isset($pos_settings['disable_sku'])) ? $pos_settings['disable_sku'] : 0;
+
             $is_discount_enabled = $pos_settings['disable_discount'] != 1 ? true : false;
             $is_mrp_enabled = $pos_settings['disable_mrp'] != 1 ? true : false;
             $is_stock_enabled = $pos_settings['disable_stock'] != 1 ? true : false;
