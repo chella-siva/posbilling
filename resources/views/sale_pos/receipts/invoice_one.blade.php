@@ -185,9 +185,12 @@
 				@if(!empty($receipt_details->contact) && !empty($receipt_details->website))
 					, 
 				@endif
-				@if(!empty($receipt_details->website))
-					{{ $receipt_details->website }}
-				@endif
+				@if($receipt_details->show_website == 1)
+    				@if(!empty($receipt_details->website))
+    					{{ $receipt_details->website }}
+    				@endif
+    			@endif
+				
 				@if(!empty($receipt_details->location_custom_fields))
 					<br>{{ $receipt_details->location_custom_fields }}
 				@endif
@@ -353,11 +356,12 @@
             <td style="padding:2px 2px 5px 4px;vertical-align: top;width:50%;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0pt;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67;" colspan="6">
                 <p class="s2" style="color:#0070C0!important;font-style:italic;text-align: left;">Bank Details:</p>
                 <p class="s4" style="text-align: left;">
-                    Name: NammaBilling Private Limited <br>
-                    Bank: Yes Bank<br>
-                    IFSC: YESB0000658<br>
-                    Branch: AVENUE ROAD<br>
-                    Account No: 065333300001234
+                    {!! $receipt_details->bank_details !!} 
+                    <!--Name: NammaBilling Private Limited <br>-->
+                    <!--Bank: Yes Bank<br>-->
+                    <!--IFSC: YESB0000658<br>-->
+                    <!--Branch: AVENUE ROAD<br>-->
+                    <!--Account No: 065333300001234-->
                 </p>
             </td>
         </tr>
@@ -418,14 +422,16 @@
                     <th class="text-right" width="5%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">{{$receipt_details->table_qty_label}}</p>
                     </th>
-
+                    @if($receipt_details->show_unit == 1)
                     <th class="text-right" width="5%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">Unit</p>
                     </th>
-
+                    @endif
+                    @if($receipt_details->show_tax == 1)
 					<th class="text-right" width="8%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">Tax(%)</p>
                     </th>
+                    @endif
 
 					@if(!empty($receipt_details->discounted_unit_price_label))
 						<th class="text-right" width="8%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
@@ -513,16 +519,19 @@
                                 @endif
                             </p>
                         </td>
-
+                    @if($receipt_details->show_unit == 1)
                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                             <p class="s7" style="text-align: center;">{{$line['units']}} </p>
                         </td> 
+                        @endif
+                     @if($receipt_details->show_tax == 1)
                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                             <p class="s7" style="text-align: center;">
                                 <!-- {{$line['tax']}}  -->
                                 {{$line['tax_name']}}
                             </p>
                         </td>
+                    @endif
 
                         @if(!empty($receipt_details->discounted_unit_price_label))
                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
@@ -638,6 +647,16 @@
                         $colspan += 1;
                     @endphp
                 @endif
+                @if($receipt_details->show_unit == 1)
+                    @php
+                        $colspan += 1;
+                    @endphp
+                @endif
+                @if($receipt_details->show_tax == 1)
+                    @php
+                        $colspan += 1;
+                    @endphp
+                @endif
 
                 @if(!empty($receipt_details->discounted_unit_price_label))
                     @php
@@ -650,7 +669,6 @@
                         $colspan += 1;
                     @endphp
                 @endif
-
                 
 		@if(!empty($receipt_details->total_exempt_uf))					
         <tr style="height:24px;">
@@ -803,7 +821,6 @@
             <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67" colspan="2" bgcolor="#E1EDFF">
                 <p class="s8" style="text-align: right;">{!! $receipt_details->total_label !!}</p>
             </td>
-
             <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67" bgcolor="#E1EDFF">
                 <p class="s8" style="text-align: right;">{{$receipt_details->total}}</p>
             </td>

@@ -506,11 +506,12 @@
                             	{{$line['quantity']}} x {{$line['base_unit_multiplier']}} = {{$line['orig_quantity']}} {{$line['base_unit_name']}}
                             </small>
                             @endif</td>
-
 							@if($receipt_details->show_mrp != 0)
 							<td class= "text-center"> {{$line['mrp']}} </td>
 							@endif
-							@php $savedval += $line['mrp'] - $line['unit_price_before_discount']; @endphp
+							@php
+                            $savedval += (is_numeric($line['mrp']) ? (float)$line['mrp'] : 0) - (is_numeric($line['unit_price_before_discount']) ? (float)$line['unit_price_before_discount'] : 0);
+							@endphp
 
 	                        @if(empty($receipt_details->hide_price))
 	                        <td class="unit_price text-center">{{$line['unit_price_before_discount']}} </td>
@@ -549,10 +550,6 @@
 									@if(!empty($receipt_details->discounted_unit_price_label))
 										<td class="text-center">{{$modifier['unit_price_exc_tax']}}</td>
 									@endif
-									@if(!empty($receipt_details->item_discount_label))
-										<td class="text-center">0.00</td>
-									@endif
-									<td class="text-right">{{$modifier['line_total']}}</td>
 									@endif
 								</tr>
 							@endforeach

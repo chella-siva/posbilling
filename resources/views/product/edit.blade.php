@@ -174,22 +174,6 @@
             </div>
             </div>
             </div>
-            @php $image = $product->image; @endphp
-            <div class="image-container" style="
-    height: 50px;
-    width: 50px;
-">
-                @if ($image && file_exists(public_path('uploads/img/' . $image)))
-                    <img src="{{ asset('uploads/img/' . $image) }}" alt="Product Image" style="width: 150px; height: auto;">
-                    <!-- Close button to remove image -->
-                    <button type="button" class="btn btn-danger" onclick="removeImage()">X</button>
-                @else
-                    <img src="{{ asset('img/default.png') }}" alt="Default Image" style="width: 150px; height: auto;">
-                @endif
-            </div>
-
-
-
 
             <div class="col-sm-4">
               <div class="form-group">

@@ -16,6 +16,10 @@
             $pos_settings['disable_stock'] = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
             $pos_settings['disable_brand'] = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
             $pos_settings['disable_sku'] = (isset($pos_settings['disable_sku'])) ? $pos_settings['disable_sku'] : 0;
+            $pos_settings['disable_mrp'] = (isset($pos_settings['disable_mrp'])) ? $pos_settings['disable_mrp'] : 0;
+            $pos_settings['disable_unit'] = (isset($pos_settings['disable_unit'])) ? $pos_settings['disable_unit'] : 0;
+            $pos_settings['disable_image'] = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
+            $pos_settings['disable_lotandexp'] = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;
 
             $is_discount_enabled = $pos_settings['disable_discount'] != 1 ? true : false;
             $is_mrp_enabled = $pos_settings['disable_mrp'] != 1 ? true : false;

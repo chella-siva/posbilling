@@ -187,8 +187,10 @@
 				@if(!empty($receipt_details->contact) && !empty($receipt_details->website))
 					, 
 				@endif
-				@if(!empty($receipt_details->website))
-					{{ $receipt_details->website }}
+				@if($receipt_details->show_website == 1)
+    				@if(!empty($receipt_details->website))
+    					{{ $receipt_details->website }}
+    				@endif
 				@endif
 				@if(!empty($receipt_details->location_custom_fields))
 					<br>{{ $receipt_details->location_custom_fields }}
@@ -402,13 +404,16 @@
                         <p class="s8" style="text-align: center;">{{$receipt_details->table_qty_label}}</p>
                     </th>
 
-                    <!-- <th class="text-right" width="5%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
+                     @if($receipt_details->show_unit == 1)
+                    <th class="text-right" width="5%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">Unit</p>
-                    </th> -->
-
+                    </th>
+                    @endif
+                    @if($receipt_details->show_tax == 1)
 					<th class="text-right" width="8%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">Tax(%)</p>
                     </th>
+                    @endif
 
 					<!-- @if(!empty($receipt_details->discounted_unit_price_label))
 						<th class="text-right" width="8%" style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
@@ -496,9 +501,21 @@
                             </p>
                         </td>
 
-                        <!-- <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
+                    @if($receipt_details->show_unit == 1)
+
+                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                             <p class="s7" style="text-align: center;">{{$line['units']}} </p>
-                        </td> -->
+                        </td> 
+                        @endif
+                          @if($receipt_details->show_tax == 1)
+
+                        <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
+                            <p class="s7" style="text-align: center;">
+                                <!-- {{$line['tax']}}  -->
+                                {{$line['tax_name']}}
+                            </p>
+                        </td>
+                        @endif
                         
                         <!-- @foreach($receipt_details->taxes as $key => $val)
                         <td style="border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
@@ -628,6 +645,16 @@
                     $colspan = 2;
                 @endphp
                 @if($receipt_details->show_cat_code == 1)
+                    @php
+                        $colspan += 1;
+                    @endphp
+                @endif
+                @if($receipt_details->show_unit == 1)
+                    @php
+                        $colspan += 1;
+                    @endphp
+                @endif
+                @if($receipt_details->show_tax == 1)
                     @php
                         $colspan += 1;
                     @endphp

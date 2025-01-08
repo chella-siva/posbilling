@@ -315,7 +315,7 @@ class InvoiceLayoutController extends Controller
         return ['classic' => __('lang_v1.classic').' ('.__('lang_v1.for_normal_printer').')',
             'elegant' => __('lang_v1.elegant').' ('.__('lang_v1.for_normal_printer').')',
             // 'thirutest' => __('lang_v1.thirutest').' ('.__('lang_v1.for_normal_printer').')',
-            // 'invoice_one' => __('lang_v1.invoice_one').' ('.__('lang_v1.for_normal_printer').')',
+            'invoice_one' => __('lang_v1.invoice_one').' ('.__('lang_v1.for_normal_printer').')',
             'invoice_two' => __('lang_v1.invoice_two').' ('.__('lang_v1.for_normal_printer').')',
             'invoice_three' => __('lang_v1.invoice_three').' ('.__('lang_v1.for_normal_printer').')',
             'invoice_four' => __('lang_v1.invoice_four').' ('.__('lang_v1.for_normal_printer').')',
