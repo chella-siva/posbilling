@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\InvoiceLayout;
+use App\PosLayout;
 use App\Utils\Util;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\File; // <-- Import the File facade
 
 
-class InvoiceLayoutController extends Controller
+class PosLayoutController extends Controller
 {
     protected $commonUtil;
 
@@ -43,7 +43,7 @@ class InvoiceLayoutController extends Controller
         $common_settings = session()->get('business.common_settings');
         $is_warranty_enabled = ! empty($common_settings['enable_product_warranty']) ? true : false;
 
-        return view('invoice_layout.create')->with(compact('designs', 'is_warranty_enabled'));
+        return view('pos_layout.create')->with(compact('designs', 'is_warranty_enabled'));
     }
 
     /**
@@ -67,7 +67,7 @@ class InvoiceLayoutController extends Controller
                 'invoice_no_prefix', 'invoice_heading', 'sub_total_label', 'discount_label', 'tax_label', 'total_label', 'highlight_color', 'footer_text','bank_details', 'invoice_heading_not_paid', 'invoice_heading_paid', 'total_due_label', 'customer_label', 'paid_label', 'sub_heading_line1', 'sub_heading_line2',
                 'sub_heading_line3', 'sub_heading_line4', 'sub_heading_line5',
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
-                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_savedvalue','savedvalue_lable','show_website','date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
+                'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design', 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label', 'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_website','date_time_format', 'common_settings', 'change_return_label', 'round_off_label', 'qr_code_fields', 'commission_agent_label', ]);
 
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
@@ -94,7 +94,7 @@ class InvoiceLayoutController extends Controller
 
             if (! empty($request->input('is_default'))) {
                 //get_default
-                $default = InvoiceLayout::where('business_id', $business_id)
+                $default = PosLayout::where('business_id', $business_id)
                                 ->where('is_default', 1)
                                 ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
@@ -112,7 +112,7 @@ class InvoiceLayoutController extends Controller
             $input['contact_custom_fields'] = ! empty($request->input('contact_custom_fields')) ? $request->input('contact_custom_fields') : null;
             $input['location_custom_fields'] = ! empty($request->input('location_custom_fields')) ? $request->input('location_custom_fields') : null;
 
-            InvoiceLayout::create($input);
+            PosLayout::create($input);
             $output = ['success' => 1,
                 'msg' => __('invoice.layout_added_success'),
             ];
@@ -130,10 +130,10 @@ class InvoiceLayoutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\PosLayout  $PosLayout
      * @return \Illuminate\Http\Response
      */
-    public function show(InvoiceLayout $invoiceLayout)
+    public function show(PosLayout $PosLayout)
     {
         //
     }
@@ -141,7 +141,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\PosLayout  $PosLayout
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -152,23 +152,23 @@ class InvoiceLayoutController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $invoice_layout = InvoiceLayout::findOrFail($id);
+        $pos_layout = PosLayout::findOrFail($id);
 
         //Module info
-        $invoice_layout->module_info = json_decode($invoice_layout->module_info, true);
-        $invoice_layout->table_tax_headings = ! empty($invoice_layout->table_tax_headings) ? json_decode($invoice_layout->table_tax_headings) : ['', '', '', ''];
+        $pos_layout->module_info = json_decode($pos_layout->module_info, true);
+        $pos_layout->table_tax_headings = ! empty($pos_layout->table_tax_headings) ? json_decode($pos_layout->table_tax_headings) : ['', '', '', ''];
 
         $designs = $this->getDesigns();
 
-        return view('invoice_layout.edit')
-                ->with(compact('invoice_layout', 'designs'));
+        return view('pos_layout.edit')
+                ->with(compact('pos_layout', 'designs'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\PosLayout  $PosLayout
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -188,13 +188,13 @@ class InvoiceLayoutController extends Controller
                 'table_product_label', 'table_qty_label', 'table_unit_price_label',
                 'table_subtotal_label', 'client_id_label', 'date_label', 'quotation_heading', 'quotation_no_prefix', 'design',
                 'client_tax_label', 'cat_code_label', 'cn_heading', 'cn_no_label', 'cn_amount_label',
-                'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_savedvalue','savedvalue_lable','show_website','date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
+                'sales_person_label', 'prev_bal_label', 'opening_bal_label', 'show_opening_bal','show_mrp','show_tax','show_unit','show_website','date_time_format', 'change_return_label', 'round_off_label', 'commission_agent_label', ]);
             $business_id = $request->session()->get('user.business_id');
 
 
             $checkboxes = ['show_business_name', 'show_location_name', 'show_landmark', 'show_city', 'show_state', 'show_country', 'show_zip_code', 'show_mobile_number', 'show_alternate_number', 'show_email', 'show_tax_1', 'show_tax_2', 'show_logo', 'show_barcode', 'show_payments', 'show_customer', 'show_client_id',
                 'show_brand', 'show_sku', 'show_cat_code', 'show_sale_description', 'show_sales_person',
-                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point','show_opening_bal','show_mrp','show_tax','show_unit','show_savedvalue','show_website',
+                'show_expiry', 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point','show_opening_bal','show_mrp','show_tax','show_unit','show_website',
                 'show_qr_code', 'show_commission_agent', 'show_letter_head', ];
             foreach ($checkboxes as $name) {
                 $input[$name] = ! empty($request->input($name)) ? 1 : 0;
@@ -216,7 +216,7 @@ class InvoiceLayoutController extends Controller
 
             if (! empty($request->input('is_default'))) {
                 //get_default
-                $default = InvoiceLayout::where('business_id', $business_id)
+                $default = PosLayout::where('business_id', $business_id)
                                 ->where('is_default', 1)
                                 ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
@@ -237,7 +237,7 @@ class InvoiceLayoutController extends Controller
             $input['common_settings'] = ! empty($request->input('common_settings')) ? json_encode($request->input('common_settings')) : null;
             $input['qr_code_fields'] = ! empty($request->input('qr_code_fields')) ? json_encode($request->input('qr_code_fields')) : null;
 
-            InvoiceLayout::where('id', $id)
+            PosLayout::where('id', $id)
                         ->where('business_id', $business_id)
                         ->update($input);
             $output = ['success' => 1,
@@ -257,7 +257,7 @@ class InvoiceLayoutController extends Controller
      public function removeletterheadImage(Request $request, $invlayid)
     {
         try {
-            $product = InvoiceLayout::find($invlayid);
+            $product = PosLayout::find($invlayid);
     
             if (!$product) {
                 return response()->json(['success' => false, 'message' => 'Layout not found.']);
@@ -285,7 +285,7 @@ class InvoiceLayoutController extends Controller
    public function removelogoImage(Request $request, $invlayid)
     {
         try {
-            $product = InvoiceLayout::find($invlayid);
+            $product = PosLayout::find($invlayid);
     
             if (!$product) {
                 return response()->json(['success' => false, 'message' => 'Layout not found.']);

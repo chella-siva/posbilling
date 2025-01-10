@@ -26,6 +26,8 @@ use App\Http\Controllers\ImportProductsController;
 use App\Http\Controllers\ImportSalesController;
 use App\Http\Controllers\Install;
 use App\Http\Controllers\InvoiceLayoutController;
+use App\Http\Controllers\PosLayoutController;
+use App\Http\Controllers\QuotationLayoutController;
 use App\Http\Controllers\InvoiceSchemeController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\LedgerDiscountController;
@@ -60,6 +62,20 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArtisanController;
+
+// Route to clear cache
+Route::get('clear-cache', [ArtisanController::class, 'clearCache'])->name('clear.cache');
+
+// Route to clear configuration cache
+Route::get('clear-config', [ArtisanController::class, 'clearConfig'])->name('clear.config');
+
+// Route to clear session data
+Route::get('clear-session', [ArtisanController::class, 'clearSession'])->name('clear.session');
+
+// Route to clear compiled views
+Route::get('clear-views', [ArtisanController::class, 'clearViews'])->name('clear.views');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -318,6 +334,16 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 Route::post('/invoice/{invlayid}/remove-letterheadImage', [InvoiceLayoutController::class, 'removeletterheadImage'])->name('invoice.remove-letterheadimage');
 Route::post('/invoice/{invlayid}/remove-logoImage', [InvoiceLayoutController::class, 'removelogoImage'])->name('invoice.remove-logoimage');
 
+    //pos layouts
+    Route::resource('pos-layouts', PosLayoutController::class);
+    Route::post('/poslayout/{invlayid}/remove-letterheadImage', [PosLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
+    Route::post('/poslayout/{invlayid}/remove-logoImage', [PosLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
+
+      //pos layouts
+      Route::resource('quotation-layouts', QuotationLayoutController::class);
+      Route::post('/quotationlayout/{invlayid}/remove-letterheadImage', [QuotationLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
+      Route::post('/quotationlayout/{invlayid}/remove-logoImage', [QuotationLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
+  
 
     Route::post('get-expense-sub-categories', [ExpenseCategoryController::class, 'getSubCategories']);
 
@@ -519,6 +545,9 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/download-purchase-order/{id}/pdf', [PurchaseOrderController::class, 'downloadPdf'])->name('purchaseOrder.downloadPdf');
     Route::get('/sells/{id}', [SellController::class, 'show']);
     Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('sell.printInvoice');
+    Route::get('/sells/{transaction_id}/posprint', [SellPosController::class, 'printposInvoice'])->name('sell.printposInvoice');
+
+    Route::get('/sells/{transaction_id}/quotationprint', [SellPosController::class, 'printquotationInvoice'])->name('sell.printquotationInvoice');
     Route::get('/download-sells/{transaction_id}/pdf', [SellPosController::class, 'downloadPdf'])->name('sell.downloadPdf');
     Route::get('/download-quotation/{id}/pdf', [SellPosController::class, 'downloadQuotationPdf'])
         ->name('quotation.downloadPdf');

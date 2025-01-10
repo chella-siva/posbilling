@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\BusinessLocation;
 use App\InvoiceLayout;
+use App\PosLayout;
+use App\QuotationLayout;
 use App\InvoiceScheme;
 use App\Printer;
 use Illuminate\Http\Request;
@@ -53,12 +55,21 @@ class LocationSettingsController extends Controller
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
                             ->get()
                             ->pluck('name', 'id');
+
+        $pos_layouts = PosLayout::where('business_id', $business_id)
+        ->get()
+        ->pluck('name', 'id');
+        
+        $quotation_layouts = QuotationLayout::where('business_id', $business_id)
+        ->get()
+        ->pluck('name', 'id');
+
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
                             ->get()
                             ->pluck('name', 'id');
 
         return view('location_settings.index')
-            ->with(compact('location', 'printReceiptOnInvoice', 'receiptPrinterType', 'printers', 'invoice_layouts', 'invoice_schemes'));
+            ->with(compact('location', 'pos_layouts','quotation_layouts','printReceiptOnInvoice', 'receiptPrinterType', 'printers', 'invoice_layouts', 'invoice_schemes'));
     }
 
     /**
@@ -77,7 +88,7 @@ class LocationSettingsController extends Controller
                 abort(403, 'Unauthorized action.');
             }
 
-            $input = $request->only(['print_receipt_on_invoice', 'receipt_printer_type', 'printer_id', 'invoice_layout_id', 'invoice_scheme_id']);
+            $input = $request->only(['print_receipt_on_invoice', 'receipt_printer_type', 'printer_id', 'invoice_layout_id','pos_layout_id','quotation_layout_id', 'invoice_scheme_id']);
 
             //Auto set to browser in demo.
             if (config('app.env') == 'demo') {

@@ -93,6 +93,30 @@
 
                         <div class="col-sm-4">
                             <div class="form-group">
+                                {!! Form::label('pos_layout_id', __('invoice.pos_layout') . ':*') !!} @show_tooltip(__('tooltip.pos_layout'))
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-info"></i>
+                                    </span>
+                                    {!! Form::select('pos_layout_id', $pos_layouts, $location->pos_layout_id, ['class' => 'form-control select2', 'required']); !!}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                {!! Form::label('quotation_layout_id', __('invoice.quotation_layout') . ':*') !!} @show_tooltip(__('tooltip.quotation_layout'))
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-info"></i>
+                                    </span>
+                                    {!! Form::select('quotation_layout_id', $quotation_layouts, $location->quotation_layout_id, ['class' => 'form-control select2', 'required']); !!}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
                                 {!! Form::label('invoice_scheme_id', __('invoice.invoice_scheme') . ':*') !!} @show_tooltip(__('tooltip.invoice_scheme'))
                                 <div class="input-group">
                                     <span class="input-group-addon">

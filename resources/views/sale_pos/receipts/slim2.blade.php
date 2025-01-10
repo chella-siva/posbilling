@@ -682,7 +682,7 @@
 				@endif
 							@if(!empty($receipt_details->show_opening_bal) && $receipt_details->openbal_due != 0)
 					<div class="flex-box">
-						<div class="width-50 text-right">
+						<div class="width-50 text-left">
 							{!! $receipt_details->opening_bal_label !!}:
 						</div>
 						<div class="width-50 text-right">

@@ -1094,7 +1094,8 @@ class TransactionUtil extends Util
         $output['customer_tax_label'] = '';
         $output['customer_custom_fields'] = '';
         $output['customer_label'] = ! empty($il->customer_label) ? $il->customer_label : '';
-
+        
+        
         if ($il->show_customer == 1) {
             $output['customer_name'] = ! empty($customer->name) ? $customer->name : $customer->supplier_business_name;
             $output['customer_mobile'] = $customer->mobile;
@@ -1499,6 +1500,10 @@ class TransactionUtil extends Util
             $output['show_mrp'] = $il->show_mrp;
             $output['show_tax'] = $il->show_tax;
             $output['show_unit'] = $il->show_unit;
+            
+            $output['show_savedvalue'] = $il->show_savedvalue;
+            $output['savedvalue_lable'] = $il->savedvalue_lable;
+            
             $output['show_website'] = $il->show_website;
 
             $all_due = $this->getContactDue($transaction->contact_id);
@@ -2155,6 +2160,7 @@ class TransactionUtil extends Util
                     $modifier_line_array = [
                         //Field for 1st column
                         'name' => $product->name,
+                        'mrp' => $product->mrp,
                         'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                         //Field for 2nd column
                         'quantity' => $this->num_f($modifier_line->quantity, false, $business_details),

@@ -616,12 +616,16 @@
                     <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: center;">{{$receipt_details->total_quantity}}</p>
                     </td>
+                    @if($receipt_details->show_unit == 1)
                     <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p style="text-align: left;"><br /></p>
                     </td>
-                    <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
+                    @endif
+                    @if($receipt_details->show_tax == 1)
+					<td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p style="text-align: left;"><br /></p>
-                    </td> 
+                    </td>
+                    @endif 
                     @if(!empty($receipt_details->discounted_unit_price_label))
                     <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
                         <p class="s8" style="text-align: right;"></p>
@@ -640,7 +644,7 @@
 
 
                 @php
-                    $colspan = 4;
+                    $colspan = 2;
                 @endphp
                 @if($receipt_details->show_cat_code == 1)
                     @php

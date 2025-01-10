@@ -8,6 +8,7 @@ use App\BusinessLocation;
 use App\Contact;
 use App\Currency;
 use App\InvoiceLayout;
+use App\PosLayout;
 use App\InvoiceScheme;
 use App\NotificationTemplate;
 use App\Printer;
@@ -345,6 +346,24 @@ class BusinessUtil extends Util
      * @param  array  $layout_id = null
      * @return location object
      */
+
+     public function posLayout($business_id, $layout_id = null)
+     {
+         $layout = null;
+         if (! empty($layout_id)) {
+             $layout = PosLayout::find($layout_id);
+         }
+ 
+         //If layout is not found (deleted) then get the default layout for the business
+         if (empty($layout)) {
+             $layout = PosLayout::where('business_id', $business_id)
+                         ->where('is_default', 1)
+                         ->first();
+         }
+         //$output = []
+         return $layout;
+     }
+
     public function invoiceLayout($business_id, $layout_id = null)
     {
         $layout = null;

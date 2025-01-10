@@ -782,12 +782,13 @@
 	            @endif
             @endif
 
-			<div class="flex-box">
-					<div class="width-50 text-right">
-						Totally you saved : ₹ {{$savedval}}
-					</div>
+            @if($receipt_details->show_savedvalue == 1)
+			<div class="center-block">
+				<div class="text-center">
+					<h6>{{$receipt_details->savedvalue_lable}}: ₹ {{$savedval}}</h6>
 				</div>
-
+			</div>
+            @endif
 
             @if(!empty($receipt_details->additional_notes))
 	            <p class="centered">

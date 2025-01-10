@@ -704,6 +704,76 @@ class SellPosController extends Controller
      * @param  string  $printer_type = null
      * @return array
      */
+
+     private function receiptContent1(
+        $business_id,
+        $location_id,
+        $transaction_id,
+        $printer_type = null,
+        $is_package_slip = false,
+        $from_pos_screen = true,
+        $invoice_layout_id = null,
+        $is_delivery_note = false
+    ) {
+        $output = ['is_enabled' => false,
+            'print_type' => 'browser',
+            'html_content' => null,
+            'printer_config' => [],
+            'data' => [],
+        ];
+
+        $business_details = $this->businessUtil->getDetails($business_id);
+        $location_details = BusinessLocation::find($location_id);
+
+        if ($from_pos_screen && $location_details->print_receipt_on_invoice != 1) {
+            return $output;
+        }
+        //Check if printing of invoice is enabled or not.
+        //If enabled, get print type.
+        $output['is_enabled'] = true;
+
+        $invoice_layout_id = !empty($invoice_layout_id) ? $invoice_layout_id : $location_details->pos_layout_id;
+        $invoice_layout = $this->businessUtil->posLayout($business_id, $invoice_layout_id);
+
+        //Check if printer setting is provided.
+        $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
+
+        $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
+
+        $currency_details = [
+            'symbol' => $business_details->currency_symbol,
+            'thousand_separator' => $business_details->thousand_separator,
+            'decimal_separator' => $business_details->decimal_separator,
+        ];
+        $receipt_details->currency = $currency_details;
+
+        // if ($is_package_slip) {
+        //     $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
+
+        //     return $output;
+        // }
+
+        // if ($is_delivery_note) {
+        //     $output['html_content'] = view('sale_pos.receipts.delivery_note', compact('receipt_details'))->render();
+
+        //     return $output;
+        // }
+
+        $output['print_title'] = $receipt_details->invoice_no;
+        //If print type browser - return the content, printer - return printer config data, and invoice format config
+        if ($receipt_printer_type == 'printer') {
+            $output['print_type'] = 'printer';
+            $output['printer_config'] = $this->businessUtil->printerConfig($business_id, $location_details->printer_id);
+            $output['data'] = $receipt_details;
+        } else {
+            $layout = !empty($receipt_details->design) ? 'sale_pos.receipts.' . $receipt_details->design : 'sale_pos.receipts.classic';
+
+            $output['html_content'] = view($layout, compact('receipt_details'))->render();
+        }
+
+        return $output;
+    }
+    
     private function receiptContent(
         $business_id,
         $location_id,
@@ -1867,6 +1937,98 @@ class SellPosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+     public function printquotationInvoice(Request $request, $transaction_id)
+     {
+         if (request()->ajax()) {
+             try {
+                 $output = ['success' => 0,
+                     'msg' => trans('messages.something_went_wrong'),
+                 ];
+ 
+                 $business_id = $request->session()->get('user.business_id');
+ 
+                 $transaction = Transaction::where('business_id', $business_id)
+                     ->where('id', $transaction_id)
+                     ->with(['location'])
+                     ->first();
+ 
+                 if (empty($transaction)) {
+                     return $output;
+                 }
+ 
+                 $printer_type = 'browser';
+                 if (!empty(request()->input('check_location')) && request()->input('check_location') == true) {
+                     $printer_type = $transaction->location->receipt_printer_type;
+                 }
+ 
+                 $is_package_slip = !empty($request->input('package_slip')) ? true : false;
+                 $is_delivery_note = !empty($request->input('delivery_note')) ? true : false;
+ 
+                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->quotation_layout_id : null;
+                 $receipt = $this->receiptContent1($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id, $is_delivery_note);
+ 
+                 if (!empty($receipt)) {
+                     $output = ['success' => 1, 'receipt' => $receipt];
+                 }
+             } catch (\Exception $e) {
+                 \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+ 
+                 $output = ['success' => 0,
+                     'msg' => trans('messages.something_went_wrong'),
+                 ];
+             }
+ 
+             return $output;
+         }
+     }
+
+
+     public function printposInvoice(Request $request, $transaction_id)
+     {
+         if (request()->ajax()) {
+             try {
+                 $output = ['success' => 0,
+                     'msg' => trans('messages.something_went_wrong'),
+                 ];
+ 
+                 $business_id = $request->session()->get('user.business_id');
+ 
+                 $transaction = Transaction::where('business_id', $business_id)
+                     ->where('id', $transaction_id)
+                     ->with(['location'])
+                     ->first();
+ 
+                 if (empty($transaction)) {
+                     return $output;
+                 }
+ 
+                 $printer_type = 'browser';
+                 if (!empty(request()->input('check_location')) && request()->input('check_location') == true) {
+                     $printer_type = $transaction->location->receipt_printer_type;
+                 }
+ 
+                 $is_package_slip = !empty($request->input('package_slip')) ? true : false;
+                 $is_delivery_note = !empty($request->input('delivery_note')) ? true : false;
+ 
+                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->pos_layout_id : null;
+                 $receipt = $this->receiptContent1($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id, $is_delivery_note);
+ 
+                 if (!empty($receipt)) {
+                     $output = ['success' => 1, 'receipt' => $receipt];
+                 }
+             } catch (\Exception $e) {
+                 \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+ 
+                 $output = ['success' => 0,
+                     'msg' => trans('messages.something_went_wrong'),
+                 ];
+             }
+ 
+             return $output;
+         }
+     }
+
     public function printInvoice(Request $request, $transaction_id)
     {
         if (request()->ajax()) {
