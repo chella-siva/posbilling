@@ -605,7 +605,7 @@ class SellPosController extends Controller
 
                 $msg = trans('sale.pos_sale_added');
                 $receipt = '';
-                $invoice_layout_id = $request->input('invoice_layout_id');
+                $invoice_layout_id = $request->input('pos_layout_id');
                 $print_invoice = false;
                 if (!$is_direct_sale) {
                     if ($input['status'] == 'draft') {
@@ -629,7 +629,7 @@ class SellPosController extends Controller
                 }
 
                 if ($print_invoice) {
-                    $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
+                    $receipt = $this->receiptContent1($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
                 }
 
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt];
@@ -1928,7 +1928,7 @@ class SellPosController extends Controller
             ->get();
 
         return view('sale_pos.partials.recent_transactions')
-            ->with(compact('transactions', 'transaction_sub_type'));
+            ->with(compact('transactions', 'transaction_sub_type','transaction_status'));
     }
 
     /**

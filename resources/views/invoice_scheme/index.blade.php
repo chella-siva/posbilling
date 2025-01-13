@@ -25,7 +25,7 @@
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">@lang('invoice.invoice_schemes')</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">@lang('invoice.invoice_layouts')</a></li>
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">POS Layouts</a></li>
-                    <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Quotation Layouts</a></li>
+                    <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Quotation/Draft Layouts</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -151,7 +151,7 @@
                     <div class="tab-pane" id="tab_4">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4>Quotation Layouts <a class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm pull-right" href="{{action([\App\Http\Controllers\QuotationLayoutController::class, 'create'])}}">
+                                <h4>Quotation/Draft Layouts <a class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm pull-right" href="{{action([\App\Http\Controllers\QuotationLayoutController::class, 'create'])}}">
                                         <i class="fa fa-plus"></i> @lang( 'messages.add' )</a></h4>
                             </div>
                             <div class="col-md-12">

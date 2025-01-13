@@ -1459,6 +1459,7 @@ return [
     'pay_to_customer' => 'Debit (Pay to customer)',
     'enable_cash_denomination_on' => 'Enable cash denomination on',
     'pos_screen' => 'POS screen',
+    'pos_invoice' => 'Pos Invoice',
     'all_screen' => 'All screens',
     'strict_check' => 'Strict check',
     'strict_check_help' => 'If enabled payment amount must be equal to sum of cash denominations',
