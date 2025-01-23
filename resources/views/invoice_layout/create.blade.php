@@ -1026,15 +1026,6 @@
               'placeholder' => __('invoice.footer_text'), 'rows' => 3]); !!}
           </div>
         </div>
-
-        <div class="col-sm-12">
-          <div class="form-group">
-            {!! Form::label('bank_details', __('invoice.bank_details') . ':' ) !!}
-              {!! Form::textarea('bank_details', null, ['class' => 'form-control',
-              'placeholder' => __('invoice.bank_details'), 'rows' => 3]); !!}
-          </div>
-        </div>
-
         <div class="col-sm-6">
           <div class="form-group">
             <br>

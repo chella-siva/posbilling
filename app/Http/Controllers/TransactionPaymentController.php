@@ -7,9 +7,11 @@ use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentUpdated;
 use App\Exceptions\AdvanceBalanceNotAvailable;
 use App\Transaction;
+use App\BusinessLocation;
 use App\TransactionPayment;
 use App\Utils\ModuleUtil;
 use App\Utils\TransactionUtil;
+use App\Utils\BusinessUtil;  // Ensure this is correct
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
@@ -19,17 +21,21 @@ class TransactionPaymentController extends Controller
     protected $transactionUtil;
 
     protected $moduleUtil;
+        protected $businessUtil;
 
+    
     /**
      * Constructor
      *
      * @param  TransactionUtil  $transactionUtil
      * @return void
      */
-    public function __construct(TransactionUtil $transactionUtil, ModuleUtil $moduleUtil)
+    public function __construct(TransactionUtil $transactionUtil, ModuleUtil $moduleUtil,  BusinessUtil $businessUtil)
     {
         $this->transactionUtil = $transactionUtil;
         $this->moduleUtil = $moduleUtil;
+        $this->businessUtil = $businessUtil;
+
     }
 
     /**
@@ -58,6 +64,65 @@ class TransactionPaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+     
+       private function receiptContent3(
+        $business_id,
+        $location_id,
+        $transaction_id,
+        $printer_type = null,
+        $is_package_slip = false,
+        $from_pos_screen = true,
+        $invoice_layout_id = null,
+        $is_delivery_note = false,
+        $paymentid = null
+    ) {
+        $output = ['is_enabled' => false,
+            'print_type' => 'browser',
+            'html_content' => null,
+            'printer_config' => [],
+            'data' => [],
+        ];
+
+        $business_details = $this->businessUtil->getDetails($business_id);
+        $location_details = BusinessLocation::find($location_id);
+
+        if ($from_pos_screen && $location_details->print_receipt_on_invoice != 1) {
+            return $output;
+        }
+        //Check if printing of invoice is enabled or not.
+        //If enabled, get print type.
+        $output['is_enabled'] = true;
+
+        $invoice_layout_id = !empty($invoice_layout_id) ? $invoice_layout_id : $location_details->quotation_layout_id;
+        $invoice_layout = $this->businessUtil->QuotationLayout($business_id, $invoice_layout_id);
+
+        //Check if printer setting is provided.
+        $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
+
+        $receipt_details = $this->transactionUtil->getReceiptDetails1($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type,$paymentid);
+
+        $currency_details = [
+            'symbol' => $business_details->currency_symbol,
+            'thousand_separator' => $business_details->thousand_separator,
+            'decimal_separator' => $business_details->decimal_separator,
+        ];
+        $receipt_details->currency = $currency_details;
+
+        $output['print_title'] = $receipt_details->invoice_no;
+        //If print type browser - return the content, printer - return printer config data, and invoice format config
+        if ($receipt_printer_type == 'printer') {
+            $output['print_type'] = 'printer';
+            $output['printer_config'] = $this->businessUtil->printerConfig($business_id, $location_details->printer_id);
+            $output['data'] = $receipt_details;
+        } else {
+            $layout = 'sale_pos.receipts.classicpay';
+
+            $output['html_content'] = view($layout, compact('receipt_details'))->render();
+        }
+
+        return $output;
+    }
+    
     public function store(Request $request)
     {
         try {
@@ -567,8 +632,13 @@ class TransactionPaymentController extends Controller
                     $tp->denominations()->createMany($denominations);
                 }
             }
+           
 
             DB::commit();
+            // $tranpay = TransactionPayment::where('payment_ref_no',$tp->payment_ref_no)->first();
+            // $busloc = BusinessLocation::where('business_id',$business_id)->first();
+            // $receipt = $this->receiptContent3($business_id, $busloc->location_id, '61485', null, false, true, $busloc->invoice_layout_id);
+
             $output = ['success' => true,
                 'msg' => __('purchase.payment_added_success'),
             ];

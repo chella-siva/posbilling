@@ -61,6 +61,16 @@
     <td @if($count_child_payments > 0) class="bg-gray" @endif>
         <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary btn-modal" data-href="{{action([\App\Http\Controllers\TransactionPaymentController::class, 'viewPayment'], [$payment->id])}}" data-container=".view_modal"><i class="fas fa-eye"></i>{{__('messages.view')}}</button>
 
+        @if($transaction_type == 'sell')
+            <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-primary tw-text-white" data-href="{{route('sell.printposbillInvoice', [$transaction_id,$payment->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+        @elseif($transaction_type == 'sell_return')
+            <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-primary tw-text-white" data-href="{{route('sell.printposbillInvoice', [$return_parent_id,$payment->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+        @elseif($transaction_type == 'purchase_return')
+            <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-primary tw-text-white" data-href="{{route('sell.printposbillInvoice', [$return_parent_id,$payment->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+        @elseif ($transaction_type == 'purchase')
+            <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-primary tw-text-white" data-href="{{route('sell.printposbillInvoice', [$transaction_id,$payment->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+        @endif
+        
         @if(!empty($transaction_id))
             @if(( in_array($transaction_type, ['purchase', 'purchase_return']) && auth()->user()->can('edit_purchase_payment')) || (in_array($transaction_type, ['sell', 'sell_return']) && auth()->user()->can('edit_sell_payment')) )
                 <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info btn-modal" data-href="{{action([\App\Http\Controllers\TransactionPaymentController::class, 'edit'], [$payment->id])}}" data-container=".view_modal"><i class="fas fa-edit"></i> {{__('messages.edit')}}</button>

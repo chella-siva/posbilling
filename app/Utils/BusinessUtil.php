@@ -9,6 +9,7 @@ use App\Contact;
 use App\Currency;
 use App\InvoiceLayout;
 use App\PosLayout;
+use App\QuotationLayout;
 use App\InvoiceScheme;
 use App\NotificationTemplate;
 use App\Printer;
@@ -357,6 +358,23 @@ class BusinessUtil extends Util
          //If layout is not found (deleted) then get the default layout for the business
          if (empty($layout)) {
              $layout = PosLayout::where('business_id', $business_id)
+                         ->where('is_default', 1)
+                         ->first();
+         }
+         //$output = []
+         return $layout;
+     }
+     
+      public function QuotationLayout($business_id, $layout_id = null)
+     {
+         $layout = null;
+         if (! empty($layout_id)) {
+             $layout = QuotationLayout::find($layout_id);
+         }
+ 
+         //If layout is not found (deleted) then get the default layout for the business
+         if (empty($layout)) {
+             $layout = QuotationLayout::where('business_id', $business_id)
                          ->where('is_default', 1)
                          ->first();
          }

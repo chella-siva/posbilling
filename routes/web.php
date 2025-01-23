@@ -546,6 +546,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/sells/{id}', [SellController::class, 'show']);
     Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('sell.printInvoice');
     Route::get('/sells/{transaction_id}/posprint', [SellPosController::class, 'printposInvoice'])->name('sell.printposInvoice');
+    Route::get('/sells/{transaction_id}/posbillprint/{paymentid}', [SellPosController::class, 'printposbillInvoice'])->name('sell.printposbillInvoice');
 
     Route::get('/sells/{transaction_id}/quotationprint', [SellPosController::class, 'printquotationInvoice'])->name('sell.printquotationInvoice');
     Route::get('/download-sells/{transaction_id}/pdf', [SellPosController::class, 'downloadPdf'])->name('sell.downloadPdf');
