@@ -1628,7 +1628,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                     qty_element.change();
 
                     round_row_to_iraqi_dinnar($(this));
-
+                    toastr.success('Product added'); 
                     $('input#search_product')
                         .focus()
                         .select();
@@ -1744,8 +1744,9 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
 
                     //scroll bottom of items list
                     $(".pos_product_div").animate({ scrollTop: $('.pos_product_div').prop("scrollHeight")}, 1000);
+                    toastr.success('Product added'); 
                 } else {
-                    toastr.error(result.msg);
+                        toastr.error(result.msg);
                     $('input#search_product')
                         .focus()
                         .select();

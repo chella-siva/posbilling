@@ -20,14 +20,24 @@
 			name="products[{{$row_count}}][so_line_id]" 
 			value="{{$so_line->id}}">
 		@endif
+		 @php 
+                        $disable_mrp = (isset($pos_settings['disable_mrp'])) ? $pos_settings['disable_mrp'] : 0;
+                        $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
+                        $disable_sku = (isset($pos_settings['disable_sku'])) ? $pos_settings['disable_sku'] : 0;
+                        $disable_brand = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
+                        $disable_image = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
+                        $disable_lotandexp = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;
+                        $disable_unit = (isset($pos_settings['disable_unit'])) ? $pos_settings['disable_unit'] : 0;
+
+                      @endphp
 		@php
 			$product_name = $product->product_name;
 			
-			if($pos_settings['disable_sku'] == 0) {
+			if($disable_sku == 0) {
 			    if(!empty($product->sub_sku)){ $product_name .= '-' . $product->sub_sku ; }
 			}
 			
-			if($pos_settings['disable_brand'] == 0) {
+			if($disable_brand == 0) {
 			    if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ; }
 			}
 		@endphp
@@ -43,7 +53,7 @@
 			{!! $product_name !!}
 		@endif
 		
-		@if($pos_settings['disable_image'] == 0)
+		@if($disable_image == 0)
 		<div style="display: inline;">
 		    
 		    	<img src="@if(count($product->media) > 0)
@@ -125,7 +135,7 @@
 		</div> 
 		@endif
 
-		@if($pos_settings['disable_stock'] == 0)
+		@if($disable_stock == 0)
         <div class="py-0" style="display:block;clear: both;">
             <small class="text-muted p-1">
         			@if($product->enable_stock)
@@ -179,7 +189,7 @@
 			}
 		@endphp
 		@if(!empty($product->lot_numbers) && empty($is_sales_order))
-		@if($pos_settings['disable_lotandexp'] == 0)
+		@if($disable_lotandexp == 0)
 			<select class="form-control lot_number input-sm" name="products[{{$row_count}}][lot_no_line_id]" @if(!empty($product->transaction_sell_lines_id)) disabled @endif>
 				<option value="">@lang('lang_v1.lot_n_expiry')</option>
 				@foreach($product->lot_numbers as $lot_number)
@@ -286,7 +296,7 @@
 		</div>
 		
 		<input type="hidden" name="products[{{$row_count}}][product_unit_id]" value="{{$product->unit_id}}">
-		@if($pos_settings['disable_unit'] == 0)
+		@if($disable_unit == 0)
 		@if(count($sub_units) > 0) 
 			<select name="products[{{$row_count}}][sub_unit_id]" class="form-control input-sm sub_unit">
                 @foreach($sub_units as $key => $value)
@@ -424,7 +434,7 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
-	@if($pos_settings['disable_mrp'] == 0)
+	@if($disable_mrp == 0)
 	<td>
 		<input type="text" readonly class="form-control input_number pos_mrp_text" value="{{@num_format($product->mrp)}}">
 	</td>

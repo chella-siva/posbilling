@@ -3069,16 +3069,35 @@ class ReportController extends Controller
             ->where('sale.business_id', $business_id)
             ->where('transaction_sell_lines.children_type', '!=', 'combo');
         //If type combo: find childrens, sale price parent - get PP of childrens
-        $query->select(DB::raw('SUM(IF (TSPL.id IS NULL AND P.type="combo", ( 
-            SELECT Sum((tspl2.quantity - tspl2.qty_returned) * (tsl.unit_price_inc_tax - pl2.purchase_price_inc_tax)) AS total
-                FROM transaction_sell_lines AS tsl
-                    JOIN transaction_sell_lines_purchase_lines AS tspl2
-                ON tsl.id=tspl2.sell_line_id 
-                JOIN purchase_lines AS pl2 
-                ON tspl2.purchase_line_id = pl2.id 
-                WHERE tsl.parent_sell_line_id = transaction_sell_lines.id), IF(P.enable_stock=0,(transaction_sell_lines.quantity - transaction_sell_lines.quantity_returned) * transaction_sell_lines.unit_price_inc_tax,   
-                (TSPL.quantity - TSPL.qty_returned) * (transaction_sell_lines.unit_price_inc_tax - PL.purchase_price_inc_tax)) )) AS gross_profit')
-            );
+        $query->select(DB::raw('
+            SUM(
+                IF (
+                    TSPL.id IS NULL AND P.type = "combo", 
+                    ( 
+                        SELECT 
+                            SUM((tspl2.quantity - tspl2.qty_returned) * (tsl.unit_price_inc_tax - pl2.purchase_price_inc_tax)) AS total
+                        FROM 
+                            transaction_sell_lines AS tsl
+                        JOIN 
+                            transaction_sell_lines_purchase_lines AS tspl2
+                            ON tsl.id = tspl2.sell_line_id
+                        JOIN 
+                            purchase_lines AS pl2
+                            ON tspl2.purchase_line_id = pl2.id
+                        WHERE 
+                            tsl.parent_sell_line_id = transaction_sell_lines.id
+                    ), 
+                    IF (
+                        P.enable_stock = 0,
+                        (transaction_sell_lines.quantity - transaction_sell_lines.quantity_returned) * transaction_sell_lines.unit_price_inc_tax,   
+                        (TSPL.quantity - TSPL.qty_returned) * (transaction_sell_lines.unit_price_inc_tax - PL.purchase_price_inc_tax)
+                    )
+                )
+            ) AS gross_profit,
+            (TSPL.quantity - TSPL.qty_returned) AS itemqty, 
+            PL.purchase_price_inc_tax AS purchaseprice, 
+            transaction_sell_lines.unit_price_inc_tax AS saleprice
+        '));
 
         $permitted_locations = auth()->user()->permitted_locations();
         if ($permitted_locations != 'all') {

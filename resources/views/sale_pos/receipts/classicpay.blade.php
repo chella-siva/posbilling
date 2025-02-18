@@ -316,50 +316,7 @@
 	</div>
 </div>
 
-    <div class="border-bottom col-md-12">
-	    @if(empty($receipt_details->hide_price) && !empty($receipt_details->tax_summary_label) )
-	        <!-- tax -->
-	        @if(!empty($receipt_details->taxes))
-	        	<table class="table table-slim table-bordered">
-	        		<tr>
-	        			<th colspan="2" class="text-center">{{$receipt_details->tax_summary_label}}</th>
-	        		</tr>
-	        		@foreach($receipt_details->taxes as $key => $val)
-	        			<tr>
-	        				<td class="text-center"><b>{{$key}}</b></td>
-	        				<td class="text-center">{{$val}}</td>
-	        			</tr>
-	        		@endforeach
-	        	</table>
-	        @endif
-	    @endif
-	</div>
-
-	@if(!empty($receipt_details->additional_notes))
-	    <div class="col-xs-12">
-	    	<p>{!! nl2br($receipt_details->additional_notes) !!}</p>
-	    </div>
-    @endif
     
-</div>
-<div class="row" style="color: #000000 !important;">
-	@if(!empty($receipt_details->footer_text))
-	<div class="@if($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif">
-		{!! $receipt_details->footer_text !!}
-	</div>
-	@endif
-	@if($receipt_details->show_barcode || $receipt_details->show_qr_code)
-		<div class="@if(!empty($receipt_details->footer_text)) col-xs-4 @else col-xs-12 @endif text-center mt-5">
-			@if($receipt_details->show_barcode)
-				{{-- Barcode --}}
-				<img class="center-block" src="data:image/png;base64,{{DNS1D::getBarcodePNG($receipt_details->invoice_no, 'C128', 2,30,array(39, 48, 54), true)}}">
-			@endif
-			
-			@if($receipt_details->show_qr_code && !empty($receipt_details->qr_code_text))
-				<img class="center-block mt-5" src="data:image/png;base64,{{DNS2D::getBarcodePNG($receipt_details->qr_code_text, 'QRCODE', 3, 3, [39, 48, 54])}}">
-			@endif
-		</div>
-	@endif
 </div>
 
 <style type="text/css">

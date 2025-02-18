@@ -3,12 +3,18 @@
         <thead>
             <tr>
                 <th>@lang('product.brand')</th>
+                <th>Quantity</th>
+                <th>Sales Price</th>
+                <th>Purchase Price</th>
                 <th>@lang('lang_v1.gross_profit')</th>
             </tr>
         </thead>
         <tfoot>
             <tr class="bg-gray font-17 footer-total">
                 <td><strong>@lang('sale.total'):</strong></td>
+                <td class=""></td>
+                <td class=""></td>
+                <td class=""></td>
                 <td class="footer_total"></td>
             </tr>
         </tfoot>

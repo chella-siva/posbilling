@@ -1,6 +1,6 @@
 <table class="table table-striped">
     <tr>
-        <th>{{ __('report.opening_stock') }} <br><small class="text-muted">(@lang('lang_v1.by_purchase_price'))</small>:</th>
+        <th>{{ __('report.opening_stock') }} <br> <small class="text-muted">(@lang('lang_v1.by_purchase_price'))</small>:</th>
         <td>
             <span class="display_currency" data-currency_symbol="true">{{$data['opening_stock']}}</span>
         </td>

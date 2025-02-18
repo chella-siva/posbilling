@@ -55,6 +55,23 @@ class ContactController extends Controller
         $this->notificationUtil = $notificationUtil;
     }
 
+   public function searchContacts(Request $request)
+     {
+         // Validate request parameters
+         $request->validate([
+             'mobile' => 'required|string',
+             'business_id' => 'required|integer',
+             'location_id' => 'required|integer',
+         ]);
+ 
+         // Fetch contacts based on search input
+         $contacts = Contact::where('mobile', 'LIKE', '%' . $request->mobile . '%')
+             ->where('business_id', $request->business_id)
+             ->limit(5)
+             ->get(['id', 'name', 'email', 'mobile','address_line_1']); // Fetch only necessary fields
+ 
+         return response()->json($contacts);
+     }
     /**
      * Display a listing of the resource.
      *

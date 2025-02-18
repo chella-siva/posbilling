@@ -2636,6 +2636,19 @@ $(document).on('click', 'button.activate-deactivate-location', function(){
     });
 });
 
+function playNotificationSound() {
+    let sound = document.getElementById('notification_sound');
+    if (sound) {
+        sound.play().catch(error => {
+            console.log("Sound play error: ", error);
+            document.addEventListener("click", () => {
+                sound.play();
+            }, { once: true });
+        });
+    }
+}
+
+
 function getTotalUnreadNotifications(){
     if ($('span.notifications_count').length) {
         var href = '/get-total-unread';
@@ -2646,6 +2659,13 @@ function getTotalUnreadNotifications(){
             success: function(data) {
                 if (data.total_unread != 0 ) {
                     $('span.notifications_count').text(data.total_unread);
+                    let newCount = response.total_unread;
+                    let oldCount = parseInt($('.notifications_count').text()) || 0;
+    
+                    if (newCount > oldCount) {
+                        playNotificationSound();
+                    }
+
                 }
                 if (data.notification_html) {
                     $('.view_modal').html(data.notification_html);

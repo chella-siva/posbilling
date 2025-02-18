@@ -1953,6 +1953,7 @@ class TransactionUtil extends Util
         $il = $invoice_layout;
 
         $transaction = Transaction::find($transaction_id);
+                
         $transaction_type = $transaction->type;
 
         $output = [
@@ -1969,6 +1970,7 @@ class TransactionUtil extends Util
             'table_unit_price_label' => $il->table_unit_price_label,
             'table_subtotal_label' => $il->table_subtotal_label,
         ];
+
 
         //Display name
         $output['display_name'] = $output['business_name'];
@@ -2057,6 +2059,7 @@ class TransactionUtil extends Util
             $output['tax_info2'] = $business_details->tax_number_2;
         }
 
+
         //Shop Contact Info
         $output['contact'] = '';
         if ($il->show_mobile_number == 1 && ! empty($location_details->mobile)) {
@@ -2138,6 +2141,7 @@ class TransactionUtil extends Util
             if (! empty($temp)) {
                 $output['customer_custom_fields'] .= implode('<br>', $temp);
             }
+
 
             //To be used in pdfs
             $customer_address = [];
@@ -2505,11 +2509,10 @@ class TransactionUtil extends Util
 
             $output['openbal_due'] =  $amountNumber1 - $amountNumber;
             $output['openbal_due'] =$this->num_f($output['openbal_due'], $show_currency, $business_details);
-
             //Get payment details
             $output['payments'] = [];
-            if ($il->show_payments == 1) {
                 $payments = $transaction->payment_lines->toArray();
+
                 $payment_types = $this->payment_types($transaction->location_id, true);
                 if (! empty($payments)) {
                     foreach ($payments as $value) {
@@ -2575,7 +2578,7 @@ class TransactionUtil extends Util
                         }
                     }
                 }
-            }
+            
         }
 
         $output['additional_expenses'] = [];

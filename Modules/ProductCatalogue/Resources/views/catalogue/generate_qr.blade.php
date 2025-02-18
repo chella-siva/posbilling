@@ -33,8 +33,33 @@
                     </label>
                 </div>
             </div>
+            
             <button type="button" class="btn btn-primary" id="generate_qr">@lang( 'productcatalogue::lang.generate_qr' )</button>
         @endcomponent
+        @component('components.widget', ['class' => 'box-solid'])
+            <div class="tw-py-2 tw-align-middle sm:tw-px-5">
+                    <div class="row">
+                <div class="col-md-12">
+                    <h4>Settings:</h4>
+                    {!! Form::open(['url' => action([\App\Http\Controllers\BusinessController::class, 'postBusinessSettingsupd']), 'method' => 'post', 'id' => 'bussiness_edit_form', 'files' => true ]) !!}
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>{{ $business->show_outofstock }}
+                                {!! Form::checkbox('hide_show_outofstock', 1, $business->hide_show_outofstock == 1, ['id' => 'show_outofstock', 'class' => 'input-icheck']) !!}
+                                Show/Hide Out Of Stock
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                    <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white" id="">Save</button>
+                {!! Form::close() !!}
+
+                    </div>
+            </div>
+                </div>
+       
+            @endcomponent
+        
         @component('components.widget', ['class' => 'box-solid'])
             <div class="row">
                 <div class="col-md-12">
@@ -57,6 +82,8 @@
             </div>
         @endcomponent
         </div>
+
+        
         <div class="col-md-5">
             @component('components.widget', ['class' => 'box-solid'])
 
@@ -117,6 +144,11 @@
 
             if ($('#show_logo').is(':checked')) {
                 opts.logo = "{{asset( 'uploads/business_logos/' . $business->logo)}}";
+            }
+            if ($('#show_outofstock').is(':checked')) {
+                opts.show_outofstock = "1";
+            } else {
+                opts.show_outofstock = "0";
             }
 
             new QRCode(document.getElementById("qrcode"), opts);

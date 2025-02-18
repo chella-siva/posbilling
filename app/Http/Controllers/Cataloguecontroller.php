@@ -1,39 +1,22 @@
 <?php
 
-namespace Modules\ProductCatalogue\Http\Controllers;
+namespace App\Http\Controllers;
 
-use App\Business;
-use App\BusinessLocation;
-use App\Category;
-use App\Discount;
-use App\Product;
-use App\User;
+use Illuminate\Http\Request;
 use App\Contact;
 use App\Transaction;
-use Modules\Superadmin\Entities\SuperadminCommunicatorLog;
-use Modules\Superadmin\Notifications\SuperadminCommunicator;
-use App\TransactionSellLine;
-use App\SellingPriceGroup;
+use App\TransactionSellLine; // Add this import for the TransactionSellLine model
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Utils\ContactUtil;
 use App\Utils\ModuleUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\Util;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
-class ProductCatalogueController extends Controller
+class CatalogueController extends Controller
 {
-
-    /**
-     * Constructor
-     *
-     * @param  ProductUtils  $product
-     * @return void
-     */
-     protected $commonUtil;
+    protected $commonUtil;
 
     protected $contactUtil;
 
@@ -56,18 +39,7 @@ class ProductCatalogueController extends Controller
         $this->transactionUtil = $transactionUtil;
         $this->notificationUtil = $notificationUtil;
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function checkout()
-    {
-        return view('productcatalogue::catalogue.checkout');
-    }
-    
-     public function store(Request $request)
+    public function store(Request $request)
     {
         // Log the incoming request data
             try {
@@ -151,7 +123,7 @@ class ProductCatalogueController extends Controller
                     'delivered_to' => null,
                     'delivery_person' => null,
                     'shipping_charges' => 0.0, // Default value
-                    'final_total' => $request->input('total_amount', 0.0), // Final total
+                    'final_total' => $request->input('final_total', 0.0), // Final total
                     'created_by' => auth()->id() ?? 1, // Default current user or admin (1)
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -159,35 +131,6 @@ class ProductCatalogueController extends Controller
         
                 // Log transaction creation
                 Log::debug('Transaction created:', ['transaction' => $transaction]);
-                $business_id =  $request->input('business_id');
-                
-                $input = $request->all();
-                $input['subject'] = $input['subject'] ?? 'Quotation Created';
-                $input['message'] = $input['message'] ?? 'New Quotation created sucessfully - '.$invoice_no;
-                $busid = is_array($business_id) ? $business_id : [$business_id];
-
-
-
-                //Get business owners
-                $business_owners = User::join('business as B', 'users.id', '=', 'B.owner_id')
-                                ->whereIn('B.id', $busid)
-                                ->select('users.*')
-                                ->groupBy('users.id')
-                                ->get();
-        
-                //Send notifications
-                \Notification::send($business_owners, new SuperadminCommunicator($input));
-        
-                //Create Log
-                SuperadminCommunicatorLog::create([
-                    'business_ids' => $busid,
-                    'subject' => $input['subject'],
-                    'message' => $input['message'],
-                ]);
-                
-                // $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
-                // print_R($whatsapp_link);die;
-                
                 $cartData = json_decode($validatedData['cart'], true); // true returns as array, not object
         
                 // Iterate over the cart and save each item as a transaction sell line
@@ -251,90 +194,4 @@ class ProductCatalogueController extends Controller
         // }
     }
     
-    public function index($business_id, $location_id)
-    {
-        $products = Product::where('business_id', $business_id)
-                ->whereHas('product_locations', function ($q) use ($location_id) {
-                    $q->where('product_locations.location_id', $location_id);
-                })
-                ->ProductForSales()
-                ->with(['variations', 'variations.product_variation', 'category'])
-                ->get()
-                ->groupBy('category_id');
-        $business = Business::with(['currency'])->findOrFail($business_id);
-        $business_location = BusinessLocation::where('business_id', $business_id)->findOrFail($location_id);
-
-        $now = \Carbon::now()->toDateTimeString();
-        $discounts = Discount::where('business_id', $business_id)
-                                ->where('location_id', $location_id)
-                                ->where('is_active', 1)
-                                ->where('starts_at', '<=', $now)
-                                ->where('ends_at', '>=', $now)
-                                ->orderBy('priority', 'desc')
-                                ->get();
-        foreach ($discounts as $key => $value) {
-            $discounts[$key]->discount_amount = $this->productUtil->num_f($value->discount_amount, false, $business);
-        }
-
-        $categories = Category::forDropdown($business_id, 'product');
-
-        return view('productcatalogue::catalogue.index')->with(compact('products', 'business', 'discounts', 'business_location', 'categories'));
-    }
-
-    /**
-     * Show the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($business_id, $id)
-    {
-        $product = Product::with(['brand', 'unit', 'category', 'sub_category', 'product_tax', 'variations', 'variations.product_variation', 'variations.group_prices', 'variations.media', 'product_locations', 'warranty'])->where('business_id', $business_id)
-                        ->findOrFail($id);
-
-        $price_groups = SellingPriceGroup::where('business_id', $product->business_id)->active()->pluck('name', 'id');
-
-        $allowed_group_prices = [];
-        foreach ($price_groups as $key => $value) {
-            $allowed_group_prices[$key] = $value;
-        }
-
-        $group_price_details = [];
-        $discounts = [];
-        foreach ($product->variations as $variation) {
-            foreach ($variation->group_prices as $group_price) {
-                $group_price_details[$variation->id][$group_price->price_group_id] = $group_price->price_inc_tax;
-            }
-
-            $discounts[$variation->id] = $this->productUtil->getProductDiscount($product, $product->business_id, request()->input('location_id'), false, null, $variation->id);
-        }
-
-        $combo_variations = [];
-        if ($product->type == 'combo') {
-            $combo_variations = $this->productUtil->__getComboProductDetails($product['variations'][0]->combo_variations, $product->business_id);
-        }
-
-        return view('productcatalogue::catalogue.show')->with(compact(
-            'product',
-            'allowed_group_prices',
-            'group_price_details',
-            'combo_variations',
-            'discounts'
-        ));
-    }
-
-    public function generateQr()
-    {
-        $business_id = request()->session()->get('user.business_id');
-        if (! (auth()->user()->can('superadmin') || $this->moduleUtil->hasThePermissionInSubscription($business_id, 'productcatalogue_module'))) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $business_id = request()->session()->get('user.business_id');
-        $business_locations = BusinessLocation::forDropdown($business_id);
-        $business = Business::findOrFail($business_id);
-
-        return view('productcatalogue::catalogue.generate_qr')
-                    ->with(compact('business_locations', 'business'));
-    }
 }

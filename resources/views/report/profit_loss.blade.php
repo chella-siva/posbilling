@@ -175,6 +175,18 @@
                         name: 'product'
                     },
                     {
+                        data: 'itemqty',
+                        name: 'itemqty'
+                    },
+                    {
+                        data: 'saleprice',
+                        name: 'saleprice'
+                    },
+                    {
+                        data: 'purchaseprice',
+                        name: 'purchaseprice'
+                    },
+                    {
                         data: 'gross_profit',
                         "searchable": false
                     },
@@ -256,6 +268,18 @@
                             columns: [{
                                     data: 'brand',
                                     name: 'B.name'
+                                },
+                                {
+                                    data: 'itemqty',
+                                    name: 'itemqty'
+                                },
+                                {
+                                    data: 'saleprice',
+                                    name: 'saleprice'
+                                },
+                                {
+                                    data: 'purchaseprice',
+                                    name: 'purchaseprice'
                                 },
                                 {
                                     data: 'gross_profit',
@@ -342,6 +366,18 @@
                                     name: 'sale.invoice_no'
                                 },
                                 {
+                                    data: 'itemqty',
+                                    name: 'itemqty'
+                                },
+                                {
+                                    data: 'saleprice',
+                                    name: 'saleprice'
+                                },
+                                {
+                                    data: 'purchaseprice',
+                                    name: 'purchaseprice'
+                                },
+                                {
                                     data: 'gross_profit',
                                     "searchable": false
                                 },
@@ -382,6 +418,18 @@
                             columns: [{
                                     data: 'transaction_date',
                                     name: 'sale.transaction_date'
+                                },
+                                {
+                                    data: 'itemqty',
+                                    name: 'itemqty'
+                                },
+                                {
+                                    data: 'saleprice',
+                                    name: 'saleprice'
+                                },
+                                {
+                                    data: 'purchaseprice',
+                                    name: 'purchaseprice'
                                 },
                                 {
                                     data: 'gross_profit',

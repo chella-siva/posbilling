@@ -83,6 +83,7 @@ class TransactionPaymentController extends Controller
             'data' => [],
         ];
 
+
         $business_details = $this->businessUtil->getDetails($business_id);
         $location_details = BusinessLocation::find($location_id);
 
@@ -109,16 +110,9 @@ class TransactionPaymentController extends Controller
         $receipt_details->currency = $currency_details;
 
         $output['print_title'] = $receipt_details->invoice_no;
-        //If print type browser - return the content, printer - return printer config data, and invoice format config
-        if ($receipt_printer_type == 'printer') {
-            $output['print_type'] = 'printer';
-            $output['printer_config'] = $this->businessUtil->printerConfig($business_id, $location_details->printer_id);
-            $output['data'] = $receipt_details;
-        } else {
             $layout = 'sale_pos.receipts.classicpay';
 
             $output['html_content'] = view($layout, compact('receipt_details'))->render();
-        }
 
         return $output;
     }
@@ -635,12 +629,14 @@ class TransactionPaymentController extends Controller
            
 
             DB::commit();
-            // $tranpay = TransactionPayment::where('payment_ref_no',$tp->payment_ref_no)->first();
-            // $busloc = BusinessLocation::where('business_id',$business_id)->first();
-            // $receipt = $this->receiptContent3($business_id, $busloc->location_id, '61485', null, false, true, $busloc->invoice_layout_id);
+            $tranpay = TransactionPayment::where('payment_ref_no',$tp->payment_ref_no)->first();
+            $tranpay1 = TransactionPayment::where('parent_id',$tranpay->id)->first();
+            $busloc = BusinessLocation::where('business_id',$business_id)->first();
+            $trans = Transaction::where('id',$tranpay1->transaction_id)->first();
+            $receipt = $this->receiptContent3($business_id, $trans->location_id, $tranpay1->transaction_id , null, false, true, $busloc->invoice_layout_id,false,$tranpay1->id);
 
             $output = ['success' => true,
-                'msg' => __('purchase.payment_added_success'),
+                'msg' => __('purchase.payment_added_success'),'receipt' => $receipt
             ];
         } catch (\Exception $e) {
             DB::rollBack();
