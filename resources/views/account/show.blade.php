@@ -79,8 +79,8 @@
                                     <th>@lang( 'lang_v1.payment_details' )</th>
                                     <th>@lang( 'brand.note' )</th>
                                     <th>@lang( 'lang_v1.added_by' )</th>
-                                    <th>@lang('account.debit')</th>
                                     <th>@lang('account.credit')</th>
+                                    <th>@lang('account.debit')</th>
                     				<th>@lang( 'lang_v1.balance' )</th>
                                     <th>@lang( 'messages.action' )</th>
                     			</tr>

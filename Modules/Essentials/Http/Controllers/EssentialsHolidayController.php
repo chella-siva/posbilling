@@ -43,36 +43,13 @@ class EssentialsHolidayController extends Controller
 
         $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
 
+        $essentialsUtil = new \Modules\Essentials\Utils\EssentialsUtil;
+
         if (request()->ajax()) {
-            $holidays = EssentialsHoliday::where('essentials_holidays.business_id', $business_id)
-                        ->leftJoin('business_locations as bl', 'bl.id', '=', 'essentials_holidays.location_id')
-                        ->select([
-                            'essentials_holidays.id',
-                            'essentials_holidays.name',
-                            'bl.name as location',
-                            'start_date',
-                            'end_date',
-                            'note',
-                        ]);
-
+            
             $permitted_locations = auth()->user()->permitted_locations();
-            if ($permitted_locations != 'all') {
-                $holidays->where(function ($query) use ($permitted_locations) {
-                    $query->whereIn('essentials_holidays.location_id', $permitted_locations)
-                        ->orWhereNull('essentials_holidays.location_id');
-                });
-            }
 
-            if (! empty(request()->input('location_id'))) {
-                $holidays->where('essentials_holidays.location_id', request()->input('location_id'));
-            }
-
-            if (! empty(request()->start_date) && ! empty(request()->end_date)) {
-                $start = request()->start_date;
-                $end = request()->end_date;
-                $holidays->whereDate('essentials_holidays.start_date', '>=', $start)
-                            ->whereDate('essentials_holidays.start_date', '<=', $end);
-            }
+            $holidays = $essentialsUtil->Gettotalholiday($business_id, request()->input('location_id'), request()->start_date, request()->end_date, $permitted_locations);
 
             return Datatables::of($holidays)
                 ->addColumn(

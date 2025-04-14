@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'Télécharger des documents sur la feuille de travail',
     'upload_docs' => 'Importer des documents',
     'document' => 'Document',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Esta configuración se aplica solo a la Hoja de Trabajo en el Formato de Impresión 2',
+    'version_info' => 'Version du module de réparation - <code> :version </code>',
 ];

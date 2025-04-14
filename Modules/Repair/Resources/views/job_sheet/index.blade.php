@@ -39,6 +39,12 @@
                 {!! Form::select('status_id', $status_dropdown['statuses'], null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('sell_list_filter_date_range', __('report.date_range') . ':') !!}
+                {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
+            </div>
+        </div>
     @endcomponent
     
 	<div class="row">
@@ -98,6 +104,8 @@
                                         <th>
                                             @lang('role.customer')
                                         </th>
+                                        <th>@lang('lang_v1.contact_id')</th>
+                                        <th> @lang('repair::lang.customer_phone')</th>
                                         <th>@lang('business.location')</th>
                                         <th>@lang('product.brand')</th>
                                         <th>@lang('repair::lang.device')</th>
@@ -157,12 +165,15 @@
                                         </th>
                                         <th>@lang('sale.invoice_no')</th>
                                         <th>@lang('sale.status')</th>
+                                        
                                         @if(in_array('service_staff' ,$enabled_modules))
                                             <th>@lang('repair::lang.technician')</th>
                                         @endif
                                         <th>
                                             @lang('role.customer')
                                         </th>
+                                        <th>@lang('lang_v1.contact_id')</th>
+                                        <th> @lang('repair::lang.customer_phone')</th>
                                         <th>@lang('business.location')</th>
                                         <th>@lang('product.brand')</th>
                                         <th>@lang('repair::lang.device')</th>
@@ -209,6 +220,14 @@
                     ajax:{
                         url: '/repair/job-sheet',
                         "data": function ( d ) {
+                        if ($('#sell_list_filter_date_range').val()) {
+                            var start = $('#sell_list_filter_date_range').data('daterangepicker')
+                                .startDate.format('YYYY-MM-DD');
+                            var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate
+                                .format('YYYY-MM-DD');
+                            d.start_date = start;
+                            d.end_date = end;
+                        }
                             d.location_id = $('#location_id').val();
                             d.contact_id = $('#contact_id').val();
                             d.status_id = $('#status_id').val();
@@ -237,10 +256,13 @@
                             data: 'repair_no', name: 'repair_no'
                         },
                         { data:'status', name: 'rs.name' },
+                       
                         @if(in_array('service_staff' ,$enabled_modules))
                             { data: 'technecian', name: 'technecian', searchable: false},
                         @endif
                         { data: 'customer', name : 'contacts.name'},
+                        { data: 'contact_id', name: 'contacts.contact_id'},
+                        { data:'mobile', name: 'contacts.mobile' },
                         { data: 'location', name: 'bl.name' },
                         { data: 'brand', name: 'b.name' },
                         { data: 'device', name: 'device.name' },
@@ -293,6 +315,14 @@
                     ajax:{
                         url: '/repair/job-sheet',
                         "data": function ( d ) {
+                        if ($('#sell_list_filter_date_range').val()) {
+                            var start = $('#sell_list_filter_date_range').data('daterangepicker')
+                                .startDate.format('YYYY-MM-DD');
+                            var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate
+                                .format('YYYY-MM-DD');
+                            d.start_date = start;
+                            d.end_date = end;
+                        }
                             d.location_id = $('#location_id').val();
                             d.contact_id = $('#contact_id').val();
                             d.status_id = $('#status_id').val();
@@ -325,6 +355,8 @@
                             { data: 'technecian', name: 'technecian', searchable: false},
                         @endif
                         { data: 'customer', name : 'contacts.name'},
+                        { data: 'contact_id', name: 'contacts.contact_id'},
+                        { data:'customer', name: 'contacts.mobile' },
                         { data: 'location', name: 'bl.name' },
                         { data: 'brand', name: 'b.name' },
                         { data: 'device', name: 'device.name' },
@@ -502,6 +534,21 @@
             });
 
             $(document).on('change', '#location_id, #contact_id, #status_id, #technician',  function() {
+                pending_job_sheets_datatable.ajax.reload();
+                completed_job_sheets_datatable.ajax.reload();
+            });
+
+            $('#sell_list_filter_date_range').daterangepicker(
+                dateRangeSettings,
+                function(start, end) {
+                    $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(
+                        moment_date_format));
+                        pending_job_sheets_datatable.ajax.reload();
+                        completed_job_sheets_datatable.ajax.reload();
+                }
+            );
+            $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
+                $('#sell_list_filter_date_range').val('');
                 pending_job_sheets_datatable.ajax.reload();
                 completed_job_sheets_datatable.ajax.reload();
             });

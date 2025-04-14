@@ -2,7 +2,7 @@
 
 	<form action="{{action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'confirm'], [$package->id])}}" method="POST">
 		<!-- Note that the amount is in paise -->
-	     @php 
+		@php 
 		 	$baseAmount = $package->price;
 			$gstRate = 18; 
 			$gstAmount = $baseAmount * ($gstRate / 100);

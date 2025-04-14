@@ -38,6 +38,7 @@
             sales_target_table = $('#sales_target_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     "url": "{{action([\Modules\Essentials\Http\Controllers\SalesTargetController::class, 'index'])}}"
                 },

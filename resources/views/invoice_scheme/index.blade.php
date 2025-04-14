@@ -147,11 +147,10 @@
                         </div>
                         <br>
                     </div>
-
                     <div class="tab-pane" id="tab_4">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4>Quotation/Draft Layouts <a class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm pull-right" href="{{action([\App\Http\Controllers\QuotationLayoutController::class, 'create'])}}">
+                            <h4>Quotation/Draft Layouts <a class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm pull-right" href="{{action([\App\Http\Controllers\QuotationLayoutController::class, 'create'])}}">
                                         <i class="fa fa-plus"></i> @lang( 'messages.add' )</a></h4>
                             </div>
                             <div class="col-md-12">

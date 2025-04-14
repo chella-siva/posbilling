@@ -315,4 +315,11 @@ return [
     'days_present' => 'Days Present',
     'days_absent' => 'Days Absent',
     'attendace_report_for' => 'Attendance Report for',
+    'edit_enowledge_base' => 'Edit Knowledge Base',
+    'delete_enowledge_base' => 'Delete Knowledge Base',
+    'leave_taken' => 'Leave Take',
+    'leave_left' => 'Leave Left',
+    'leave_applied' => 'Leave applied (current)',
+    'approve_additional_leave_text' => "I understand that approving this leave request would exceed the maximum allowable limit for this employee's leave under this leave type.",
+    'version_info' => 'Essentials and HRM module version - <code> :version </code>',
 ];

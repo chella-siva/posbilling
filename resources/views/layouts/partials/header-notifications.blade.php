@@ -3,12 +3,6 @@
     $unread_notifications = $all_notifications->where('read_at', null);
     $total_unread = count($unread_notifications);
 @endphp
-
-<audio id="notification_sound">
-    <source src="{{ asset('audio/error.mp3') }}" type="audio/mpeg">
-</audio>
-
-
 <!-- Notifications: style can be found in dropdown.less -->
 <li class="dropdown notifications-menu tw-list-none">
     <a type="button"

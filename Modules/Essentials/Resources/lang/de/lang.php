@@ -315,4 +315,11 @@ return [
     'days_present' => 'Tage Anwesend',
     'days_absent' => 'Tage Abwesend',
     'attendance_report_for' => 'Anwesenheitsbericht für',
+    'edit_knowledge_base' => 'Wissensdatenbank bearbeiten',
+    'delete_knowledge_base' => 'Wissensdatenbank löschen',
+    'leave_taken' => 'Genommener Urlaub',
+    'leave_left' => 'Verbleibender Urlaub',
+    'leave_applied' => 'Angewandter Urlaub (aktuell)',
+    'approve_additional_leave_text' => "Ich verstehe, dass die Genehmigung dieses Urlaubsantrags das maximal zulässige Limit für den Urlaub dieses Mitarbeiters unter diesem Urlaubstyp überschreiten würde.",
+    'version_info' => 'Version des Essentials- und HRM-Moduls - <code> :version </code>',
 ];

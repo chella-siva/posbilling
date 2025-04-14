@@ -315,4 +315,11 @@ return [
     'days_present' => 'दिन उपस्थित',
     'days_absent' => 'दिन अनुपस्थित',
     'attendance_report_for' => 'उपस्थिति रिपोर्ट के लिए',
+    'edit_knowledge_base' => 'ज्ञानकोष संपादित करें',
+    'delete_knowledge_base' => 'ज्ञानकोष हटाएं',
+    'leave_taken' => 'लिया गया अवकाश',
+    'leave_left' => 'शेष अवकाश',
+    'leave_applied' => 'आवेदित अवकाश (वर्तमान)',
+    'approve_additional_leave_text' => "मैं समझता हूँ कि इस अवकाश अनुरोध को स्वीकृत करने से इस कर्मचारी के लिए इस अवकाश प्रकार के तहत अधिकतम अनुमेय सीमा से अधिक हो जाएगा।",
+    'version_info' => 'Essentials और HRM मॉड्यूल संस्करण - <code> :version </code>',
 ];

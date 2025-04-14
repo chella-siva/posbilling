@@ -505,10 +505,10 @@
                             @endif</td>
 
 	                        @if(empty($receipt_details->hide_price))
-	                        <td class="unit_price text-center">{{$line['unit_price_before_discount']}}</td>
+	                        <td class="unit_price text-center">{{$line['unit_price_inc_tax']}}</td>
 
 							<td class="unit_price text-center">
-								{{@num_format($product->mrp)}} 
+								{{@num_format($line['mrp'])}} 
 
 							</td>
 
@@ -778,6 +778,12 @@
 				<br/>
 				<img class="center-block" src="data:image/png;base64,{{DNS1D::getBarcodePNG($receipt_details->invoice_no, 'C128', 2,30,array(39, 48, 54), true)}}">
 			@endif
+			
+				  @if($receipt_details->show_signature)
+                    @if(!empty($receipt_details->signature_image))
+                        <img style="max-height: 100px; width: auto;" src="{{$receipt_details->signature_image}}" class="img img-responsive center-block">
+                    @endif
+                @endif
 
 			@if($receipt_details->show_qr_code && !empty($receipt_details->qr_code_text))
 				<img class="center-block mt-5" src="data:image/png;base64,{{DNS2D::getBarcodePNG($receipt_details->qr_code_text, 'QRCODE')}}">

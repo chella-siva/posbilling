@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'Jobblattdokumente hochladen',
     'upload_docs' => 'Dokumente hochladen',
     'document' => 'Dokument',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Diese Einstellung gilt nur für das Arbeitsblatt im Druckformat 2',
+    'version_info' => 'Reparaturmodulversion - <code> :version </code>',
 ];

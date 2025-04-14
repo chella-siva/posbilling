@@ -291,4 +291,11 @@ return [
     'days_present' => 'ວັນມີຢູ່',
     'days_absent' => 'ວັນຢູ່ອອກ',
     'attendance_report_for' => 'ບົດລາຍງານການເຂົ້າຮັບສໍາລັບ',
+    'edit_knowledge_base' => 'ແກ້ໄຂຖານຂໍ້ມູນຄວາມຮູ້',
+    'delete_knowledge_base' => 'ລຶບຖານຂໍ້ມູນຄວາມຮູ້',
+    'leave_taken' => 'ວັນພັກທີ່ໄດ້ໃຊ້',
+    'leave_left' => 'ວັນພັກທີ່ເຫຼືອ',
+    'leave_applied' => 'ວັນພັກທີ່ຖືກສະໜອງ (ປັດຈຸບັນ)',
+    'approve_additional_leave_text' => "ຂ້ອຍເຂົ້າໃຈວ່າການອະນຸມັດຄໍາຮ້ອງຂໍພັກນີ້ຈະເກີນຂອບເຂດສູງສຸດທີ່ອະນຸຍາດໄດ້ສໍາລັບພະນັກງານນີ້ພາຍໃຕ້ປະເພດການພັກນີ້.",
+    'version_info' => 'ສະບັບຂອງໂມດູນ Essentials ແລະ HRM - <code> :version </code>',
 ];

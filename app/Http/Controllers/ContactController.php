@@ -55,28 +55,29 @@ class ContactController extends Controller
         $this->notificationUtil = $notificationUtil;
     }
 
-   public function searchContacts(Request $request)
-     {
-         // Validate request parameters
-         $request->validate([
-             'mobile' => 'required|string',
-             'business_id' => 'required|integer',
-             'location_id' => 'required|integer',
-         ]);
- 
-         // Fetch contacts based on search input
-         $contacts = Contact::where('mobile', 'LIKE', '%' . $request->mobile . '%')
-             ->where('business_id', $request->business_id)
-             ->limit(5)
-             ->get(['id', 'name', 'email', 'mobile','address_line_1']); // Fetch only necessary fields
- 
-         return response()->json($contacts);
-     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function searchContacts(Request $request)
+      {
+          // Validate request parameters
+          $request->validate([
+              'mobile' => 'required|string',
+              'business_id' => 'required|integer',
+              'location_id' => 'required|integer',
+          ]);
+  
+          // Fetch contacts based on search input
+          $contacts = Contact::where('mobile', 'LIKE', '%' . $request->mobile . '%')
+              ->where('business_id', $request->business_id)
+              ->limit(5)
+              ->get(['id', 'name', 'email', 'mobile','address_line_1']); // Fetch only necessary fields
+  
+          return response()->json($contacts);
+      }
     public function index()
     {
         $business_id = request()->session()->get('user.business_id');
@@ -128,8 +129,8 @@ class ContactController extends Controller
         $contact = $this->contactUtil->getContactQuery($business_id, 'supplier');
 
         if (request()->has('has_purchase_due')) {
-            $contact->havingRaw('(total_purchase - purchase_paid) > 0');
-        }
+			$contact->havingRaw('(IFNULL(total_purchase, 0) - IFNULL(purchase_paid, 0) - IFNULL(total_ledger_discount, 0)) > 0');
+		}
 
         if (request()->has('has_purchase_return')) {
             $contact->havingRaw('total_purchase_return > 0');
@@ -382,7 +383,7 @@ class ContactController extends Controller
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
             ->addColumn(
                 'due',
-                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount)</span>'
+                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount -  $total_sell_return)</span>'
             )
             ->addColumn(
                 'return_due',
@@ -1190,13 +1191,13 @@ class ContactController extends Controller
                     }
 
                     //Mobile number
-                    if (! empty(trim($value[13]))) {
+                    // if (! empty(trim($value[13]))) {
                         $contact_array['mobile'] = $value[13];
-                    } else {
-                        $is_valid = false;
-                        $error_msg = "Mobile number is required in row no. $row_no";
-                        break;
-                    }
+                    // } else {
+                    //     $is_valid = false;
+                    //     $error_msg = "Mobile number is required in row no. $row_no";
+                    //     break;
+                    // }
 
                     //Alt contact number
                     $contact_array['alternate_number'] = $value[14];

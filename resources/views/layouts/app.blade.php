@@ -37,8 +37,8 @@
 
 </head>
 <body
-    class="thetop tw-font-sans tw-antialiased tw-text-gray-900 tw-bg-gray-100 @if ($pos_layout) hold-transition lockscreen @else hold-transition skin-@if (!empty(session('business.theme_color'))){{ session('business.theme_color') }}@else{{ 'blue-light' }} @endif sidebar-mini @endif" >
-    <div class="tw-flex">
+    class="tw-font-sans tw-antialiased tw-text-gray-900 tw-bg-gray-100 @if ($pos_layout) hold-transition lockscreen @else hold-transition skin-@if (!empty(session('business.theme_color'))){{ session('business.theme_color') }}@else{{ 'blue-light' }} @endif sidebar-mini @endif" >
+    <div class="tw-flex thetop">
         <script type="text/javascript">
             if (localStorage.getItem("upos_sidebar_collapse") == 'true') {
                 var body = document.getElementsByTagName("body")[0];
@@ -121,6 +121,10 @@
         <audio id="warning-audio">
             <source src="{{ asset('/audio/warning.ogg?v=' . $asset_v) }}" type="audio/ogg">
             <source src="{{ asset('/audio/warning.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+        </audio>
+        <audio id="notif-audio">
+            <source src="{{ asset('/audio/pos.ogg?v=' . $asset_v) }}" type="audio/ogg">
+            <source src="{{ asset('/audio/pos.mp3?v=' . $asset_v) }}" type="audio/mpeg">
         </audio>
 
         @if (!empty($__additional_html))

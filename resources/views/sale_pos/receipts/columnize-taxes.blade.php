@@ -729,6 +729,9 @@
 		<div style="padding:0px 2px 0px 2px;position: relative;height:110px;">
 			<!-- <p class="s9" style="color:#413bd4 !important;font-style:italic; text-align: center;">For {{$receipt_details->display_name}}</p>  -->
 			<div style="margin:0 auto;text-align: center;"> 
+			   @if(!empty($receipt_details->signature_image))
+						<img style="max-height: 100px; width: auto;" src="{{$receipt_details->signature_image}}" class="img img-responsive center-block">
+				    	@endif
 				<!-- <img src="https://app.nammabilling.com/uploads/signature/marcos2.jpg" width="70%" height="auto" style="margin:0 auto;text-align: center;"> -->
 			</div>  
 			<b class="pull-left s9" style="position: absolute;bottom: 0%;left: 5%;">@lang('lang_v1.authorized_signatory')</b>

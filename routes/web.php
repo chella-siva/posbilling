@@ -26,8 +26,6 @@ use App\Http\Controllers\ImportProductsController;
 use App\Http\Controllers\ImportSalesController;
 use App\Http\Controllers\Install;
 use App\Http\Controllers\InvoiceLayoutController;
-use App\Http\Controllers\PosLayoutController;
-use App\Http\Controllers\QuotationLayoutController;
 use App\Http\Controllers\InvoiceSchemeController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\LedgerDiscountController;
@@ -61,9 +59,22 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArtisanController;
+use App\Http\Controllers\PosLayoutController;
+use App\Http\Controllers\QuotationLayoutController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CatalogueController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
 
 // Route to clear cache
 Route::get('clear-cache', [ArtisanController::class, 'clearCache'])->name('clear.cache');
@@ -76,18 +87,6 @@ Route::get('clear-session', [ArtisanController::class, 'clearSession'])->name('c
 
 // Route to clear compiled views
 Route::get('clear-views', [ArtisanController::class, 'clearViews'])->name('clear.views');
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 include_once 'install_r.php';
 
@@ -102,8 +101,10 @@ Route::middleware(['setData'])->group(function () {
     });
 
     Auth::routes();
+
     Route::get('/search-customers', [ContactController::class, 'search']);
-    Route::post('/checkout', [CatalogueController::class, 'store']);
+     Route::post('/checkout', [CatalogueController::class, 'store']);
+
     Route::get('/business/register', [BusinessController::class, 'getRegister'])->name('business.getRegister');
     Route::post('/business/register', [BusinessController::class, 'postRegister'])->name('business.postRegister');
     Route::post('/business/register/check-username', [BusinessController::class, 'postCheckUsername'])->name('business.postCheckUsername');
@@ -141,12 +142,12 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/home/sales-payment-dues', [HomeController::class, 'getSalesPaymentDues']);
     Route::post('/attach-medias-to-model', [HomeController::class, 'attachMediasToGivenModel'])->name('attach.medias.to.model');
     Route::get('/calendar', [HomeController::class, 'getCalendar'])->name('calendar');
-
+    Route::post('/business/updatestock', [BusinessController::class, 'postBusinessSettingsupd'])->name('business.postBusinessSettingsupd');
+    
     Route::post('/test-email', [BusinessController::class, 'testEmailConfiguration']);
     Route::post('/test-sms', [BusinessController::class, 'testSmsConfiguration']);
     Route::get('/business/settings', [BusinessController::class, 'getBusinessSettings'])->name('business.getBusinessSettings');
     Route::post('/business/update', [BusinessController::class, 'postBusinessSettings'])->name('business.postBusinessSettings');
-    Route::post('/business/updatestock', [BusinessController::class, 'postBusinessSettingsupd'])->name('business.postBusinessSettingsupd');
     Route::get('/user/profile', [UserController::class, 'getProfile'])->name('user.getProfile');
     Route::post('/user/update', [UserController::class, 'updateProfile'])->name('user.updateProfile');
     Route::post('/user/update-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
@@ -337,24 +338,27 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 Route::post('/invoice/{invlayid}/remove-letterheadImage', [InvoiceLayoutController::class, 'removeletterheadImage'])->name('invoice.remove-letterheadimage');
 Route::post('/invoice/{invlayid}/remove-logoImage', [InvoiceLayoutController::class, 'removelogoImage'])->name('invoice.remove-logoimage');
 
-    //pos layouts
-    Route::resource('pos-layouts', PosLayoutController::class);
-    Route::post('/poslayout/{invlayid}/remove-letterheadImage', [PosLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
-    Route::post('/poslayout/{invlayid}/remove-logoImage', [PosLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
-
-      //pos layouts
-      Route::resource('quotation-layouts', QuotationLayoutController::class);
-      Route::post('/quotationlayout/{invlayid}/remove-letterheadImage', [QuotationLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
-      Route::post('/quotationlayout/{invlayid}/remove-logoImage', [QuotationLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
-  
-
     Route::post('get-expense-sub-categories', [ExpenseCategoryController::class, 'getSubCategories']);
 
+
+      //pos layouts
+      Route::resource('pos-layouts', PosLayoutController::class);
+      Route::post('/poslayout/{invlayid}/remove-letterheadImage', [PosLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
+      Route::post('/poslayout/{invlayid}/remove-logoImage', [PosLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
+        //pos layouts
+        Route::resource('quotation-layouts', QuotationLayoutController::class);
+        Route::post('/quotationlayout/{invlayid}/remove-letterheadImage', [QuotationLayoutController::class, 'removeletterheadImage'])->name('poslayout.remove-letterheadimage');
+        Route::post('/quotationlayout/{invlayid}/remove-logoImage', [QuotationLayoutController::class, 'removelogoImage'])->name('poslayout.remove-logoimage');
+    
+
+        
     //Expense Categories...
     Route::resource('expense-categories', ExpenseCategoryController::class);
 
     //Expenses...
     Route::resource('expenses', ExpenseController::class);
+    Route::get('import-expense', [ExpenseController::class, 'importExpense']);
+    Route::post('store-import-expense', [ExpenseController::class, 'storeExpenseImport']);
 
     //Transaction payments...
     // Route::get('/payments/opening-balance/{contact_id}', 'TransactionPaymentController@getOpeningBalancePayments');
@@ -539,7 +543,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 });
 
-
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
     Route::get('/load-more-notifications', [HomeController::class, 'loadMoreNotifications']);
     Route::get('/get-total-unread', [HomeController::class, 'getTotalUnreadNotifications']);
@@ -548,15 +551,17 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/download-purchase-order/{id}/pdf', [PurchaseOrderController::class, 'downloadPdf'])->name('purchaseOrder.downloadPdf');
     Route::get('/sells/{id}', [SellController::class, 'show']);
     Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('sell.printInvoice');
+    Route::get('/sells/{transaction_id}/printpdf', [SellPosController::class, 'printInvoicepdf'])->name('sell.printInvoicepdf');
+    Route::get('/invoice/{id}/download', [SellPosController::class, 'downloadInvoicePdf']);
     Route::get('/sells/{transaction_id}/posprint', [SellPosController::class, 'printposInvoice'])->name('sell.printposInvoice');
-    Route::get('/sells/{transaction_id}/posbillprint/{paymentid}', [SellPosController::class, 'printposbillInvoice'])->name('sell.printposbillInvoice');
-
     Route::get('/sells/{transaction_id}/quotationprint', [SellPosController::class, 'printquotationInvoice'])->name('sell.printquotationInvoice');
+ 
     Route::get('/download-sells/{transaction_id}/pdf', [SellPosController::class, 'downloadPdf'])->name('sell.downloadPdf');
     Route::get('/download-quotation/{id}/pdf', [SellPosController::class, 'downloadQuotationPdf'])
         ->name('quotation.downloadPdf');
     Route::get('/download-packing-list/{id}/pdf', [SellPosController::class, 'downloadPackingListPdf'])
         ->name('packing.downloadPdf');
     Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl']);
+    Route::get('/sells/{transaction_id}/posbillprint/{paymentid}', [SellPosController::class, 'printposbillInvoice'])->name('sell.printposbillInvoice');
     Route::get('/show-notification/{id}', [HomeController::class, 'showNotification']);
 });

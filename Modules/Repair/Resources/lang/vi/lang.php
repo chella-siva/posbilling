@@ -185,4 +185,6 @@ return [
     ' upload_job_sheet_docs ' => ' Tải lên tài liệu bảng công việc ',
     'upload_docs' => 'Tải lên tài liệu',
     'document' => 'Tài liệu',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Cài đặt này chỉ áp dụng cho Phiếu Công Việc ở Định Dạng In 2',
+    'version_info' => 'Phiên bản mô-đun sửa chữa - <code> :version </code>',
 ];

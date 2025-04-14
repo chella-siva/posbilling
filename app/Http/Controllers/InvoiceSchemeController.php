@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\InvoiceLayout;
 use App\InvoiceScheme;
-use App\PosLayout;
-use App\QuotationLayout;
 use Datatables;
 use Illuminate\Http\Request;
+use App\PosLayout;
+use App\QuotationLayout;
 
 class InvoiceSchemeController extends Controller
 {
@@ -75,16 +75,16 @@ class InvoiceSchemeController extends Controller
                                         ->with(['locations'])
                                         ->get();
 
-        $pos_layouts = PosLayout::where('business_id', $business_id)
-        ->with(['locations'])
-        ->get();
-
-        $quotation_layouts = QuotationLayout::where('business_id', $business_id)
-        ->with(['locations'])
-        ->get();
+                                        $pos_layouts = PosLayout::where('business_id', $business_id)
+                                        ->with(['locations'])
+                                        ->get();
+                                        $quotation_layouts = QuotationLayout::where('business_id', $business_id)
+                                        ->with(['locations'])
+                                        ->get();
+                                
 
         return view('invoice_scheme.index')
-                    ->with(compact('invoice_layouts','pos_layouts','quotation_layouts'));
+        ->with(compact('invoice_layouts','pos_layouts','quotation_layouts'));
     }
 
     /**

@@ -188,7 +188,7 @@
 			</td>
 			<td class="width-50">
 				<strong>@lang('lang_v1.delivery_at')</strong><br>
-				{!! $purchase->location->location_address !!}
+				{!! $purchase->shipping_address ?? $purchase->location->location_address !!}
 		        <br>
 		        {{--<strong>@lang('lang_v1.dispatch_from'):</strong>
 				@if(!empty($purchase->contact->city))

@@ -57,7 +57,7 @@
                         {!! Form::text('single_dsp_inc_tax', @num_format($variation->sell_price_inc_tax), ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
                     </td>
                     <td> 
-                    {!! Form::text('single_mrp', @num_format($variation->mrp), ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'mrp', 'required']); !!}
+                    {!! Form::text('single_mrp', @num_format($variation->mrp), ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'mrp']); !!}
                    </td>
                     <td>
                         @php 

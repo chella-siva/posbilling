@@ -158,14 +158,15 @@
 
                         <div class="tab-content">
                             <div class="tab-pane active " id="product_list_tab">
-                                @php
+
+                            @php
                                 $a=auth()->user()->username;
                                 $adminUsernames = env('ADMINISTRATOR_USERNAMES', '');
-
                                 // Check if the value of $a is in the ADMINISTRATOR_USERNAMES list
                                 @endphp
                                 
                                 @if ((in_array($a, explode(',', $adminUsernames))) || (!empty(session('previous_user_id')) && !empty(session('previous_username')))) 
+
                                 @if ($is_admin)
 
                                     <a class="tw-dw-btn tw-bg-gradient-to-r tw-from-indigo-600 tw-to-blue-500 tw-font-bold tw-text-white tw-border-none tw-rounded-full pull-right tw-m-2"
@@ -307,7 +308,6 @@
                             searchable: false
                         },
                     @endcan 
-                    
                     {
                         data: 'mrp',
                         name: 'MRP'

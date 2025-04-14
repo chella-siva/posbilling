@@ -49,19 +49,6 @@ class BusinessController extends Controller
      * @param  ProductUtils  $product
      * @return void
      */
-        public function postBusinessSettingsupd(Request $request)
-     {
-        $business_id = session('user')['business_id'];
-        $business_details = $request->only(['hide_show_outofstock' ]);
-        $business = Business::where('id', $business_id)->first();
-        $business_details['hide_show_outofstock'] = !empty($business_details['hide_show_outofstock']) ? 1 : 0;
-        $business->fill($business_details);
-        $business->save();
-        $business_locations = BusinessLocation::forDropdown($business_id);
-        $business = Business::findOrFail($business_id);
-        return redirect()->route('catalogue.qr');
-
-    }
     public function __construct(BusinessUtil $businessUtil, RestaurantUtil $restaurantUtil, ModuleUtil $moduleUtil)
     {
         $this->businessUtil = $businessUtil;
@@ -98,6 +85,21 @@ class BusinessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function postBusinessSettingsupd(Request $request)
+     {
+        $business_id = session('user')['business_id'];
+        $business_details = $request->only(['hide_show_outofstock' ]);
+        $business = Business::where('id', $business_id)->first();
+        $business_details['hide_show_outofstock'] = !empty($business_details['hide_show_outofstock']) ? 1 : 0;
+        $business->fill($business_details);
+        $business->save();
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        $business = Business::findOrFail($business_id);
+        return redirect()->route('catalogue.qr');
+
+    }
+
     public function getRegister()
     {
         if (! config('constants.allow_registration')) {

@@ -299,6 +299,16 @@ class DataController extends Controller
                 'label' => __('essentials::lang.access_sales_target'),
                 'default' => false,
             ],
+            [
+                'value' => 'essentials.edit_knowledge_base',
+                'label' => __('essentials::lang.edit_enowledge_base'),
+                'default' => false,
+            ],
+            [
+                'value' => 'essentials.delete_knowledge_base',
+                'label' => __('essentials::lang.delete_enowledge_base'),
+                'default' => false,
+            ],
         ];
     }
 
@@ -764,6 +774,16 @@ class DataController extends Controller
                 'location' => false,
                 'show_data' => true,
             ],
+            [
+                'name' => 'holiday',
+                'label' => __('essentials::lang.holiday'),
+                'size' => 100,
+                'module_name' => __('essentials::lang.essentials_module'),
+                'range' => true,
+                'html_text' => false,
+                'location' => true,
+                'show_data' => true,
+            ],
         ];
     }
 
@@ -893,6 +913,26 @@ class DataController extends Controller
 
         return [
             'html' => view('essentials::custom_dashboard.range_by_attendance', compact('users', 'endDate', 'startDate', 'dashboard_detail')),
+        ];
+    }
+
+    public function holiday($dashboard_detail){
+
+        $essentialsUtil = new \Modules\Essentials\Utils\EssentialsUtil;
+
+        $business_id = session()->get('user.business_id');
+
+        $permitted_locations = auth()->user()->permitted_locations();
+
+        $endDate = $dashboard_detail->end_date;
+        $startDate = $dashboard_detail->start_date;
+        
+        $holidays = $essentialsUtil->Gettotalholiday($business_id, $dashboard_detail->location , $startDate, $endDate, $permitted_locations);
+
+        $holidays = $holidays->get();
+    
+        return [
+            'html' => view('essentials::custom_dashboard.holiday', compact('holidays', 'endDate', 'startDate', 'dashboard_detail')),
         ];
     }
 }

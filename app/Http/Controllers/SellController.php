@@ -99,8 +99,11 @@ class SellController extends Controller
 
             // only display sell invoice we add it because project invoive show in sell list
             if($sale_type == 'sell'){
-                $sells->whereNull('transactions.sub_type');
-            }
+                $sells->where(function ($query) {
+                    $query->where('transactions.sub_type', '!=', 'project_invoice')
+                          ->orWhereNull('transactions.sub_type');
+                });
+            }         
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
@@ -418,9 +421,9 @@ class SellController extends Controller
 
                         if ($row->type == 'sell') {
                             if (auth()->user()->can('print_invoice')) {
-                                $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.print_invoice').'</a></li>
-                                <li><a href="#" class="print-invoice" data-href="'.route('sell.printposInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.pos_invoice').'</a></li>
-                                    <li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.packing_slip').'</a></li>';
+                                $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.print_invoice').'</a></li><li><a href="#" class="print-invoice" data-href="'.route('sell.printposInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.pos_invoice').'</a></li>
+                                    <li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.packing_slip').'</a></li>
+                                    ';
 
                                 $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.delivery_note').'</a></li>';
                             }
@@ -1369,8 +1372,7 @@ class SellController extends Controller
                                     <a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>'.__('messages.print').'</a>
                                 </li>';
 
-                                
-                                $html .= '<li>
+                        $html .= '<li>
                                 <a href="#" class="print-invoice" data-href="'.route('sell.printquotationInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>Quotation print</a>
                             </li>';
 

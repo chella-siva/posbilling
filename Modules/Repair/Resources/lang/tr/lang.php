@@ -185,4 +185,6 @@ return [
     ' upload_job_sheet_docs ' => ' İş sayfası belgelerini yükleyin ',
     'upload_docs' => 'Belgeleri yükle',
     'document' => 'Belge',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Bu ayar yalnızca İş Formu Baskı Formatı 2 için geçerlidir',
+    'version_info' => 'Onarım modülü sürümü - <code> :version </code>',
 ];

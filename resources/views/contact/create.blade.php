@@ -120,7 +120,7 @@
                         <span class="input-group-addon">
                             <i class="fa fa-mobile"></i>
                         </span>
-                        {!! Form::text('mobile', null, ['class' => 'form-control', 'required', 'placeholder' => __('contact.mobile')]); !!}
+                        {!! Form::text('mobile', null, ['class' => 'form-control', 'placeholder' => __('contact.mobile')]); !!}
                     </div>
                 </div>
             </div>
@@ -239,7 +239,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                       {!! Form::label('tax_number', __('contact.tax_no') . ':') !!}
-                        <span class="pull-right">
+                      <span class="pull-right">
                             <a class="pointer text-bold" target="_blank" href="https://services.gst.gov.in/services/searchtp">Verify</a>
                         </span>
                         <div class="input-group">

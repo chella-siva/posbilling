@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'ອັບ ໂຫລດ ເອ ກະ ສານ ສະ ໝັກ ວຽກ',
     'upload_docs' => 'ອັບ ໂຫລດ ເອ ກະ ສານ',
     'document' => 'ເອ ກະ ສານ',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'ການຕັ້ງນີ້ໃຊ້ງານແມ່ນເລກເອກະສານຕັ້ງຕົ້ນເພື່ອພິມຂັ້ນສະເຫນີ 2',
+    'version_info' => 'ສະບັບຂອງໂມດູນສ້ອມແປງ - <code> :version </code>',
 ];

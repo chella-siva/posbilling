@@ -14,4 +14,10 @@ return [
     'show_business_logo_on_qrcode' => 'Show business logo on qrcode',
     'title' => 'Title',
     'subtitle' => 'Subtitle',
+    'setting' => 'Settings',
+    'outofstock_products' => 'Out of stock products',
+    'show' => 'Show',
+    'hide' => 'Hide',
+    'save' => 'Save',
+    'out_of_stock' => 'Out of stock',
 ];

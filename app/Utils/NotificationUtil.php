@@ -70,6 +70,80 @@ class NotificationUtil extends Util
                     } catch (\Exception $e) {
                         \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
                     }
+
+                }
+
+                //Auto send sms
+                if (! empty($notification_template->auto_send_sms)) {
+                    $data['mobile_number'] = $contact->mobile;
+                    if (! empty($contact->mobile)) {
+                        try {
+                            $this->sendSms($data);
+
+                            $this->activityLog($transaction, 'sms_notification_sent', null, [], false, $business_id);
+                        } catch (\Exception $e) {
+                            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                        }
+                    }
+                }
+
+                if (! empty($notification_template->auto_send_wa_notif)) {
+                    $data['mobile_number'] = $contact->mobile;
+                    if (! empty($contact->mobile)) {
+                        $whatsapp_link = $this->getWhatsappNotificationLink($data);
+                    }
+                }
+            }
+        }
+
+        return $whatsapp_link;
+    }
+    
+     public function autoSendNotificationQuotation($business_id, $notification_type, $transaction, $contact)
+    {
+        $notification_template = NotificationTemplate::where('business_id', $business_id)
+                ->where('template_for', $notification_type)
+                ->first();
+
+        $business = Business::findOrFail($business_id);
+        $data['email_settings'] = $business->email_settings;
+        $data['sms_settings'] = $business->sms_settings;
+        $whatsapp_link = '';
+        if (! empty($notification_template)) {
+            if (! empty($notification_template->auto_send) || ! empty($notification_template->auto_send_sms) || ! empty($notification_template->auto_send_wa_notif)) {
+                $orig_data = [
+                    'email_body' => $notification_template->email_body,
+                    'sms_body' => $notification_template->sms_body,
+                    'subject' => $notification_template->subject,
+                    'whatsapp_text' => $notification_template->whatsapp_text,
+                ];
+                $tag_replaced_data = $this->replaceTags($business_id, $orig_data, $transaction);
+
+                $data['email_body'] = $tag_replaced_data['email_body'];
+                $data['sms_body'] = $tag_replaced_data['sms_body'];
+                $data['whatsapp_text'] = $tag_replaced_data['whatsapp_text'];
+
+                //Auto send email
+                if (! empty($notification_template->auto_send) && ! empty($contact->email)) {
+                    $data['subject'] = $tag_replaced_data['subject'];
+                    $data['to_email'] = $contact->email;
+
+                    $customer_notifications = NotificationTemplate::customerNotifications();
+                    $supplier_notifications = NotificationTemplate::supplierNotifications();
+
+                    try {
+                        if (array_key_exists($notification_type, $customer_notifications)) {
+                            // Notification::route('mail', $data['to_email'])
+                            //                 ->notify(new CustomerNotification($data));
+                        } elseif (array_key_exists($notification_type, $supplier_notifications)) {
+                            // Notification::route('mail', $data['to_email'])
+                            //                 ->notify(new SupplierNotification($data));
+                        }
+                        $this->activityLog($transaction, 'email_notification_sent', null, [], false, $business_id);
+                    } catch (\Exception $e) {
+                        \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                    }
+
                 }
 
                 //Auto send sms

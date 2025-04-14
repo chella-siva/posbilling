@@ -185,4 +185,6 @@ return [
     ' upload_job_sheet_docs ' => ' अपलोड नौकरी शीट डॉक्स ',
     'upload_docs' => 'अपलोड डॉक्स',
     'document' => 'दस्तावेज़',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'यह सेटिंग केवल प्रिंट फॉर्मेट 2 के लिए जॉब शीट पर लागू होती है',
+    'version_info' => 'मरम्मत मॉड्यूल संस्करण - <code> :version </code>',
 ];

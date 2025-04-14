@@ -7,6 +7,7 @@ use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use App\System;
 
 class EssentialsSettingsController extends Controller
 {
@@ -42,9 +43,9 @@ class EssentialsSettingsController extends Controller
 
         $settings = request()->session()->get('business.essentials_settings');
         $settings = ! empty($settings) ? json_decode($settings, true) : [];
-
+        $module_version = System::getProperty('essentials_version');
         if ($is_admin) {
-            return view('essentials::settings.add')->with(compact('settings'));
+            return view('essentials::settings.add')->with(compact('settings', 'module_version'));
         }
     }
 

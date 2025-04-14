@@ -1,4 +1,4 @@
-<div class="col-md-4 tw-mb-5 {{ $package->interval }} tw-relative">
+<div class="col-md-4 tw-mb-5 {{ $package->interval }} tw-relative price_card">
     <div
         class="tw-flex tw-flex-col tw-gap-6 tw-p-6 tw-shadow bg-white tw-rounded-2xl tw-shadow-lg tw-transition-all tw-duration-700 hover:tw-scale-110 tw-cursor-pointer">
 
@@ -99,11 +99,11 @@
 
         @if ($package->enable_custom_link == 1)
             <a href="{{ $package->custom_link }}"
-                class="tw-bg-gradient-to-r tw-from-red-800 tw-to-red-900 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-red-600 hover:tw-bg-red-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">{{ $package->custom_link_text }}</a>
+                class="tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-indigo-600 hover:tw-to-blue-600 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">{{ $package->custom_link_text }}</a>
         @else
             @if (isset($action_type) && $action_type == 'register')
                 <a href="{{ route('business.getRegister') }}?package={{ $package->id }}"
-                    class="tw-bg-gradient-to-r tw-from-red-800 tw-to-red-900 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-red-600 hover:tw-bg-red-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">
+                    class="tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-indigo-600 hover:tw-to-blue-600 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">
                     @if ($package->price != 0)
                         @lang('superadmin::lang.register_subscribe')
                     @else
@@ -112,7 +112,7 @@
                 </a>
             @else
                 <a href="{{ action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'pay'], [$package->id]) }}"
-                    class="tw-bg-gradient-to-r tw-from-red-800 tw-to-red-900 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-red-600 hover:tw-bg-red-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">
+                    class="tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-tw-w-full tw-tw-max-w-full tw-mt-2 tw-flex tw-items-center tw-justify-center hover:tw-from-indigo-600 hover:tw-to-blue-600 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">
                     @if ($package->price != 0)
                         @lang('superadmin::lang.pay_and_subscribe')
                     @else

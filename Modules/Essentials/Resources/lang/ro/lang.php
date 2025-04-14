@@ -290,4 +290,11 @@ return [
     'days_present' => 'Zile prezent',
     'days_absent' => 'Zile absent',
     'attendance_report_for' => 'Raport de prezență pentru',
+    'edit_knowledge_base' => 'Editează baza de cunoștințe',
+    'delete_knowledge_base' => 'Șterge baza de cunoștințe',
+    'leave_taken' => 'Concediu luat',
+    'leave_left' => 'Concediu rămas',
+    'leave_applied' => 'Concediu aplicat (curent)',
+    'approve_additional_leave_text' => "Înțeleg că aprobarea acestei cereri de concediu ar depăși limita maximă permisă pentru concediul acestui angajat sub acest tip de concediu.",
+    'version_info' => 'Versiunea modulului Essentials și HRM - <code> :version </code>',
 ];

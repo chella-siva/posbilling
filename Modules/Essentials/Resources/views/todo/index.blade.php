@@ -85,6 +85,7 @@
 		task_table = $('#task_table').DataTable({
 	        processing: true,
 	        serverSide: true,
+			fixedHeader:false,
 	        ajax: {
 	        	url: '/essentials/todo',
 	        	data: function(d) {

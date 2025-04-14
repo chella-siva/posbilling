@@ -11,16 +11,16 @@ return [
     |
     */
 
-    'units' => 'Units',
-    'manage_your_units' => 'Manage your units',
-    'all_your_units' => 'All your units',
-    'name' => 'Name',
-    'short_name' => 'Short name',
-    'allow_decimal' => 'Allow decimal',
-    'added_success' => 'Unit added successfully',
-    'updated_success' => 'Unit updated successfully',
-    'deleted_success' => 'Unit deleted successfully',
-    'add_unit' => 'Add Unit',
-    'edit_unit' => 'Edit Unit',
+    'units' => 'Đơn vị',
+    'manage_your_units' => 'Quản lý đơn vị tính',
+    'all_your_units' => 'Tất cả các đơn vị',
+    'name' => 'Tên',
+    'short_name' => 'Tên viết tắt',
+    'allow_decimal' => 'Cho phép thập phân',
+    'added_success' => 'Đã thêm đơn vị thành công',
+    'updated_success' => 'Đơn vị cập nhật thành công',
+    'deleted_success' => 'Đã xóa đơn vị thành công',
+    'add_unit' => 'Thêm đơn vị',
+    'edit_unit' => 'Sửa đơn vị',
 
 ];

@@ -1,6 +1,5 @@
 
 <style type="text/css">
-		 @media print {
          /* @page {
             margin: 0
          }
@@ -15,7 +14,7 @@
             -webkit-print-color-adjust: exact;
          } 
  
-      } 
+      
  
 
         * {
@@ -505,7 +504,7 @@
                         @endif
 
                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
-                            <p class="s7" style="text-align: center;">{{$line['unit_price_before_discount']}}</p>
+                            <p class="s7" style="text-align: center;">{{$line['unit_price_inc_tax']}}</p>
                         </td>
 
                         <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67">
@@ -883,6 +882,10 @@
             <td style="padding:0px 2px 0px 2px;border-top-style:solid;border-top-width:0.5px;border-top-color:#113F67;border-left-style:solid;border-left-width:0.5px;border-left-color:#113F67;border-bottom-style:solid;border-bottom-width:0.5px;border-bottom-color:#113F67;border-right-style:solid;border-right-width:0.5px;border-right-color:#113F67;position: relative;height:130px;min-width:200px;" colspan="3">
                 <p class="s9" style="color:#413bd4 !important;font-style:italic;text-align: center;width: 100%;">For {{$receipt_details->display_name}}</p> 
                 <div style="margin:0 auto;text-align: center;"> 
+
+                        @if(!empty($receipt_details->signature_image))
+						<img style="max-height: 100px; width: auto;" src="{{$receipt_details->signature_image}}" class="img img-responsive center-block">
+				    	@endif
                     <!-- <img src="https://app.nammabilling.com/uploads/signature/marcos2.jpg" width="70%" height="auto" style="margin:0 auto;text-align: center;"> -->
                 </div> 
                 <p class="s9" style="position: absolute;bottom: 0%;left: 50%;transform: translate(-50%, -20%);text-align: center;width: 100%;">@lang('lang_v1.authorized_signatory')</p>
@@ -911,7 +914,6 @@
     ol, ul { 
     padding-left: 15px;
 }
-	@media print {
 		* {
 			/* font-size: 12px; */
 			/* font-family: 'Times New Roman'; */ 
@@ -937,6 +939,5 @@
     background: #ccc !important; 
     color: #000;
 }
-	}
 	
 </style>

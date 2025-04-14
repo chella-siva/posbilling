@@ -80,14 +80,27 @@ class CommunicatorController extends Controller
 
     public function getHistory()
     {
-        $history = SuperadminCommunicatorLog::select('subject', 'message', 'created_at');
-
+        
+        $history = SuperadminCommunicatorLog::select('subject', 'message', 'created_at')
+            ->where('message', 'not like', '%quotation created%'); // Filter messages containing "quotation"
+        
         return Datatables::of($history)
-                         ->editColumn(
-                             'created_at',
-                             '{{@format_date($created_at)}} {{@format_time($created_at)}}'
-                         )
-                         ->rawColumns([1])
-                         ->make(false);
+            ->editColumn(
+                'created_at',
+                '{{@format_date($created_at)}} {{@format_time($created_at)}}'
+            )
+            ->rawColumns([1])
+            ->make(false);
+
+
+        // $history = SuperadminCommunicatorLog::select('subject', 'message', 'created_at');
+
+        // return Datatables::of($history)
+        //                  ->editColumn(
+        //                      'created_at',
+        //                      '{{@format_date($created_at)}} {{@format_time($created_at)}}'
+        //                  )
+        //                  ->rawColumns([1])
+        //                  ->make(false);
     }
 }

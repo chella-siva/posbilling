@@ -191,8 +191,6 @@
                   {{ $purchase_line->product->sku }}
                  @endif
               </td>
-
-              
               @if($purchase->type == 'purchase_order')
                 <td>
                   <span class="display_currency" data-is_quantity="true" data-currency_symbol="false">{{ $purchase_line->quantity - $purchase_line->po_quantity_purchased }}</span> @if(!empty($purchase_line->actual_name)) {{$purchase_line->sub_unit->actual_name}} @else {{$purchase_line->product->unit->actual_name}} @endif

@@ -92,6 +92,7 @@
 		//dataTable(memos)
 		var documents = $(".documents").DataTable({
 			processing: true,
+			fixedHeader:false,
 			ajax: "/essentials/document"+'?type=memos',
 			columns: [
 						{data: "name", name:"documents.name"},

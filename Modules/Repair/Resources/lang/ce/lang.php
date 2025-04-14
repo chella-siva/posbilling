@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => '上传工作表文档',
     'upload_docs' => '上传文档',
     'document' => '文档',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => '此设置仅适用于打印格式2的工作表',
+    'version_info' => '维修模块版本 - <code> :version </code>',
 ];

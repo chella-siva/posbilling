@@ -15,6 +15,7 @@ class InstallController extends Controller
     {
         $this->module_name = 'productcatalogue';
         $this->appVersion = config('productcatalogue.module_version');
+        $this->module_display_name = 'Product Catalogue';
     }
 
     /**
@@ -40,9 +41,12 @@ class InstallController extends Controller
         }
 
         $action_url = action([\Modules\ProductCatalogue\Http\Controllers\InstallController::class, 'install']);
-
+        $intruction_type = 'cc'; 
+        $action_type = 'install';
+        $module_display_name = $this->module_display_name;
         return view('install.install-module')
-            ->with(compact('action_url'));
+            ->with(compact('action_url', 'intruction_type', 'action_type', 'module_display_name'));
+
     }
 
     /**

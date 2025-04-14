@@ -50,7 +50,11 @@ class TaxonomyController extends Controller
 
             $business_id = request()->session()->get('user.business_id');
 
-               $category = Category::where('business_id', $business_id)
+            // $category = Category::where('business_id', $business_id)
+            //                 ->where('category_type', $category_type)
+            //                 ->select(['name', 'short_code', 'description', 'id', 'parent_id']);
+
+            $category = Category::where('business_id', $business_id)
             ->where('category_type', $category_type)
             ->select(['name', 'short_code', 'description', 'id', 'parent_id'])
             ->get(); // Fetch all categories first
@@ -70,7 +74,8 @@ class TaxonomyController extends Controller
         
         $sortedCategories = sortCategories($category); // Sort categories hierarchically
         
-        return Datatables::of(collect($sortedCategories)) // Use sorted categories in Datatables
+
+            return Datatables::of($sortedCategories)
                 ->addColumn(
                     'action', function ($row) use ($can_edit, $can_delete, $category_type) {
                         $html = '';

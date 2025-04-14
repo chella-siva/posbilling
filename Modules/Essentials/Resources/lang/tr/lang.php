@@ -291,4 +291,11 @@ return [
     'days_present' => 'Jours Présent',
     'days_absent' => 'Jours Absent',
     'attendance_report_for' => 'Rapport de présence pour',
+    'edit_knowledge_base' => 'Bilgi Tabanını Düzenle',
+    'delete_knowledge_base' => 'Bilgi Tabanını Sil',
+    'leave_taken' => 'Kullanılan İzin',
+    'leave_left' => 'Kalan İzin',
+    'leave_applied' => 'Başvurulan İzin (mevcut)',
+    'approve_additional_leave_text' => "Bu izin talebini onaylamanın, bu izin türü kapsamında bu çalışanın izin için izin verilen maksimum sınırı aşacağını anlıyorum.",
+    'version_info' => 'Essentials ve HRM modülü sürümü - <code> :version </code>',
 ];

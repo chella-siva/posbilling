@@ -314,4 +314,12 @@ return [
     'days_present' => 'Días Presente',
     'days_absent' => 'Días Ausente',
     'attendance_report_for' => 'Informe de asistencia para',
+    'edit_knowledge_base' => 'Editar Base de Conocimiento',
+    'delete_knowledge_base' => 'Eliminar Base de Conocimiento',
+    'leave_taken' => 'Permiso tomado',
+    'leave_left' => 'Permiso restante',
+    'leave_applied' => 'Permiso aplicado (actual)',
+    'approve_additional_leave_text' => "Entiendo que aprobar esta solicitud de permiso excedería el límite máximo permitido para la licencia de este empleado bajo este tipo de permiso.",
+    'version_info' => 'Versión del módulo Essentials y HRM - <code> :version </code>'
 ];
+

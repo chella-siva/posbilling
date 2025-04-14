@@ -492,7 +492,7 @@
                             @endif
 						</td>
 						<td class="text-center">
-							{{$line['unit_price_before_discount']}} 
+							{{$line['unit_price_inc_tax']}} 
 						</td>
 						@if(!empty($receipt_details->discounted_unit_price_label))
 						<td class="text-right">
@@ -591,6 +591,9 @@
 				@endforeach
 			@endif
 		</table>
+		 @if(!empty($receipt_details->signature_image))
+						<img style="max-height: 100px; width: auto;" src="{{$receipt_details->signature_image}}" class="img img-responsive center-block">
+				    	@endif
 		<b class="pull-left">{{__('lang_v1.authorized_signatory')}}</b>
 	</div>
 

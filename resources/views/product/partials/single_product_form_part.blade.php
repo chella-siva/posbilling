@@ -48,7 +48,7 @@
             {!! Form::text('single_dsp_inc_tax', $default, ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
           </td>
           <td> 
-          {!! Form::text('single_mrp', $default, ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'single_mrp', 'required']); !!}
+          {!! Form::text('single_mrp', $default, ['class' => 'form-control input-sm mrp input_number', 'placeholder' => 'Mrp', 'id' => 'single_mrp']); !!}
 
         </td>
           @if(empty($quick_add))

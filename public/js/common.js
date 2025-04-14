@@ -45,7 +45,7 @@ $(document).ready(function () {
 
     //Toastr setting
     toastr.options.preventDuplicates = true;
-    toastr.options.timeOut = '3000';
+    toastr.options.timeOut = '1000';
 
     //Play notification sound on success, error and warning
     toastr.options.onShown = function () {

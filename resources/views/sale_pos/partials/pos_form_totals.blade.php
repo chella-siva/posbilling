@@ -10,8 +10,8 @@
 				</td>
 			</tr>
 			<tr>
-				@if(!Gate::check('disable_discount') || auth()->user()->can('superadmin') || auth()->user()->can('admin'))
-					<td>
+				
+					<td @if(!Gate::check('disable_discount') || auth()->user()->can('superadmin') || auth()->user()->can('admin')) class="" @else class="hide" @endif>
 						<b class="tw-text-base md:tw-text-sm tw-font-bold">
 							@if($is_discount_enabled)
 								@lang('sale.discount')
@@ -39,7 +39,7 @@
 								</span>
 						</b> 
 					</td>
-				@endif
+				
 				<td class="@if($pos_settings['disable_order_tax'] != 0) hide @endif">
 					<span class="tw-text-base md:tw-text-sm tw-font-semibold">
 						<b class="tw-text-base md:tw-text-sm tw-font-bold">@lang('sale.order_tax')(+): @show_tooltip(__('tooltip.sale_tax'))</b>

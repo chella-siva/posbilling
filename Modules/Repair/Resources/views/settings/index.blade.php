@@ -89,6 +89,9 @@
             </div>
         </div>
     </div>
+    <div class="col-xs-12">
+        <p class="help-block"><i>{!! __('repair::lang.version_info', ['version' => $module_version]) !!}</i></p>
+    </div>
 </section>
 @stop
 @section('javascript')

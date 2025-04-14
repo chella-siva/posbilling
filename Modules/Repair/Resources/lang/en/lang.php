@@ -206,4 +206,6 @@ return [
     'device_info' => 'Device Info',
     'imei_sr_no' => 'IMEI/Serial No.',
     'brand_model' => 'Brand/Model',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'This setting applies Job Sheet to Print Format 2 only',
+    'version_info' => 'Repair module version - <code> :version </code>',
 ];

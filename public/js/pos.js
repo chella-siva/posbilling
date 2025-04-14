@@ -224,8 +224,8 @@ $(document).ready(function() {
                     }
 
                     var is_draft=false;
-                    if($('input#status') && ($('input#status').val()=='quotation' || 
-                    $('input#status').val()=='draft')) {
+                    if($('#status') && ($('#status').val()=='quotation' || 
+                    $('#status').val()=='draft')) {
                         var is_draft=true;
                     }
 
@@ -251,8 +251,9 @@ $(document).ready(function() {
                     for_so = true;
                 }
                 var is_draft=false;
-                if($('input#status') && ($('input#status').val()=='quotation' || 
-                $('input#status').val()=='draft')) {
+                
+                if($('#status') && ($('#status').val()=='quotation' || 
+                $('#status').val()=='draft')) {
                     var is_draft=true;
                 }
 
@@ -300,9 +301,10 @@ $(document).ready(function() {
 
     //Update line total and check for quantity not greater than max quantity
     $('table#pos_table tbody').on('change', 'input.pos_quantity', function() {
-        if (sell_form_validator) {
-            sell_form.valid();
-        }
+        // comment line becouse it validate form at increment and decrement item
+        // if (sell_form_validator) {
+        //     sell_form.valid();
+        // }
         if (pos_form_validator) {
             pos_form_validator.element($(this));
         }
@@ -1628,7 +1630,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                     qty_element.change();
 
                     round_row_to_iraqi_dinnar($(this));
-                    toastr.success('Product added'); 
+
                     $('input#search_product')
                         .focus()
                         .select();
@@ -1674,9 +1676,18 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
         }
 
         var is_draft=false;
-        if($('input#status') && ($('input#status').val()=='quotation' || 
-        $('input#status').val()=='draft')) {
+        if($('#status') && ($('#status').val()=='quotation' || 
+        $('#status').val()=='draft')) {
             is_draft=true;
+        }
+
+        var is_serial_no = false;
+
+        if (
+            $('input[name="is_serial_no"]').length > 0 &&
+            $('input[name="is_serial_no"]').val() == 1
+        ) {
+            is_serial_no = true;
         }
         
         $.ajax({
@@ -1687,6 +1698,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                 product_row: product_row,
                 customer_id: customer_id,
                 is_direct_sell: is_direct_sell,
+                is_serial_no: is_serial_no,
                 price_group: price_group,
                 purchase_line_id: purchase_line_id,
                 weighing_scale_barcode: weighing_scale_barcode,
@@ -1744,9 +1756,8 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
 
                     //scroll bottom of items list
                     $(".pos_product_div").animate({ scrollTop: $('.pos_product_div').prop("scrollHeight")}, 1000);
-                    toastr.success('Product added'); 
                 } else {
-                        toastr.error(result.msg);
+                    toastr.error(result.msg);
                     $('input#search_product')
                         .focus()
                         .select();
@@ -1758,6 +1769,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
 
 //Update values for each row
 function pos_each_row(row_obj) {
+      
     var unit_price = __read_number(row_obj.find('input.pos_unit_price'));
 
     var discounted_unit_price = calculate_discounted_unit_price(row_obj);
@@ -1789,7 +1801,11 @@ function pos_total_row() {
     $('table#pos_table tbody tr').each(function() {
         total_quantity = total_quantity + __read_number($(this).find('input.pos_quantity'));
     });
-
+        var audio = $('#notif-audio')[0];
+        if (audio !== undefined) {
+            audio.currentTime = 0; // Reset the audio to the beginning
+            audio.play();
+        }
     //updating shipping charges
     $('span#shipping_charges_amount').text(
         __currency_trans_from_en(__read_number($('input#shipping_charges_modal')), false)
@@ -1802,6 +1818,13 @@ function pos_total_row() {
     //$('span.unit_price_total').html(unit_price_total);
     $('span.price_total').html(__currency_trans_from_en(price_total, false));
     calculate_billing_details(price_total);
+
+    if (
+        $('input[name="is_serial_no"]').length > 0 &&
+        $('input[name="is_serial_no"]').val() == 1
+    ) {
+        update_serial_no();
+    }
 }
 
 function get_subtotal() {
@@ -3177,3 +3200,13 @@ $(document).on('change', '#res_waiter_id', function(e){
         
     }
 })
+
+// update serial number of product item
+function update_serial_no(){
+    $('.product_row').each(function (index) {
+        // Add the serial number to the first <td> of each row (index + 1 to start from 1)
+        if ($(this).find('td:first').hasClass('serial_no')) {
+            $(this).find('td:first').text(index + 1);
+        }
+    });
+}

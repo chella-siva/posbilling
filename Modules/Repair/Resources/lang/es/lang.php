@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'Upload worksheet documents',
     'upload_docs' => 'Upload documents',
     'document' => 'Document',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Esta configuración se aplica solo a la Hoja de Trabajo en el Formato de Impresión 2',
+    'version_info' => 'Versioni i modulit të riparimit - <code> :version </code>' 
 ];

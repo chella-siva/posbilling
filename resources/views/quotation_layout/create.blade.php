@@ -676,6 +676,21 @@
           </div>
         </div>
         
+          <div class="col-sm-3">
+          <div class="form-group">
+              <div class="checkbox">
+                <label>{!! Form::checkbox('show_signature', 1, false, ['class' => 'input-icheck']); !!} Show Signature</label>
+              </div>
+          </div>
+        </div>
+        
+         <div class="col-sm-3">
+            <div class="form-group">
+                {!! Form::label('signature_image', 'Signature Image:') !!}
+                {!! Form::file('signature_image', ['class' => 'form-control', 'placeholder' => 'signature image']) !!}
+            </div>
+        </div>
+        
         <div class="col-sm-12">
           <h4>@lang('lang_v1.product_details_to_be_shown'):</h4>
         </div>

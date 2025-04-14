@@ -78,6 +78,7 @@
             holidays_table = $('#holidays_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     "url": "{{action([\Modules\Essentials\Http\Controllers\EssentialsHolidayController::class, 'index'])}}",
                     "data" : function(d) {

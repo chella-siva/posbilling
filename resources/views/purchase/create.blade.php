@@ -252,7 +252,7 @@
 			<div class="col-sm-12">
 				<div class="table-responsive">
 					<table class="table table-condensed table-bordered table-th-green text-center table-striped" id="purchase_entry_table">
-						<thead>
+					<thead>
 							<tr>
 								<th>#</th>
 								<th class="min_width200">@lang( 'product.product_name' )</th>

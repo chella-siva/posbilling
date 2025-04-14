@@ -290,4 +290,11 @@ return[
     'days_present' => 'Hari Hadir',
     'days_absent' => 'Hari Absen',
     'attendance_report_for' => 'Laporan Kehadiran untuk',
+    'edit_knowledge_base' => 'Edit Basis Pengetahuan',
+    'delete_knowledge_base' => 'Hapus Basis Pengetahuan',
+    'leave_taken' => 'Cuti Diambil',
+    'leave_left' => 'Cuti Tersisa',
+    'leave_applied' => 'Cuti yang diterapkan (saat ini)',
+    'approve_additional_leave_text' => "Saya mengerti bahwa menyetujui permintaan cuti ini akan melebihi batas maksimum yang diizinkan untuk cuti karyawan ini dalam jenis cuti ini.",
+    'version_info' => 'Versi modul Essentials dan HRM - <code> :version </code>',
 ];

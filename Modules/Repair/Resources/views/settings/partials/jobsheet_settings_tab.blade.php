@@ -6,6 +6,7 @@ $contact_custom_fields = !empty($jobsheet_pdf_settings['contact_custom_fields'])
 <div class="row">
     <div class="col-sm-12">
         <h3>@lang('repair::lang.job_sheet_pdf'):</h3>
+        <code>@lang('repair::lang.this_setting_applies_job_sheet_to_print_format_2_only')</code>
     </div>
 
     <div class="col-sm-12">

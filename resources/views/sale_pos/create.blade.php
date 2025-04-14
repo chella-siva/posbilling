@@ -21,6 +21,7 @@
             $pos_settings['disable_image'] = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
             $pos_settings['disable_lotandexp'] = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;
 
+            
             $is_discount_enabled = $pos_settings['disable_discount'] != 1 ? true : false;
             $is_mrp_enabled = $pos_settings['disable_mrp'] != 1 ? true : false;
             $is_stock_enabled = $pos_settings['disable_stock'] != 1 ? true : false;

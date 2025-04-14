@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'Încărcați documente din foaia de job',
     'upload_docs' => 'Încărcați documente',
     'document' => 'Document',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Această setare se aplică doar pentru Foaia de lucru în Formatul de tipărire 2',
+    'version_info' => '维修模块版本 - <code> :version </code>',
 ];

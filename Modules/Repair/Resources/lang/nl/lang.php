@@ -284,4 +284,6 @@ return [
     'upload_job_sheet_docs' => 'Upload job sheet documenten',
     'upload_docs' => 'Upload documenten',
     'document' => 'Document',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Deze instelling geldt alleen voor de werkblad in afdrukformaat 2',
+    'version_info' => 'Reparatiemoduleversie - <code> :version </code>',
 ];

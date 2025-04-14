@@ -1364,7 +1364,6 @@ $(document).ready(function() {
         init_tinymce('footer_text');
     }
 
-
     if ($('#bank_details').length) {
         init_tinymce('bank_details');
     }
@@ -1926,6 +1925,25 @@ $(document).ready(function() {
             }
         });
     }
+    
+      if ($('form#add_pos_layout_form').length > 0) {
+        $('select#design').change(function() {
+            if ($(this).val() == 'columnize-taxes') {
+                $('div#columnize-taxes').removeClass('hide');
+                $('div#columnize-taxes')
+                    .find('input')
+                    .removeAttr('disabled', 'false');
+            } else {
+                $('div#columnize-taxes').addClass('hide');
+                $('div#columnize-taxes')
+                    .find('input')
+                    .attr('disabled', 'true');
+            }
+        });
+    }
+    
+    
+
 
     $(document).on('keyup', 'form#unit_add_form input#actual_name', function() {
         $('form#unit_add_form span#unit_name').text($(this).val());
@@ -2030,25 +2048,20 @@ $(document).ready(function() {
         placeholder: LANG.search,
     });
 
-    $('#search_settings').change(function(){
-        // Get label position and add active class to the tab
+    $('#search_settings').change( function(){
+        //Get label position and add active class to the tab
         var label_index = $(this).val();
         var label = label_objects[label_index];
         $('.pos-tab-content.active').removeClass('active');
         var tab_content = label.closest('.pos-tab-content');
         tab_content.addClass('active');
-        var tab_index = $('.pos-tab-content').index(tab_content);
+        tab_index = $('.pos-tab-content').index(tab_content);
         $('.list-group-item.active').removeClass('active');
         $('.list-group-item').eq(tab_index).addClass('active');
-            
-        // Scroll the container to the target element
-        var container = $('#scrollable-container');
-        var targetOffset = label.offset().top + container.scrollTop() - container.offset().top;
-        
-        container.animate({
-            scrollTop: targetOffset - 100 // Adjust offset as needed
+        //Highlight the label for three seconds
+        $([document.documentElement, document.body]).animate({
+            scrollTop: label.offset().top - 100
         }, 500);
-        
         label.css('background-color', 'yellow');
         setTimeout(function(){ 
             label.css('background-color', ''); 
@@ -2636,19 +2649,6 @@ $(document).on('click', 'button.activate-deactivate-location', function(){
     });
 });
 
-function playNotificationSound() {
-    let sound = document.getElementById('notification_sound');
-    if (sound) {
-        sound.play().catch(error => {
-            console.log("Sound play error: ", error);
-            document.addEventListener("click", () => {
-                sound.play();
-            }, { once: true });
-        });
-    }
-}
-
-
 function getTotalUnreadNotifications(){
     if ($('span.notifications_count').length) {
         var href = '/get-total-unread';
@@ -2659,13 +2659,6 @@ function getTotalUnreadNotifications(){
             success: function(data) {
                 if (data.total_unread != 0 ) {
                     $('span.notifications_count').text(data.total_unread);
-                    let newCount = response.total_unread;
-                    let oldCount = parseInt($('.notifications_count').text()) || 0;
-    
-                    if (newCount > oldCount) {
-                        playNotificationSound();
-                    }
-
                 }
                 if (data.notification_html) {
                     $('.view_modal').html(data.notification_html);

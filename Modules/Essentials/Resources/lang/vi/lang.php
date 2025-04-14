@@ -290,4 +290,11 @@ return [
     'days_present' => 'Ngày Có Mặt',
     'days_absent' => 'Ngày Vắng',
     'attendance_report_for' => 'Báo cáo Điểm danh cho',
+    'edit_knowledge_base' => 'Chỉnh sửa cơ sở tri thức',
+    'delete_knowledge_base' => 'Xóa cơ sở tri thức',
+    'leave_taken' => 'Nghỉ phép đã dùng',
+    'leave_left' => 'Nghỉ phép còn lại',
+    'leave_applied' => 'Nghỉ phép đã đăng ký (hiện tại)',
+   'approve_additional_leave_text' => "Tôi hiểu rằng việc phê duyệt yêu cầu nghỉ phép này sẽ vượt quá giới hạn tối đa được phép đối với nhân viên này theo loại nghỉ phép này.",
+    'version_info' => 'Phiên bản mô-đun Essentials và HRM - <code> :version </code>',
 ];

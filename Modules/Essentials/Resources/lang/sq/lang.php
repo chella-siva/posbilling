@@ -315,4 +315,11 @@ return [
     'days_present' => 'Ditë të Pranisë',
     'days_absent' => 'Ditë të Munguar',
     'attendance_report_for' => 'Raporti i pranisë për',
+    'edit_knowledge_base' => 'Redakto Bazën e Njohurive',
+    'delete_knowledge_base' => 'Fshi Bazën e Njohurive',
+    'leave_taken' => 'Leje e marrë',
+    'leave_left' => 'Leje e mbetur',
+    'leave_applied' => 'Leje e aplikuar (aktuale)',
+    'approve_additional_leave_text' => "E kuptoj që miratimi i këtij kërkese për leje do të tejkalojë kufirin maksimal të lejuar për pushimin e këtij punonjësi sipas këtij lloji të lejes.",
+    'version_info' => 'Versioni i modulit Essentials dhe HRM - <code> :version </code>',
 ];

@@ -14,7 +14,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'NammaBilling'),
+    'name' => env('APP_NAME', 'ultimatePOS'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,8 +27,8 @@ return [
     |
     */
 
-    // 'env' => env('APP_ENV', 'production'),
-    'env' => env('APP_ENV', 'development'),
+    // 'env' => env('APP_ENV', 'development'),
+    'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------

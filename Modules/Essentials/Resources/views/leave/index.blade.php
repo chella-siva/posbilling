@@ -86,8 +86,8 @@
 <!-- /.content -->
 <div class="modal fade" id="add_leave_modal" tabindex="-1" role="dialog" 
         aria-labelledby="gridSystemModalLabel"></div>
-
-@include('essentials::leave.change_status_modal')
+ <div class="modal fade change_status_modal" id="change_status_modal"  tabindex="-1" role="dialog" 
+        aria-labelledby="gridSystemModalLabel"></div>
 
 @endsection
 
@@ -97,6 +97,7 @@
             leaves_table = $('#leave_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     "url": "{{action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'index'])}}",
                     "data" : function(d) {
@@ -188,10 +189,24 @@
 
         $(document).on('click', 'a.change_status', function(e) {
             e.preventDefault();
-            $('#change_status_modal').find('select#status_dropdown').val($(this).data('orig-value')).change();
-            $('#change_status_modal').find('#leave_id').val($(this).data('leave-id'));
-            $('#change_status_modal').find('#status_note').val($(this).data('status_note'));
-            $('#change_status_modal').modal('show');
+            // $('#change_status_modal').find('select#status_dropdown').val($(this).data('orig-value')).change();
+            // $('#change_status_modal').find('#leave_id').val($(this).data('leave-id'));
+            // $('#change_status_modal').find('#status_note').val($(this).data('status_note'));
+            // $('#change_status_modal').modal('show');
+            $.ajax({
+                method: 'get',
+                url: '/hrm/change-leave-status',
+                dataType: 'html',
+                data:{
+                    id : $(this).data('leave-id'),
+                },
+                success: function(result) {
+                        $('.change_status_modal')
+                            .html(result)
+                            .modal('show');
+                            is_additional_hide_show();
+                },
+            });
         });
 
         $(document).on('submit', 'form#change_status_form', function(e) {
@@ -259,5 +274,21 @@
                 },
             });
         }
+
+        function is_additional_hide_show(){
+
+            var status = $('#status_dropdown').val();
+                if(status == 'approved'){
+                    $('.is_additional').show();
+                    $('#is_additional').prop('required', true);
+                }else{
+                    $('.is_additional').hide();
+                    $('#is_additional').prop('required', false);
+                }
+        }
+
+        $(document).on( 'change', '#status_dropdown', function() {
+            is_additional_hide_show();
+        });
     </script>
 @endsection

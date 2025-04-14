@@ -291,5 +291,12 @@ return [
     'days_present' => '到场天数',
     'days_absent' => '缺席天数',
     'attendance_report_for' => '出勤报告，适用于',
+    'edit_knowledge_base' => '编辑知识库',
+    'delete_knowledge_base' => '删除知识库',
+    'leave_taken' => '已用假期',
+    'leave_left' => '剩余假期',
+    'leave_applied' => '已申请假期（当前）',
+    'approve_additional_leave_text' => "我理解批准此请假请求将超出该员工在此请假类型下的最大允许限制。",
+    'version_info' => 'Essentials和HRM模块版本 - <code> :version </code>',
 ];
 

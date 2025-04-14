@@ -205,6 +205,7 @@
             payrolls_table = $('#payrolls_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     url: "{{action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])}}",
                     data: function (d) {
@@ -350,6 +351,7 @@
                 payroll_group_table = $('#payroll_group_table').DataTable({
                         processing: true,
                         serverSide: true,
+                        fixedHeader:false,
                         ajax: "{{action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'payrollGroupDatatable'])}}",
                         aaSorting: [[6, 'desc']],
                         columns: [

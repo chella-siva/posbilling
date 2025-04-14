@@ -34,7 +34,7 @@ return [
     'document_size_limit' => '200000', //in Bytes,
     'image_size_limit' => '200000', //in Bytes
 
-    'asset_version' => 600,
+    'asset_version' => 610,
 
     'disable_purchase_in_other_currency' => true,
 
@@ -53,11 +53,12 @@ return [
     'new_notification_count_interval' => 30, //Interval to check for new notifications in seconds;Default is 60sec
 
     'administrator_usernames' => env('ADMINISTRATOR_USERNAMES'),
+    'SHOW_REPAIR_STATUS_LOGIN_SCREEN' => env('SHOW_REPAIR_STATUS_LOGIN_SCREEN', true),
     'allow_registration' => env('ALLOW_REGISTRATION', true),
     'app_title' => env('APP_TITLE'),
 
-    'google_recaptcha_key' => env('6Lf5uTEqAAAAAEpw2Fq-3MgtlxQxqJ4HcG1WVLUr'),
-    'google_recaptcha_secret' => env('6Lf5uTEqAAAAAOn_QZ4fnyklgEtnwimKaZGr9aV9'),
+    'google_recaptcha_key' => env('GOOGLE_RECAPTCHA_KEY'),
+    'google_recaptcha_secret' => env('GOOGLE_RECAPTCHA_SECRET'),
     'enable_recaptcha' => env('ENABLE_RECAPTCHA', false),
     
     'mpdf_temp_path' => storage_path('app/pdf'), //Temporary path used by mpdf
@@ -75,13 +76,12 @@ return [
     'show_report_606' => false,
     'show_report_607' => false,
     'whatsapp_base_url' => 'https://wa.me',
-    // 'whatsapp_base_url' => 'https://wa.me/919019912392',
     'enable_crm_call_log' => false,
     'enable_product_bulk_edit' => true,  //Will be depreciated in future
     'enable_convert_draft_to_invoice' => true, //Experimental beta feature.
     'enable_download_pdf' => false,         //Experimental feature
     'invoice_scheme_separator' => '-',
-    'show_payments_recovered_today' => false, //Displays payment recovered today table on dashboard
+    'show_payments_recovered_today' => true, //Displays payment recovered today table on dashboard
     'enable_b2b_marketplace' => false,
     'enable_contact_assign' => true, //Used in add/edit contacts screen
     'show_payment_type_on_contact_pay' => true,

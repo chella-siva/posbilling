@@ -149,6 +149,7 @@ class RepairController extends Controller
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
                     'contacts.name',
+                    'contacts.contact_id',
                     'transactions.payment_status',
                     'transactions.final_total',
                     'transactions.tax_amount',

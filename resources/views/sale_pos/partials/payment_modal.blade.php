@@ -132,109 +132,64 @@
                     </div>
                     <div class="col-md-4">
                         <div class="box box-solid bg-navy">
-                            <div class="box-body">
+                        <div class="box-body">
 
-                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
-                                    <div class="">
-                                        <span class="col-md-5 text-left">@lang('lang_v1.total_items'):</span>
-                                        <span class="col-md-7 text-right text-bold lead total_quantity">0</span>
-                                    </div>
-                                </div> -->
-                                
-                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
-                                    <span>
-                                        @lang('lang_v1.total_items'):
-                                    </span>
-                                    <br />
-                                    <span class="lead text-bold total_quantity">0</span>
-                                </div>
+                            <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
+                                <span>
+                                    @lang('lang_v1.total_items'):
+                                </span>
+                                <br />
+                                <span class="lead text-bold total_quantity">0</span>
+                            </div>
 
-                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base bg-red">
-                                    <div class="">
-                                        <span class="col-md-5 text-left">@lang('sale.total_payable'):</span>
-                                        <span class="col-md-7 text-right lead text-bold total_payable_span">0</span>
-                                    </div>
-                                </div>  -->
-                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-red">
-                                    <!-- <hr> -->
-                                    <span>
-                                        @lang('sale.total_payable'):
-                                    </span>
-                                    <br />
-                                    <span class="lead text-bold total_payable_span">0</span>
-                                </div>
+                            <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-red">
+                                <!-- <hr> -->
+                                <span>
+                                    @lang('sale.total_payable'):
+                                </span>
+                                <br />
+                                <span class="lead text-bold total_payable_span">0</span>
+                            </div>
 
-                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
-                                    <div class="">
-                                        <span class="col-md-5 text-left">@lang('lang_v1.total_paying'):</span>
-                                        <span class="col-md-7 text-right lead text-bold total_paying">0</span>
-                                        <input type="hidden" id="total_paying_input">
-                                    </div>
-                                </div> -->
+                            <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
+                                <!-- <hr> -->
+                                <span>
+                                    @lang('lang_v1.total_paying'):
+                                </span>
+                                <br />
+                                <span class="lead text-bold total_paying">0</span>
+                                <input type="hidden" id="total_paying_input">
+                            </div>
 
-                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base">
-                                    <!-- <hr> -->
-                                    <span>
-                                        @lang('lang_v1.total_paying'):
-                                    </span>
-                                    <br />
-                                    <span class="lead text-bold total_paying">0</span>
-                                    <input type="hidden" id="total_paying_input">
-                                </div>
+                            <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-yellow">
+                                <!-- <hr> -->
+                                <span>
+                                    @lang('lang_v1.change_return'):
+                                </span>
+                                <br />
+                                <span class="lead text-bold change_return_span">0</span>
+                                {!! Form::hidden('change_return', $change_return['amount'], [
+                                    'class' => 'form-control change_return input_number',
+                                    'required',
+                                    'id' => 'change_return',
+                                ]) !!}
+                                <!-- <span class="lead text-bold total_quantity">0</span> -->
+                                @if (!empty($change_return['id']))
+                                    <input type="hidden" name="change_return_id"
+                                        value="{{ $change_return['id'] }}">
+                                @endif
+                            </div>
 
-                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base bg-yellow">
-                                    <div class="">
-                                        <span class="col-md-5 text-left">@lang('lang_v1.change_return'):</span>
-                                        <span class="col-md-7 text-right lead text-bold change_return_span">0</span> 
-                                        {!! Form::hidden('change_return', $change_return['amount'], [
-                                            'class' => 'form-control change_return input_number',
-                                            'required',
-                                            'id' => 'change_return',
-                                        ]) !!} 
-                                        @if (!empty($change_return['id']))
-                                            <input type="hidden" name="change_return_id"
-                                                value="{{ $change_return['id'] }}">
-                                        @endif
-                                    </div>
-                                </div> -->
+                            <div class="col-md-12 mt-10 text-center tw-text-sm md:tw-text-base">
+                                <!-- <hr> -->
+                                <span>
+                                    @lang('lang_v1.balance'):
+                                </span>
+                                <br />
+                                <span class="lead text-bold balance_due">0</span>
+                                <input type="hidden" id="in_balance_due" value=0>
+                            </div>
 
-                                <div class="col-md-12 border-custom-bottom text-center tw-text-sm md:tw-text-base bg-yellow">
-                                    <!-- <hr> -->
-                                    <span>
-                                        @lang('lang_v1.change_return'):
-                                    </span>
-                                    <br />
-                                    <span class="lead text-bold change_return_span">0</span>
-                                    {!! Form::hidden('change_return', $change_return['amount'], [
-                                        'class' => 'form-control change_return input_number',
-                                        'required',
-                                        'id' => 'change_return',
-                                    ]) !!}
-                                    <!-- <span class="lead text-bold total_quantity">0</span> -->
-                                    @if (!empty($change_return['id']))
-                                        <input type="hidden" name="change_return_id"
-                                            value="{{ $change_return['id'] }}">
-                                    @endif
-                                </div>
-                                
-                                <!-- <div class="row border-custom-bottom tw-font-bold tw-text-sm md:tw-text-base">
-                                    <div class="">
-                                        <span class="col-md-5 text-left">@lang('lang_v1.balance'):</span>
-                                        <span class="col-md-7 text-right lead text-bold balance_due">0</span>
-                                        <input type="hidden" id="in_balance_due" value=0>
-                                    </div>
-                                </div> -->
-
-                                <div class="col-md-12 mt-10 text-center tw-text-sm md:tw-text-base">
-                                    <!-- <hr> -->
-                                    <span>
-                                        @lang('lang_v1.balance'):
-                                    </span>
-                                    <br />
-                                    <span class="lead text-bold balance_due">0</span>
-                                    <input type="hidden" id="in_balance_due" value=0>
-                                </div>
- 
 
                             </div>
                             <!-- /.box-body -->

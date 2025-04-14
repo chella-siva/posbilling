@@ -213,6 +213,7 @@
             attendance_table = $('#attendance_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     "url": "{{action([\Modules\Essentials\Http\Controllers\AttendanceController::class, 'index'])}}",
                     "data" : function(d) {
@@ -291,6 +292,7 @@
             shift_table = $('#shift_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: {
                     "url": "{{action([\Modules\Essentials\Http\Controllers\ShiftController::class, 'index'])}}",
                 },

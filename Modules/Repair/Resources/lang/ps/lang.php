@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'د دندې شیټ لاسوندونه اپلوډ کړئ',
     'upload_docs' => 'ډیسک اپلوډ',
     'document' => 'سند',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'دا تنظیم یوازې د چاپ فارمیټ 2 لپاره د کار پاڼه باندې پلي کیږي',
+    'version_info' => 'د ترمیم ماډل نسخه - <code> :version </code>',
 ];

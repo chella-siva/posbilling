@@ -185,4 +185,6 @@ return [
     ' upload_job_sheet_docs ' => ' Ngarko dokumentet e fletës së punës ',
     'upload_docs' => 'Ngarko dokumente',
     'document' => 'Dokumenti',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Ky cilësim zbatohet vetëm për Fletën e Punës në Format Printimi 2',
+    'version_info' => 'Versioni i modulit të riparimit - <code> :version </code>',
 ];

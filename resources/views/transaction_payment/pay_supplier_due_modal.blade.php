@@ -243,9 +243,6 @@
     </div>
 
     {!! Form::close() !!}
-    
-     <section class="invoice print_section" id="receipt_section">
-            </section>
 
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->

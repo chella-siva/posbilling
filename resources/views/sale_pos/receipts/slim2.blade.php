@@ -388,6 +388,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $savedval = 0; @endphp
                 	@forelse($receipt_details->lines as $line)
 	                    <tr class="bb-lgs" style="border-bottom:0.1px dashed #ccc !important;" >
 	                        <td class="description">
@@ -438,12 +439,21 @@
 	                        		</p>
 	                        	</div> 
 
+                        	@php
+                           $mrp = is_numeric(str_replace(',', '', $line['mrp'])) ? (float)str_replace(',', '', $line['mrp']) : 0;
+                            $unit_price = is_numeric(str_replace(',', '', $line['unit_price'])) ? (float)str_replace(',', '', $line['unit_price']) : 0;
+                            
+                            $savedval += ($mrp != 0) ? ($mrp - $unit_price) : 0;
+
+
+							@endphp
+
 	                        	<div style="display:flex; width: 100%;">
 	                        		<p class="text-left quantity m-0 bw" style="direction: ltr;width: 100%;">&nbsp;&nbsp;&nbsp;
 										<span class="pull-lefts">
 											<small>{{$line['quantity']}} 
 											@if(empty($receipt_details->hide_price))
-											x {{$line['unit_price_before_discount']}}
+											x {{$line['unit_price_inc_tax']}}
 											
 											@if(!empty($line['total_line_discount']) && $line['total_line_discount'] != 0)
 												- {{$line['total_line_discount']}}
@@ -731,6 +741,13 @@
 	            	</table>
 	            @endif
             @endif
+             @if($receipt_details->show_savedvalue == 1)
+			<div class="center-block">
+				<div class="text-center">
+					<h6>{{$receipt_details->savedvalue_lable}}: ₹ {{$savedval}}</h6>
+				</div>
+			</div>
+            @endif
 
             @if(!empty($receipt_details->additional_notes))
 	            <p class="centered" >
@@ -743,6 +760,12 @@
 				<br/>
 				<img class="center-block" src="data:image/png;base64,{{DNS1D::getBarcodePNG($receipt_details->invoice_no, 'C128', 2,30,array(39, 48, 54), true)}}">
 			@endif
+			
+			  @if($receipt_details->show_signature)
+                    @if(!empty($receipt_details->signature_image))
+                        <img style="max-height: 100px; width: auto;" src="{{$receipt_details->signature_image}}" class="img img-responsive center-block">
+                    @endif
+                @endif
 
 			@if($receipt_details->show_qr_code && !empty($receipt_details->qr_code_text))
 				<img class="center-block mt-5" src="data:image/png;base64,{{DNS2D::getBarcodePNG($receipt_details->qr_code_text, 'QRCODE')}}">

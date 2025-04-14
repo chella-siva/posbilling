@@ -14,6 +14,7 @@ use Modules\Essentials\Notifications\LeaveStatusNotification;
 use Modules\Essentials\Notifications\NewLeaveNotification;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
+use App\Business;
 
 class EssentialsLeaveController extends Controller
 {
@@ -130,7 +131,7 @@ class EssentialsLeaveController extends Controller
                     $start_date_formated = $this->moduleUtil->format_date($start_date);
                     $end_date_formated = $this->moduleUtil->format_date($end_date);
 
-                    return $start_date_formated.' - '.$end_date_formated.' ('.$diff.\Str::plural(__('lang_v1.day'), $diff).')';
+                    return $start_date_formated.' - '.$end_date_formated.' ('.$diff.' '.\Str::plural(__('lang_v1.day'), $diff).')';
                 })
                 ->editColumn('status', function ($row) {
                     $status = '<span class="label '.$this->leave_statuses[$row->status]['class'].'">'
@@ -335,9 +336,12 @@ class EssentialsLeaveController extends Controller
         try {
             $input = $request->only(['status', 'leave_id', 'status_note']);
 
+            $input['is_additional'] = $request->has('is_additional') ? $request->input('is_additional') : false;
+
             $leave = EssentialsLeave::where('business_id', $business_id)
                             ->find($input['leave_id']);
 
+            $leave->is_additional = $input['is_additional'];
             $leave->status = $input['status'];
             $leave->status_note = $input['status_note'];
             $leave->save();
@@ -449,5 +453,81 @@ class EssentialsLeaveController extends Controller
                     ->find($user_id);
 
         return view('essentials::leave.user_leave_summary')->with(compact('leaves_summary', 'leave_types', 'statuses', 'user', 'status_summary'));
+    }
+
+    public function changeLeaveStatus(Request $request) {
+
+        $business_id = request()->session()->get('user.business_id');
+
+        $current_leave = EssentialsLeave::where('business_id', $business_id)->findOrFail($request->id);
+
+        $leave_statuses = $this->leave_statuses;
+
+        $leaveCount =  $this->checkLeaveAvailability($current_leave);
+
+        $leaveType = EssentialsLeaveType::find($current_leave->essentials_leave_type_id);
+
+        return view('essentials::leave.change_status_modal', compact('leave_statuses', 'current_leave', 'leaveType', 'leaveCount'));
+    }
+
+    /**
+     * Checks the availability of leaves for a given leave type and user.
+     * 
+     * This method calculates the total days of approved leaves taken by a user within a specific period
+     * based on the leave type's count interval (month, year, or lifetime). It excludes the current leave
+     * being processed.
+     * 
+     * @param EssentialsLeave $currentLeave The current leave being processed.
+     * @return int The total days of approved leaves taken by the user within the specified period.
+     */
+    public function checkLeaveAvailability($currentLeave)
+    {
+        // Fetch the leave type associated with the current leave
+        $leaveType = EssentialsLeaveType::find($currentLeave->essentials_leave_type_id);
+    
+        if (!$leaveType) {
+            return ['status' => false, 'message' => 'Leave type not found'];
+        }
+    
+        // Initialize the leave query to filter leaves based on user, leave type, and status
+        $leaveQuery = EssentialsLeave::where('user_id', $currentLeave->user_id)
+            ->where('essentials_leave_type_id', $currentLeave->essentials_leave_type_id)
+            ->where('status', 'approved') // Assuming 'approved' status
+            ->where('id', '!=', $currentLeave->id);
+        // Determine the start date based on the leave_count_interval
+        if ($leaveType->leave_count_interval === 'month') {
+            // Count days taken only in the month of the leave's start_date
+            $leaveStartDate = \Carbon::parse($currentLeave->start_date);
+            $leaveQuery->whereMonth('start_date', $leaveStartDate->month)
+                       ->whereYear('start_date', $leaveStartDate->year);
+        } elseif ($leaveType->leave_count_interval === 'year') {
+            // Count days taken only in the financial year of the leave's start_date
+            $leaveStartDate = \Carbon::parse($currentLeave->start_date);
+            $currentYear = $leaveStartDate->year;
+    
+            // Determine the financial year start based on the business's fiscal year start month
+            $business = Business::where('id', $currentLeave->business_id)->first();
+            $start_month = $business->fy_start_month;
+
+            $financialYearStart = $leaveStartDate->month >= $start_month 
+                ? \Carbon::createFromDate($currentYear, $start_month, 1) 
+                : \Carbon::createFromDate($currentYear - 1, $start_month, 1);
+
+            // Determine the financial year end 
+            $financialYearEnd = $financialYearStart->copy()->addYear()->subDay();
+
+            $leaveQuery->where('start_date', '>=', $financialYearStart)
+                       ->where('start_date', '<=', $financialYearEnd);
+        } // No action needed if leave_count_interval is null (lifetime)
+    
+        // Sum the days of each approved leave
+        $leaveCount = $leaveQuery->get()->sum(function ($leave) {
+            // Calculate total days in each leave (end_date inclusive)
+            $start = \Carbon::parse($leave->start_date);
+            $end = \Carbon::parse($leave->end_date);
+            return $start->diffInDays($end) + 1; // +1 to include the end date
+        });
+    
+        return $leaveCount;
     }
 }

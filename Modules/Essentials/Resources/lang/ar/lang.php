@@ -315,4 +315,11 @@ return[
     'days_present' => 'أيام الحضور',
     'days_absent' => 'أيام الغياب',
     'attendance_report_for' => 'تقرير الحضور لـ',
+    'edit_knowledge_base' => 'تحرير قاعدة المعرفة',
+    'delete_knowledge_base' => 'حذف قاعدة المعرفة',
+    'leave_taken' => 'الإجازة المأخوذة',
+    'leave_left' => 'الإجازة المتبقية',
+    'leave_applied' => 'الإجازة المقدمة (الحالية)',
+    'approve_additional_leave_text' => "أفهم أن الموافقة على طلب الإجازة هذا ستتجاوز الحد الأقصى المسموح به لإجازة هذا الموظف وفقًا لهذا النوع من الإجازة.",
+    'version_info' => 'إصدار وحدة Essentials و HRM - <code> :version </code>',
 ];

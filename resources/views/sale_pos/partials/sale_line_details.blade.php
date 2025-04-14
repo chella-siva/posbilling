@@ -170,7 +170,6 @@
                         <span class="display_currency" data-currency_symbol="true">{{ $modifier->unit_price_inc_tax }}</span>
                     @endif
                 </td>
-               
                 <td>
                     @if(!empty($for_ledger))
                         @format_currency($modifier->quantity * $modifier->unit_price_inc_tax)

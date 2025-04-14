@@ -275,17 +275,21 @@
 					@endif
 	        	</div> -->
 
-				<div style="vertical-align: top;"><span>
-	        		{{$receipt_details->customer_label ?? ''}}
-					</span>
-				</div>
-	        	 <div style="width:100%; !important;">
-	        		@if(!empty($receipt_details->customer_info))
-	        			<div class="bw" style="line-height:10px;">
-						{!! $receipt_details->customer_info !!}
-						</div>
-					@endif
-	        	</div>
+			<table style="width: 100%;">
+    <tr>
+        <td style="vertical-align: top;">
+            <span>{{$receipt_details->customer_label ?? ''}}</span>
+        </td>
+        <td style="vertical-align: top; text-align: right;">
+            @if(!empty($receipt_details->customer_info))
+                <div class="bw" style="line-height: 10px;">
+                    {!! $receipt_details->customer_info !!}
+                </div>
+            @endif
+        </td>
+    </tr>
+</table>
+
 
 
 	        </div>
@@ -427,11 +431,9 @@
                         <th class="quantity text-center" width="8%">
                         	{{$receipt_details->table_qty_label}}
                         </th>
-						@if($receipt_details->show_mrp != 0)
 						<th class="mrp text-center" width="8%">
                         	MRP
                         </th>
-						@endif
                         @if(empty($receipt_details->hide_price))
                         <th class="unit_price text-center" width="8%">
                         	{{$receipt_details->table_unit_price_label}}
@@ -506,15 +508,19 @@
                             	{{$line['quantity']}} x {{$line['base_unit_multiplier']}} = {{$line['orig_quantity']}} {{$line['base_unit_name']}}
                             </small>
                             @endif</td>
-							@if($receipt_details->show_mrp != 0)
 							<td class= "text-center"> {{$line['mrp']}} </td>
-							@endif
 							@php
-                            $savedval += (is_numeric($line['mrp']) ? (float)$line['mrp'] : 0) - (is_numeric($line['unit_price_before_discount']) ? (float)$line['unit_price_before_discount'] : 0);
+                           $mrp = is_numeric(str_replace(',', '', $line['mrp'])) ? (float)str_replace(',', '', $line['mrp']) : 0;
+                            $unit_price = is_numeric(str_replace(',', '', $line['unit_price'])) ? (float)str_replace(',', '', $line['unit_price']) : 0;
+                            
+                            $savedval += ($mrp != 0) ? ($mrp - $unit_price) : 0;
+
+
 							@endphp
 
+
 	                        @if(empty($receipt_details->hide_price))
-	                        <td class="unit_price text-center">{{$line['unit_price_before_discount']}} </td>
+	                        <td class="unit_price text-center">{{$line['unit_price_inc_tax']}} </td>
 
 	                        @if(!empty($receipt_details->discounted_unit_price_label))
 								<td class="text-center">
@@ -786,6 +792,14 @@
 			<div class="center-block">
 				<div class="text-center">
 					<h6>{{$receipt_details->savedvalue_lable}}: ₹ {{$savedval}}</h6>
+				</div>
+			</div>
+            @endif
+            
+            @if($receipt_details->show_signature == 1)
+			<div class="center-block">
+				<div class="text-center">
+			        <img style="max-height: 60px; width: auto; margin:0 auto;" src="{{$receipt_details->signature_image}}" alt="Logo">
 				</div>
 			</div>
             @endif

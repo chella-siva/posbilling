@@ -93,6 +93,7 @@
 		//document dataTable
 		var documents = $(".documents").DataTable({
 			processing: true,
+			fixedHeader:false,
 			ajax: "/essentials/document"+'?type=document',
 			columns: [
 						{data: "name", name:"documents.name"},

@@ -185,4 +185,6 @@ return [
     ' upload_job_sheet_docs ' => ' Unggah dokumen lembar kerja ',
     'upload_docs' => 'Unggah dokumen',
     'document' => 'Dokumen',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Pengaturan ini hanya berlaku untuk Lembar Kerja pada Format Cetak 2',
+    'version_info' => 'Versi modul perbaikan - <code> :version </code>',
 ];

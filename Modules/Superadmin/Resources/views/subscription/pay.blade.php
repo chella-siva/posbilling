@@ -12,12 +12,8 @@
 	<div class="box box-success">
         <div class="box-header">
             <h3 class="box-title">@lang('superadmin::lang.pay_and_subscribe')</h3>
-        </div>
 
-        <div class="box-body">
-    		<div class="col-md-8">
-        		<h3>
-					@php 
+			@php 
 						$baseAmount = $package->price;
 						$gstRate = 18; 
 						$gstAmount = $baseAmount * ($gstRate / 100);
@@ -29,7 +25,11 @@
 					
 					<span style="font-size: 12px;"> GST 18% -</span>
 					<span style="font-size: 12px;" class="display_currency" data-currency_symbol="true"> {{$gstAmount}}</span><br/>
+        </div>
 
+        <div class="box-body">
+    		<div class="col-md-8">
+        		<h3>
         			{{$package->name}}
 
         			(<span class="display_currency" data-currency_symbol="true">{{$payableamnt}}</span>

@@ -80,6 +80,7 @@
                                         @endif
                                         <th>@lang('lang_v1.added_by')</th>
                                         <th>@lang('sale.customer_name')</th>
+                                        <th>@lang('lang_v1.contact_id')</th>
                                         <th>@lang('product.brand')</th>
                                         <th>@lang('repair::lang.device_model')</th>
                                         <th>@lang('repair::lang.serial_no')</th>
@@ -96,9 +97,9 @@
                                     <tr class="bg-gray font-17 footer-total text-center">
                                         <td
                                             @if(in_array('service_staff' ,$enabled_modules))
-                                                colspan="11"
+                                                colspan="12"
                                             @else
-                                                colspan="10"
+                                                colspan="11"
                                             @endif>
                                                 <strong>@lang('sale.total'):</strong>
                                         </td>
@@ -152,6 +153,7 @@
                                         @endif
                                         <th>@lang('lang_v1.added_by')</th>
                                         <th>@lang('sale.customer_name')</th>
+                                        <th>@lang('lang_v1.contact_id')</th>
                                         <th>@lang('product.brand')</th>
                                         <th>@lang('repair::lang.device_model')</th>
                                         <th>@lang('repair::lang.serial_no')</th>
@@ -168,9 +170,9 @@
                                     <tr class="bg-gray font-17 footer-total text-center">
                                         <td
                                             @if(in_array('service_staff' ,$enabled_modules))
-                                                colspan="11"
+                                                colspan="12"
                                             @else
-                                                colspan="10"
+                                                colspan="11"
                                             @endif>
                                                 <strong>@lang('sale.total'):</strong>
                                         </td>
@@ -266,6 +268,7 @@ $(document).ready( function(){
             @endif
             { data: 'added_by', name: 'added_by', orderable: false, searchable: false},
             { data: 'name', name: 'contacts.name'},
+            { data: 'contact_id', name: 'contacts.contact_id'},
             { data: 'brand', name: 'b.name'},
             { data: 'device_model', name: 'rdm.name'},
             { data: 'repair_serial_no', name: 'transactions.repair_serial_no'},
@@ -335,6 +338,7 @@ $(document).ready( function(){
             @endif
             { data: 'added_by', name: 'added_by', orderable: false, searchable: false},
             { data: 'name', name: 'contacts.name'},
+            { data: 'contact_id', name: 'contacts.contact_id'},
             { data: 'brand', name: 'b.name'},
             { data: 'device_model', name: 'rdm.name'},
             { data: 'repair_serial_no', name: 'transactions.repair_serial_no'},

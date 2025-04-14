@@ -51,6 +51,7 @@
             leave_type_table = $('#leave_type_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: "{{action([\Modules\Essentials\Http\Controllers\EssentialsLeaveTypeController::class, 'index'])}}",
                 columnDefs: [
                     {

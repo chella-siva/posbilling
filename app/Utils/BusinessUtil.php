@@ -8,16 +8,17 @@ use App\BusinessLocation;
 use App\Contact;
 use App\Currency;
 use App\InvoiceLayout;
-use App\PosLayout;
-use App\QuotationLayout;
 use App\InvoiceScheme;
 use App\NotificationTemplate;
+use App\QuotationLayout;
 use App\Printer;
 use App\Unit;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\VariationLocationDetails;
+use App\PosLayout;
+
 
 
 class BusinessUtil extends Util
@@ -29,6 +30,42 @@ class BusinessUtil extends Util
      * @param  int  $user_id
      * @return bool
      */
+
+     public function posLayout($business_id, $layout_id = null)
+     {
+         $layout = null;
+         if (! empty($layout_id)) {
+             $layout = PosLayout::find($layout_id);
+         }
+ 
+         //If layout is not found (deleted) then get the default layout for the business
+         if (empty($layout)) {
+             $layout = PosLayout::where('business_id', $business_id)
+                         ->where('is_default', 1)
+                         ->first();
+         }
+         //$output = []
+         return $layout;
+     }
+
+     public function QuotationLayout($business_id, $layout_id = null)
+     {
+         $layout = null;
+         if (! empty($layout_id)) {
+             $layout = QuotationLayout::find($layout_id);
+         }
+ 
+         //If layout is not found (deleted) then get the default layout for the business
+         if (empty($layout)) {
+             $layout = QuotationLayout::where('business_id', $business_id)
+                         ->where('is_default', 1)
+                         ->first();
+         }
+         //$output = []
+         return $layout;
+     }
+
+    
     public function newBusinessDefaultResources($business_id, $user_id)
     {
         $user = User::find($user_id);
@@ -90,13 +127,13 @@ class BusinessUtil extends Util
             'show_country' => 1,
             'highlight_color' => '#000000',
             'footer_text' => '',
-            'bank_details' => '',
             'is_default' => 1,
+            'bank_details' => '',
+            'opening_bal_label' => 'Opening Balance',
             'business_id' => $business_id,
             'invoice_heading_not_paid' => '',
             'invoice_heading_paid' => '',
             'total_due_label' => 'Total Due',
-            'opening_bal_label' => 'Opening Balance',
             'paid_label' => 'Total Paid',
             'show_payments' => 1,
             'show_customer' => 1,
@@ -107,6 +144,72 @@ class BusinessUtil extends Util
             'table_subtotal_label' => 'Subtotal',
             'date_label' => 'Date',
         ]);
+        
+         PosLayout::create(['name' => 'Default',
+        'header_text' => null,
+        'invoice_no_prefix' => 'Invoice No.',
+        'invoice_heading' => 'Invoice',
+        'sub_total_label' => 'Subtotal',
+        'discount_label' => 'Discount',
+        'tax_label' => 'Tax',
+        'total_label' => 'Total',
+        'show_landmark' => 1,
+        'show_city' => 1,
+        'show_state' => 1,
+        'show_zip_code' => 1,
+        'show_country' => 1,
+        'highlight_color' => '#000000',
+        'footer_text' => '',
+        'is_default' => 1,
+        'bank_details' => '',
+        'opening_bal_label' => 'Opening Balance',
+        'business_id' => $business_id,
+        'invoice_heading_not_paid' => '',
+        'invoice_heading_paid' => '',
+        'total_due_label' => 'Total Due',
+        'paid_label' => 'Total Paid',
+        'show_payments' => 1,
+        'show_customer' => 1,
+        'customer_label' => 'Customer',
+        'table_product_label' => 'Product',
+        'table_qty_label' => 'Quantity',
+        'table_unit_price_label' => 'Unit Price',
+        'table_subtotal_label' => 'Subtotal',
+        'date_label' => 'Date',
+        ]);
+
+        QuotationLayout::create(['name' => 'Default',
+        'header_text' => null,
+        'invoice_no_prefix' => 'Invoice No.',
+        'invoice_heading' => 'Invoice',
+        'sub_total_label' => 'Subtotal',
+        'discount_label' => 'Discount',
+        'tax_label' => 'Tax',
+        'total_label' => 'Total',
+        'show_landmark' => 1,
+        'show_city' => 1,
+        'show_state' => 1,
+        'show_zip_code' => 1,
+        'show_country' => 1,
+        'highlight_color' => '#000000',
+        'footer_text' => '',
+        'is_default' => 1,
+        'bank_details' => '',
+        'opening_bal_label' => 'Opening Balance',
+        'business_id' => $business_id,
+        'invoice_heading_not_paid' => '',
+        'invoice_heading_paid' => '',
+        'total_due_label' => 'Total Due',
+        'paid_label' => 'Total Paid',
+        'show_payments' => 1,
+        'show_customer' => 1,
+        'customer_label' => 'Customer',
+        'table_product_label' => 'Product',
+        'table_qty_label' => 'Quantity',
+        'table_unit_price_label' => 'Unit Price',
+        'table_subtotal_label' => 'Subtotal',
+        'date_label' => 'Date',
+    ]);
 
         //create default barcode setting for new business
         // Barcode::create(['name' => 'Default',
@@ -347,41 +450,6 @@ class BusinessUtil extends Util
      * @param  array  $layout_id = null
      * @return location object
      */
-
-     public function posLayout($business_id, $layout_id = null)
-     {
-         $layout = null;
-         if (! empty($layout_id)) {
-             $layout = PosLayout::find($layout_id);
-         }
- 
-         //If layout is not found (deleted) then get the default layout for the business
-         if (empty($layout)) {
-             $layout = PosLayout::where('business_id', $business_id)
-                         ->where('is_default', 1)
-                         ->first();
-         }
-         //$output = []
-         return $layout;
-     }
-     
-      public function QuotationLayout($business_id, $layout_id = null)
-     {
-         $layout = null;
-         if (! empty($layout_id)) {
-             $layout = QuotationLayout::find($layout_id);
-         }
- 
-         //If layout is not found (deleted) then get the default layout for the business
-         if (empty($layout)) {
-             $layout = QuotationLayout::where('business_id', $business_id)
-                         ->where('is_default', 1)
-                         ->first();
-         }
-         //$output = []
-         return $layout;
-     }
-
     public function invoiceLayout($business_id, $layout_id = null)
     {
         $layout = null;

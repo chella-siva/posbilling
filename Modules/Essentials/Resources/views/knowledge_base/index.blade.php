@@ -16,7 +16,7 @@
 							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
 							<path d="M12 5l0 14" />
 							<path d="M5 12l14 0" />
-						</svg> @lang('essentials::lang.add_reminder')
+						</svg> @lang('messages.add')
 					</a>
 				</div>
 			</div>
@@ -29,11 +29,12 @@
 								<h4 class="box-title">{{$kb->title}}</h4>
 								<div class="box-tools pull-right">
 									<a class="text-info p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'show'], [$kb->id])}}" title="@lang('messages.view')" data-toggle="tooltip"><i class="fas fa-eye"></i></a>
-
+								@if(auth()->user()->can('essentials.edit_knowledge_base'))
 									<a class="text-primary p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'edit'], [$kb->id])}}" title="@lang('messages.edit')" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
-
+								@endif
+								@if(auth()->user()->can('essentials.delete_knowledge_base'))
 									<a class="text-danger p-5-5 delete-kb" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'destroy'], [$kb->id])}}" title="@lang('messages.delete')" data-toggle="tooltip"><i class="fas fa-trash"></i></a>
-
+								@endif
 									<a class="text-primary p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'create'])}}?parent={{$kb->id}}" title="@lang('essentials::lang.add_section')" data-toggle="tooltip"><i class="fas fa-plus"></i></a>
 								</div>
 							</div>
@@ -51,11 +52,13 @@
 													</h4>
 													<div class="box-tools pull-right">
 														<a class="text-info p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'show'], [$section->id])}}" title="@lang('messages.view')" data-toggle="tooltip"><i class="fas fa-eye"></i></a>
-
+													@if(auth()->user()->can('essentials.edit_knowledge_base'))
 														<a class="text-primary p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'edit'], [$section->id])}}" title="@lang('messages.edit')" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
+													@endif
 
+													@if(auth()->user()->can('essentials.delete_knowledge_base'))
 														<a class="text-danger p-5-5 delete-kb" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'destroy'], [$section->id])}}" title="@lang('messages.delete')" data-toggle="tooltip"><i class="fas fa-trash"></i></a>
-
+													@endif
 														<a class="text-success p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'create'])}}?parent={{$section->id}}" title="@lang('essentials::lang.add_article')" data-toggle="tooltip"><i class="fas fa-plus"></i></a>
 													</div>
 												</div>
@@ -68,10 +71,13 @@
 								                				<li><a class="text-primary" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'show'], [$article->id])}}">{{$article->title}}
 								                				</a>
 								                				<div class="tools">
+															@if(auth()->user()->can('essentials.edit_knowledge_base'))
 								                				<a class="text-primary p-5-5" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'edit'], [$article->id])}}" title="@lang('messages.edit')" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
-
+															@endif
+															@if(auth()->user()->can('essentials.edit_knowledge_base'))
 																<a class="text-danger p-5-5 delete-kb" href="{{action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'destroy'], [$article->id])}}" title="@lang('messages.delete')" data-toggle="tooltip"><i class="fas fa-trash"></i></a>
-																</div>
+															@endif
+															</div>
 								                				</li>
 								                			@endforeach
 								                			</ul>

@@ -62,8 +62,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-     public function removeImage(Request $request, $product_id)
+    public function removeImage(Request $request, $product_id)
     {
         try {
             $product = Product::find($product_id);

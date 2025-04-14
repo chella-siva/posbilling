@@ -290,4 +290,11 @@ return[
     'days_present' => 'ګڼ دی',
     'days_absent' => 'ګڼ نه دی',
     'attendance_report_for' => 'ګڼ لړلیک لپاره',
+    'edit_knowledge_base' => 'د پوهې اساس سمول',
+    'delete_knowledge_base' => 'د پوهې اساس ړنګول',
+    'leave_taken' => 'اخیستل شوی رخصت',
+    'leave_left' => 'پاتې رخصت',
+    'leave_applied' => 'کارول شوې رخصت (اوسنۍ)',
+    'approve_additional_leave_text' => "زه پوهیږم چې د دې رخصتۍ غوښتنې تصویب به د دې کارمند لپاره د دې رخصتۍ ډول لاندې د اعظمي اجازه ورکړل شوي حد څخه ډیر شي.",
+    'version_info' => 'د Essentials او HRM ماډل نسخه - <code> :version </code>',
 ];

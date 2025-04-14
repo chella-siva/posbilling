@@ -45,7 +45,7 @@ class ManageUserController extends Controller
             $users = User::where('business_id', $business_id)
                         ->user()
                         ->where('is_cmmsn_agnt', 0)
-                        ->select(['id', 'username',
+                        ->select(['id', 'username','first_name',
                             DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"), 'email', 'allow_login', ]);
 
             return Datatables::of($users)
@@ -60,17 +60,26 @@ class ManageUserController extends Controller
                 )
                 ->addColumn(
                     'action',
-                    '@can("user.update")
-                        <a href="{{action(\'App\Http\Controllers\ManageUserController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
-                        &nbsp;
-                    @endcan
-                    @can("user.view")
-                    <a href="{{action(\'App\Http\Controllers\ManageUserController@show\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info"><i class="fa fa-eye"></i> @lang("messages.view")</a>
-                    &nbsp;
-                    @endcan
-                    @can("user.delete")
-                        <button data-href="{{action(\'App\Http\Controllers\ManageUserController@destroy\', [$id])}}" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_user_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
-                    @endcan'
+                    function ($row) {
+                        $action = '';
+            
+                        // Edit button
+                        if (auth()->user()->can('user.update')) {
+                            $action .= '<a href="' . action('App\Http\Controllers\ManageUserController@edit', [$row->id]) . '" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>&nbsp;';
+                        }
+            
+                        // View button
+                        if (auth()->user()->can('user.view')) {
+                            $action .= '<a href="' . action('App\Http\Controllers\ManageUserController@show', [$row->id]) . '" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info"><i class="fa fa-eye"></i> View</a>&nbsp;';
+                        }
+            
+                        // Delete button (only show if first_name is not 'Admin')
+                        if (auth()->user()->can('user.delete') && $row->first_name !== 'Admin') {
+                            $action .= '<button data-href="' . action('App\Http\Controllers\ManageUserController@destroy', [$row->id]) . '" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_user_button"><i class="glyphicon glyphicon-trash"></i> Delete </button>';
+                        }
+            
+                        return $action;
+                    }
                 )
                 ->filterColumn('full_name', function ($query, $keyword) {
                     $query->whereRaw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) like ?", ["%{$keyword}%"]);

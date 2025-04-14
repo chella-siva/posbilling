@@ -184,4 +184,6 @@ return [
     'upload_job_sheet_docs' => 'تحميل مستندات ورقة العمل',
     'upload_docs' => 'تحميل المستندات',
     'document' => 'وثيقة',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'ينطبق هذا الإعداد على ورقة العمل فقط في تنسيق الطباعة 2',
+    'version_info' => 'إصدار وحدة الإصلاح - <code> :version </code>',
 ];

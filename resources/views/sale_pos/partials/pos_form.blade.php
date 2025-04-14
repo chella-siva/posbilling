@@ -174,7 +174,7 @@
 	
 	<!-- Call restaurant module if defined -->
     @if(in_array('tables' ,$enabled_modules) || in_array('service_staff' ,$enabled_modules))
-    	<!--<div class="clearfix"></div>-->
+    	<!-- <div class="clearfix"></div> -->
     	<span id="restaurant_module_span">
       		<div class="col-md-3"></div>
     	</span>
@@ -240,9 +240,7 @@
 					<th class="text-center tw-text-sm md:!tw-text-base tw-font-medium width-15 min_width">
 						@lang('sale.subtotal')
 					</th>
-					<th class="text-center width-5 min_width50">
-						<i class="fas fa-trash-alt tw-text-sm md:!tw-text-base tw-font-medium " aria-hidden="true""></i> 
-					</th>
+					<th class="text-center width-5 min_width50"><i class="fas fa-trash-alt tw-text-sm md:!tw-text-base tw-font-medium" aria-hidden="true"></i></th>
 				</tr>
 			</thead>
 			<tbody></tbody>

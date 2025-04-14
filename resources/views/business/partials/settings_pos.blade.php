@@ -355,7 +355,7 @@
                 <div class="checkbox">
                 <br>
                   <label>
-                    {!! Form::checkbox('pos_settings[disable_stock]', 1,  $pos_settings['disable_stock'] , 
+                    {!! Form::checkbox('pos_settings[disable_stock]', 1,  $disable_stock , 
                     [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_stock' ) }}
                   </label>
                 </div>
@@ -367,7 +367,7 @@
                 <div class="checkbox">
                 <br>
                   <label>
-                    {!! Form::checkbox('pos_settings[disable_sku]', 1,  $pos_settings['disable_sku'] , 
+                    {!! Form::checkbox('pos_settings[disable_sku]', 1,  $disable_sku , 
                     [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_sku' ) }}
                   </label>
                 </div>
@@ -379,7 +379,7 @@
                 <div class="checkbox">
                 <br>
                   <label>
-                    {!! Form::checkbox('pos_settings[disable_brand]', 1,  $pos_settings['disable_brand'] , 
+                    {!! Form::checkbox('pos_settings[disable_brand]', 1,  $disable_brand , 
                     [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.disable_brand' ) }}
                   </label>
                 </div>

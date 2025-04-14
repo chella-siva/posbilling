@@ -42,18 +42,19 @@
 						    <i class="fas fa-money-bill-alt text-muted"></i>
 						</a>
 					@endif
-					
+
 					@if($transaction_status == 'final')
     	    			<a href="{{action([\App\Http\Controllers\SellPosController::class, 'printposInvoice'], [$transaction->id])}}" class="print-invoice-link tw-dw-btn tw-dw-btn-outline tw-dw-btn-success">
     	    				<i class="fa fa-print text-muted" aria-hidden="true" title="{{__('lang_v1.click_to_print')}}"></i>
                             @lang('messages.print')
     	    			</a>
                     @else
-                    	<a href="{{action([\App\Http\Controllers\SellPosController::class, 'printquotationInvoice'], [$transaction->id])}}" class="print-invoice-link tw-dw-btn tw-dw-btn-outline tw-dw-btn-success">
-	    				<i class="fa fa-print text-muted" aria-hidden="true" title="{{__('lang_v1.click_to_print')}}"></i>
+                    	<a href="{{action([\App\Http\Controllers\SellPosController::class, 'printquotationInvoice'], [$transaction->id])}}" class="print-invoice-link tw-dw-btn tw-dw-btn-outline tw-dw-btn-success">	    				<i class="fa fa-print text-muted" aria-hidden="true" title="{{__('lang_v1.click_to_print')}}"></i>
                         @lang('messages.print')
-	    			    </a>
-                    @endif
+	    			</a>
+					@endif
+
+
                     @if(auth()->user()->can('sell.delete') || auth()->user()->can('direct_sell.delete'))
 	    			    <a href="{{action([\App\Http\Controllers\SellPosController::class, 'destroy'], [$transaction->id])}}" class="delete-sale tw-dw-btn tw-dw-btn-outline tw-dw-btn-error">
                             <i class="fa fa-trash text-danger" title="{{__('lang_v1.click_to_delete')}}"></i>

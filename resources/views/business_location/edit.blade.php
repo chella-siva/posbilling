@@ -121,14 +121,13 @@
                         'placeholder' => __('messages.please_select')]); !!}
                     </div>
                 </div>
-
                 <div class="col-sm-6">
                     <div class="form-group">
                         {!! Form::label('quotation_layout_id','Quotation Layout:*') !!} @show_tooltip(__('tooltip.quotation_layout'))
                         {!! Form::select('quotation_layout_id', $quotation_layouts, $location->quotation_layout_id, ['class' => 'form-control', 'required',
                         'placeholder' => __('messages.please_select')]); !!}
                     </div>
-                </div>
+                        </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         {!! Form::label('selling_price_group_id', __('lang_v1.default_selling_price_group') . ':') !!} @show_tooltip(__('lang_v1.location_price_group_help'))

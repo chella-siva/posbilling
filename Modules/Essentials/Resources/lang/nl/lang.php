@@ -315,4 +315,11 @@ return [
     'days_present' => 'Dagen Aanwezig',
     'days_absent' => 'Dagen Afwezig',
     'attendance_report_for' => 'Aanwezigheidsrapport voor',
+    'edit_knowledge_base' => 'Kennisbasis bewerken',
+    'delete_knowledge_base' => 'Kennisbasis verwijderen',
+    'leave_taken' => 'Verlof genomen',
+    'leave_left' => 'Verlof over',
+    'leave_applied' => 'Aangevraagd verlof (huidig)',
+    'approve_additional_leave_text' => "Ik begrijp dat goedkeuring van dit verlofverzoek de maximaal toegestane limiet voor dit type verlof van deze werknemer zou overschrijden.",
+    'version_info' => 'Essentials- en HRM-moduleversie - <code> :version </code>',
 ];

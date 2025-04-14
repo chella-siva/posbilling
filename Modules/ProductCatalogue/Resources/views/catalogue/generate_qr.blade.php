@@ -4,7 +4,7 @@
 @section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>@lang( 'productcatalogue::lang.catalogue_qr' )</h1>
+    <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">@lang( 'productcatalogue::lang.catalogue_qr' )</h1>
 </section>
 <section class="content">
     <div class="row">
@@ -33,33 +33,42 @@
                     </label>
                 </div>
             </div>
-            
-            <button type="button" class="btn btn-primary" id="generate_qr">@lang( 'productcatalogue::lang.generate_qr' )</button>
+            <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white" id="generate_qr">@lang('productcatalogue::lang.generate_qr')</button>
         @endcomponent
-        @component('components.widget', ['class' => 'box-solid'])
-            <div class="tw-py-2 tw-align-middle sm:tw-px-5">
-                    <div class="row">
-                <div class="col-md-12">
-                    <h4>Settings:</h4>
-                    {!! Form::open(['url' => action([\App\Http\Controllers\BusinessController::class, 'postBusinessSettingsupd']), 'method' => 'post', 'id' => 'bussiness_edit_form', 'files' => true ]) !!}
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>{{ $business->show_outofstock }}
-                                {!! Form::checkbox('hide_show_outofstock', 1, $business->hide_show_outofstock == 1, ['id' => 'show_outofstock', 'class' => 'input-icheck']) !!}
-                                Show/Hide Out Of Stock
-                            </label>
-                        </div>
-                    </div>
-                    <br>
-                    <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white" id="">Save</button>
-                {!! Form::close() !!}
 
-                    </div>
-            </div>
+        @component('components.widget', ['class' => 'box-solid'])
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>@lang('productcatalogue::lang.setting'):</h4>
+                    {!! Form::open(['url' => action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'productCatalogueSetting']), 'method' => 'post']) !!}
+                        {!! Form::label('is_show', __('productcatalogue::lang.outofstock_products').':') !!}
+                        <div class="form-inline">
+                        <div class="form-group">
+                        @php
+                            $settings = json_decode($business->productcatalogue_settings);
+                            $is_show = $settings->is_show ?? '';
+                        @endphp
+                            <div class="checkbox">
+                                <label>
+                                    {!! Form::radio('is_show', 1, $is_show == 1 ? true : false, ['id' => 'show_logo', 'class' => 'input-icheck', 'required']); !!} @lang('productcatalogue::lang.show')
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!! Form::radio('is_show', 0, $is_show == 0 ? true : false, ['id' => 'show_logo', 'class' => 'input-icheck', 'required']); !!} @lang('productcatalogue::lang.hide')
+                                </label>
+                            </div>
+                        </div>
+                    </div> <br>
+                    <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white" id="">@lang('productcatalogue::lang.save')</button>
+                {!! Form::close() !!}
                 </div>
-       
-            @endcomponent
+            </div>
+        @endcomponent
         
+
         @component('components.widget', ['class' => 'box-solid'])
             <div class="row">
                 <div class="col-md-12">
@@ -82,8 +91,6 @@
             </div>
         @endcomponent
         </div>
-
-        
         <div class="col-md-5">
             @component('components.widget', ['class' => 'box-solid'])
 
@@ -91,7 +98,7 @@
                     <div id="qrcode"></div>
                     <span id="catalogue_link"></span>
                     <br>
-                    <a href="#" class="btn btn-success hide" id="download_image">@lang( 'productcatalogue::lang.download_image' )</a>
+                    <a href="#" class="tw-dw-btn tw-dw-btn-success tw-text-white hide" id="download_image">@lang( 'productcatalogue::lang.download_image' )</a>
                 </div>
             @endcomponent
         </div>
@@ -144,11 +151,6 @@
 
             if ($('#show_logo').is(':checked')) {
                 opts.logo = "{{asset( 'uploads/business_logos/' . $business->logo)}}";
-            }
-            if ($('#show_outofstock').is(':checked')) {
-                opts.show_outofstock = "1";
-            } else {
-                opts.show_outofstock = "0";
             }
 
             new QRCode(document.getElementById("qrcode"), opts);

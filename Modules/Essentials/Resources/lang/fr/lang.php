@@ -310,4 +310,11 @@ return [
     'days_present' => 'Jours Présent',
     'days_absent' => 'Jours Absent',
     'attendance_report_for' => 'Rapport de présence pour',
+    'edit_knowledge_base' => 'Modifier la base de connaissances',
+    'delete_knowledge_base' => 'Supprimer la base de connaissances',
+    'leave_taken' => 'Congé pris',
+    'leave_left' => 'Congé restant',
+    'leave_applied' => 'Congé demandé (actuel)',
+    'approve_additional_leave_text' => "Je comprends que l'approbation de cette demande de congé dépasserait la limite maximale autorisée pour le congé de cet employé sous ce type de congé.",
+    'version_info' => 'Version du module Essentials et HRM - <code> :version </code>',
 ];

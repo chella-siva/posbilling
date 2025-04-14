@@ -291,4 +291,11 @@ return [
     'days_present' => 'Dias Presente',
     'days_absent' => 'Dias Ausente',
     'attendance_report_for' => 'Relatório de Presença para',
+    'edit_knowledge_base' => 'Editar Base de Conhecimento',
+    'delete_knowledge_base' => 'Excluir Base de Conhecimento',
+    'leave_taken' => 'Licença tomada',
+    'leave_left' => 'Licença restante',
+    'leave_applied' => 'Licença solicitada (atual)',
+    'approve_additional_leave_text' => "Compreendo que aprovar este pedido de licença excederia o limite máximo permitido para a licença deste funcionário sob este tipo de licença.",
+    'version_info' => 'Versão do módulo Essentials e HRM - <code> :version </code>',
 ];

@@ -71,6 +71,12 @@
 	      					<tr>
 	      						<td colspan="2"><br><br>{!! $product->product_description !!}</td>
 	      					</tr>
+							@if (($product->stock < 0 || empty($product->stock)) && $product->enable_stock)
+								<tr>
+									<td colspan="2"><small class="text-muted">@lang('productcatalogue::lang.out_of_stock') {{ $product->stock }}</small></td>
+								</tr>
+							@endif
+							
 	      				</table>
       				</div>
 	      		</div>
@@ -82,7 +88,7 @@
       		@endif
       	</div>
       	<div class="modal-footer">
-	      	<button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
+	      	<button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
 	    </div>
 	</div>
 </div>

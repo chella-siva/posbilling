@@ -14,37 +14,34 @@
 @endforeach
 
 <tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif>
+	@if(!empty($is_serial_no))
+		<td class="serial_no" ></td>
+	@endif
 	<td>
 		@if(!empty($so_line))
 			<input type="hidden" 
 			name="products[{{$row_count}}][so_line_id]" 
 			value="{{$so_line->id}}">
 		@endif
-		 @php 
-                        $disable_mrp = (isset($pos_settings['disable_mrp'])) ? $pos_settings['disable_mrp'] : 0;
-                        $disable_stock = (isset($pos_settings['disable_stock'])) ? $pos_settings['disable_stock'] : 0;
-                        $disable_sku = (isset($pos_settings['disable_sku'])) ? $pos_settings['disable_sku'] : 0;
-                        $disable_brand = (isset($pos_settings['disable_brand'])) ? $pos_settings['disable_brand'] : 0;
-                        $disable_image = (isset($pos_settings['disable_image'])) ? $pos_settings['disable_image'] : 0;
-                        $disable_lotandexp = (isset($pos_settings['disable_lotandexp'])) ? $pos_settings['disable_lotandexp'] : 0;
-                        $disable_unit = (isset($pos_settings['disable_unit'])) ? $pos_settings['disable_unit'] : 0;
-
-                      @endphp
+		<!-- @php
+			$product_name = $product->product_name . '-' . $product->sub_sku ;
+			if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ;}
+		@endphp -->
 		@php
 			$product_name = $product->product_name;
 			
-			if($disable_sku == 0) {
+			if($pos_settings['disable_sku'] == 0) {
 			    if(!empty($product->sub_sku)){ $product_name .= '-' . $product->sub_sku ; }
 			}
 			
-			if($disable_brand == 0) {
+			if($pos_settings['disable_brand'] == 0) {
 			    if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ; }
 			}
 		@endphp
 
 		@if( ($edit_price || $edit_discount) && empty($is_direct_sell) )
 		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline-block;float: left;">
-		<span class="text-link text-primary cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}" style="color:#161616 !important;;">
+		<span class="text-link text-primary cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}" style="color:#161616 !important;">
 			{!! $product_name !!}
 			&nbsp;<i class="fas fa-edit" style="color:blue;"></i>
 		</span>
@@ -52,8 +49,16 @@
 		@else
 			{!! $product_name !!}
 		@endif
-		
-		@if($disable_image == 0)
+		<!-- <div style="display: inline;">
+		<img src="@if(count($product->media) > 0)
+						{{$product->media->first()->display_url}}
+					@elseif(!empty($product->product_image))
+						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
+					@else
+						{{asset('/img/default.png')}}
+					@endif" alt="product-img" loading="lazy"style="width:100%;height:50px;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
+		</div> -->
+		@if($pos_settings['disable_image'] == 0)
 		<div style="display: inline;">
 		    
 		    	<img src="@if(count($product->media) > 0)
@@ -65,8 +70,6 @@
 					@endif" alt="product-img" loading="lazy"style="width:100%;height: 50px;display: inline;margin-left: 5px; border: black;border-radius: 5px; margin-top: 0px; width: 50px;object-fit: cover;">
 		</div>
 		@endif
-	
-
 
 		<input type="hidden" class="enable_sr_no" value="{{$product->enable_sr_no}}">
 		<input type="hidden" 
@@ -133,9 +136,17 @@
 		<div class="modal fade row_edit_product_price_model" id="row_edit_product_price_modal_{{$row_count}}" tabindex="-1" role="dialog">
 			@include('sale_pos.partials.row_edit_product_price_modal')
 		</div> 
-		@endif
-
-		@if($disable_stock == 0)
+		@endif 
+		<!-- <div class="py-0" style="display:block;clear: both;">
+			<small class="text-muted p-1">
+				@if($product->enable_stock)
+				{{ @num_format($product->qty_available) }} {{$product->unit}} @lang('lang_v1.in_stock')
+				@else
+					--
+				@endif
+			</small>
+		</div> -->
+		@if($pos_settings['disable_stock'] == 0)
         <div class="py-0" style="display:block;clear: both;">
             <small class="text-muted p-1">
         			@if($product->enable_stock)
@@ -146,7 +157,6 @@
         		</small>
         </div>
         @endif
-		
 
 		<!-- Description modal end -->
 		@if(in_array('modifiers' , $enabled_modules))
@@ -189,7 +199,7 @@
 			}
 		@endphp
 		@if(!empty($product->lot_numbers) && empty($is_sales_order))
-		@if($disable_lotandexp == 0)
+		@if($pos_settings['disable_lotandexp'] == 0)
 			<select class="form-control lot_number input-sm" name="products[{{$row_count}}][lot_no_line_id]" @if(!empty($product->transaction_sell_lines_id)) disabled @endif>
 				<option value="">@lang('lang_v1.lot_n_expiry')</option>
 				@foreach($product->lot_numbers as $lot_number)
@@ -296,7 +306,7 @@
 		</div>
 		
 		<input type="hidden" name="products[{{$row_count}}][product_unit_id]" value="{{$product->unit_id}}">
-		@if($disable_unit == 0)
+		@if($pos_settings['disable_unit'] == 0)
 		@if(count($sub_units) > 0) 
 			<select name="products[{{$row_count}}][sub_unit_id]" class="form-control input-sm sub_unit">
                 @foreach($sub_units as $key => $value)
@@ -434,7 +444,7 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
-	@if($disable_mrp == 0)
+	@if($pos_settings['disable_mrp'] == 0)
 	<td>
 		<input type="text" readonly class="form-control input_number pos_mrp_text" value="{{@num_format($product->mrp)}}">
 	</td>
@@ -447,7 +457,7 @@
 		<input type="{{$subtotal_type}}" class="form-control pos_line_total @if(!empty($pos_settings['is_pos_subtotal_editable'])) input_number @endif" value="{{@num_format($product->quantity_ordered*$unit_price_inc_tax )}}">
 		<span class="display_currency pos_line_total_text @if(!empty($pos_settings['is_pos_subtotal_editable'])) hide @endif" data-currency_symbol="true">{{$product->quantity_ordered*$unit_price_inc_tax}}</span>
 	</td>
-	<td class="text-center v-center"  title="Delete Items">
-		<i class="fas fa-backspace text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i> 
+	<td class="text-center v-center" title="Delete Items">
+		<i class="fas fa-backspace text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
 	</td>
 </tr>

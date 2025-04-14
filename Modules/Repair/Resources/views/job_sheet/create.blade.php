@@ -9,6 +9,7 @@
     <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">
     	@lang('repair::lang.job_sheet')
         <small class="tw-text-sm md:tw-text-base tw-text-gray-700 tw-font-semibold" >@lang('repair::lang.create')</small>
+        
     </h1>
 </section>
 <section class="content">

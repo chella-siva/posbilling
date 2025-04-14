@@ -9,15 +9,15 @@
       </div>
   
       <div class="modal-body">
-        <div class="form-group">
-          {!! Form::label('rooms', __('hms::lang.rooms'). '*') !!} <br>
-          {!! Form::select('rooms[]', $rooms, '', [
-              'class' => 'form-control select2',
-              'required',
-              'style' => 'width:100%'
-              'multiple',
-          ]) !!}
-        </div>
+          <div class="form-group">
+        {!! Form::label('rooms', __('hms::lang.rooms'). '*') !!} <br>
+        {!! Form::select('rooms[]', $rooms, '', [
+            'class' => 'form-control select2',
+            'required',
+            'style' => 'width:100%',  // <-- Add a comma here
+            'multiple'  // <-- This is now correctly placed
+        ]) !!}
+    </div>
 
         <div class="form-group">
             {!! Form::label('date_from', __('hms::lang.date_from') . '*') !!}

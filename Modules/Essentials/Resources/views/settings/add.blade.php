@@ -52,12 +52,15 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group pull-right">
+                <div class="form-group text-center">
                     {{ Form::submit(__('messages.update'), ['class' => 'tw-dw-btn tw-dw-btn-error tw-text-white']) }}
                 </div>
             </div>
         </div>
         {!! Form::close() !!}
+        <div class="col-xs-12">
+            <p class="help-block"><i>{!! __('essentials::lang.version_info', ['version' => $module_version]) !!}</i></p>
+        </div>
     </section>
 @stop
 @section('javascript')

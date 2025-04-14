@@ -9,7 +9,7 @@
 <div class="table-responsive">
     <table class="table table-condensed table-bordered table-th-green text-center table-striped" 
     id="purchase_entry_table">
-        <thead>
+    <thead>
               <tr>
                 <th>#</th>
                 <th class="min_width200">@lang( 'product.product_name' )</th>
@@ -201,6 +201,7 @@
             <td>
                 {!! Form::text('purchases[' . $loop->index . '][mrp]', number_format($purchase_line->variations->mrp, $currency_precision, $currency_details->decimal_separator, $currency_details->thousand_separator), ['class' => 'form-control input-sm input_number mrp', 'required']); !!}
             </td>
+
             @if(session('business.enable_product_expiry'))
                 <td style="text-align: left;">
                     @php

@@ -124,13 +124,14 @@
                             <label class="tw-dw-form-control">
                                 <div class="tw-dw-label">
                                     <span
-                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('Username')</span>
+                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('lang_v1.username')</span>
                                 </div>
 
                                 <input
                                     class="tw-border tw-border-[#D1D5DA] tw-outline-none tw-h-12 tw-bg-transparent tw-rounded-lg tw-px-3 tw-font-medium tw-text-black placeholder:tw-text-gray-500 placeholder:tw-font-medium"
                                     name="username" required autofocus placeholder="@lang('lang_v1.username')"
-                                    data-last-active-input="" id="username" type="text" name="username" @if(Cookie::has('adminuser')) value="{{ Cookie::get('adminuser') }}" @endif />
+                                    data-last-active-input="" id="username" type="text" name="username" @if(Cookie::has('adminuser')) value="{{ Cookie::get('adminuser') }}" @endif
+                                    value="{{ $username }}" />
                                 @if ($errors->has('username'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('username') }}</strong>
@@ -143,7 +144,7 @@
                             <label class="tw-dw-form-control">
                                 <div class="tw-dw-label">
                                     <span
-                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('Password')</span>
+                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('lang_v1.password')</span>
                                     @if (config('app.env') != 'demo')
                                         <a href="{{ route('password.request') }}"
                                             class="tw-text-xs md:tw-text-sm tw-font-medium tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-inline-block tw-text-transparent tw-bg-clip-text hover:tw-text-[#467BF5]"
@@ -174,7 +175,7 @@
 
                         <div class="tw-dw-form-control">
                             <label class="tw-dw-cursor-pointer tw-dw-label tw-self-start tw-gap-2">
-                                <input type="checkbox" id="remember" name="remember" @if(Cookie::has('adminuser')) Checked @endif
+                                <input type="checkbox" id="remember" name="remember" @if(Cookie::has('adminuser')) Checked @endif name="remember"
                                     class="tw-dw-checkbox">
                                 <span
                                     class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black tw-mt-[0.2rem]">@lang('lang_v1.remember_me')</span>

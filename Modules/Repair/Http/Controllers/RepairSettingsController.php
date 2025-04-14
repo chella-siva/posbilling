@@ -8,6 +8,7 @@ use App\Business;
 use App\Category;
 use App\Utils\ModuleUtil;
 use App\Variation;
+use App\System;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -72,10 +73,13 @@ class RepairSettingsController extends Controller
         $brands = Brands::forDropdown($business_id, false, true);
         $devices = Category::forDropdown($business_id, 'device');
         $module_category_data = $this->moduleUtil->getTaxonomyData('device');
+
+        $module_version = System::getProperty('repair_version');
+
         return view('repair::settings.index')
                 ->with(compact('barcode_settings', 'repair_settings', 'default_product_name',
                 'barcode_types', 'repair_statuses', 'brands', 'devices',
-                'module_category_data', 'jobsheet_pdf_settings'));
+                'module_category_data', 'jobsheet_pdf_settings', 'module_version'));
     }
 
     /**

@@ -11,6 +11,8 @@ use Modules\Essentials\Entities\EssentialsAttendance;
 use Modules\Essentials\Entities\EssentialsLeave;
 use Modules\Essentials\Entities\EssentialsUserShift;
 use Modules\Essentials\Entities\Shift;
+use Modules\Essentials\Entities\EssentialsHoliday;
+
 
 class EssentialsUtil extends Util
 {
@@ -335,5 +337,36 @@ class EssentialsUtil extends Util
         $settings = ! empty($settings) ? json_decode($settings, true) : [];
 
         return $settings;
+    }
+
+    public function Gettotalholiday($business_id, $location, $start_date, $end_date, $permitted_locations){
+        $holidays = EssentialsHoliday::where('essentials_holidays.business_id', $business_id)
+                        ->leftJoin('business_locations as bl', 'bl.id', '=', 'essentials_holidays.location_id')
+                        ->select([
+                            'essentials_holidays.id',
+                            'essentials_holidays.name',
+                            'bl.name as location',
+                            'start_date',
+                            'end_date',
+                            'note',
+                        ]);
+
+            if ($permitted_locations != 'all') {
+                $holidays->where(function ($query) use ($permitted_locations) {
+                    $query->whereIn('essentials_holidays.location_id', $permitted_locations)
+                        ->orWhereNull('essentials_holidays.location_id');
+                });
+            }
+
+            if (! empty($location)) {
+                $holidays->where('essentials_holidays.location_id', $location);
+            }
+
+            if (! empty($start_date) && ! empty($end_date)) {
+                $holidays->whereDate('essentials_holidays.start_date', '>=', $start_date)
+                            ->whereDate('essentials_holidays.start_date', '<=', $end_date);
+            }
+
+            return $holidays;
     }
 }

@@ -1,6 +1,7 @@
 @extends('layouts.guest')
 @section('title', $business->name)
 
+
 <style>
     /* Style for quantity input, cart icon, etc. */
     .quantity-container {
@@ -17,7 +18,13 @@
         padding: 5px;
         margin: 0 5px;
     }
-
+    #cart-details 
+    {
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto; /* Enables vertical scrollbar */
+    border: 1px solid #ccc; /* Optional: To make the cart visible */
+    padding: 10px; /* Optional: For better spacing */
+    }
     .btn-outline-secondary {
         width: 30px;
         height: 30px;
@@ -135,17 +142,46 @@
     }
 
 </style>
-
 @section('content')
-@php
-$outofstock = request()->session()->get('business.hide_show_outofstock');
-@endphp
+<!-- Content Header (Page header) -->
 <section class="content-header text-center" id="top">
-    <h2>{{$business->name}}</h2>
-    <h4 class="mb-0">{{$business_location->name}}</h4>
+    <h2 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black" >{{$business->name}}</h2>
+    <h4 class="mb-0 tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">{{$business_location->name}}</h4>
     <p>{!! $business_location->location_address !!}</p>
 </section>
-
+<section class="no-print">
+    <div class="container">
+        <!-- Static navbar -->
+        <nav class="navbar-default tw-transition-all tw-duration-5000 tw-shrink-0 tw-rounded-2xl tw-m-[16px] tw-border-2 !tw-bg-white">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" style="margin-top: 3px; margin-right: 3px;">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand menu" href="#top">
+                        @if(!empty($business->logo))
+                            <img src="{{asset( 'uploads/business_logos/' . $business->logo)}}" alt="Logo" width="30">
+                        @else
+                            <i class="fas fa-boxes"></i>
+                        @endif
+                    </a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                    @foreach($categories as $key => $value)
+                        <li><a href="#category{{$key}}" class="menu">{{$value}}</a></li>
+                    @endforeach 
+                        <li><a href="#category0" class="menu">Uncategorized</a></li>           
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
+</section>
+<!-- Main content -->
 <section class="content pt-0">
     <div class="container">
         @foreach($products as $product_category)
@@ -154,252 +190,129 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
                     <h2 class="page-header" id="category{{$product_category->first()->category->id ?? 0}}">{{$product_category->first()->category->name ?? 'Uncategorized'}}</h2>
                 </div>
             </div>
-            @if($outofstock == 1)
             <div class="row eq-height-row">
-                @foreach($product_category as $product)
-                @php
-                    if($product->enable_stock == 1)
-                    {
-                        $location_id = $business_location->id;
-                        $stock = $product->variations->flatMap->variation_location_details
-                        ->where('location_id', $location_id)
-                        ->sum('qty_available');
-                    } else {
-                        $stock = 100000;   
-                    }
-                @endphp
-                @if($stock > 0)
-                    <div class="col-md-3 eq-height-col col-xs-12">
-                        <div class="box box-solid product-box">
-                            <div class="box-body">
-                                <a href="#" class="show-product-details" data-href="{{action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'],  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
-                                    <img src="{{$product->image_url}}" class="img-responsive catalogue">
-                                </a>
-
-                                @php
-                                    $discount = $discounts->firstWhere('brand_id', $product->brand_id);
-                                    if(empty($discount)){
-                                        $discount = $discounts->firstWhere('category_id', $product->category_id);
-                                    }
-                                @endphp
-
-                                @if(!empty($discount))
-                                    <span class="label label-warning discount-badge">- {{($discount->discount_amount)}}%</span>
-                                @endif
-
-                                @php
-                                    $max_price = $product->variations->max('sell_price_inc_tax');
-                                    $min_price = $product->variations->min('sell_price_inc_tax');
-                                @endphp
-                                <h2 class="catalogue-title">
-                                    <a href="#" class="show-product-details" data-href="{{action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'],  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
-                                        {{$product->name}}
-                                    </a>
-                                </h2>
-
-                                <form action="{{ route('cart.add') }}" method="POST">
-                                    <table class="table no-border product-info-table">
-                                        <tr>
-                                            <th class="pb-0"> @lang('lang_v1.price'):</th>
-                                            <td class="pb-0">
-                                                <span class="display_currency" data-currency_symbol="true">{{($max_price)}}</span> 
-                                                @if($max_price != $min_price) 
-                                                    - <span class="display_currency" data-currency_symbol="true">{{($min_price)}}</span> 
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="pb-0"> @lang('product.sku'):</th>
-                                            <td class="pb-0">{{$product->sku}}</td>
-                                        </tr>
-                                        @if($product->type == 'variable')
-                                        @php
-                                            $variations = $product->variations->groupBy('product_variation_id');
-                                        @endphp
-                                        @foreach($variations as $product_variation)
-                                            <tr>
-                                                <th>{{$product_variation->first()->product_variation->name}}:</th>
-                                                <td>
-                                                <select class="form-control input-sm variant-selector" data-product-id="{{$product->id}}" 
-                                                    onchange="updateVariationId(this)">
-                                                    @foreach($product_variation as $variation)
-                                                        <option value="{{$variation->id}}" 
-                                                            data-price="{{($variation->sell_price_inc_tax)}}"
-                                                            data-name="{{$variation->name}}"
-                                                            data-sku="{{$variation->sub_sku}}">
-                                                            {{$variation->name}} ({{$variation->sub_sku}}) - {{($variation->sell_price_inc_tax)}}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-
-                                            </tr>
-                                        @endforeach
-                                    @endif
-
-                                        @if($stock > 0)
-                                        <tr>
-                                            <th class="pb-0"> Quantity:</th>
-                                            <td class="pb-0">
-                                            <div class="quantity-container">
-                                                <button type="button" class="btn btn-outline-secondary" data-action="decrease">-</button>
-                                                <input type="text" name="quantity" class="quantity-input" value="1" readonly />
-                                                <button type="button" class="btn btn-outline-secondary" data-action="increase">+</button>
-                                            </div>
-                                            </td>
-                                        </tr>
-                                        @endif
-
-                                        <input type="hidden" name="product_sku" value="{{$product->sku}}" />
-                                        <input type="hidden" name="variation_id" 
-                                        value="{{ $product->type == 'variable' ? '' : ($product->variations->isNotEmpty() ? $product->variations->first()->id : '') }}"
-                                        class="selected-variation-id"/>
-
-                                    </table>
-
-                                    @if($stock > 0)
-                                    <button type="button" class="btn btn-primary add-to-cart-btn"
-                                    data-product-id="{{$product->id}}"  
-                                    data-product-type="{{$product->type}}"
-                                    data-product-name="{{$product->name}}"
-                                    data-product-price="{{($max_price)}}"
-                                    data-stock-available="{{ $stock }}">Add to cart</button>
-
-                                    @else
-                                    <span style="font-size:20px;color:red;"> Out Of Stock </span>
-                                    @endif
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                     @endif
-                @endforeach
-            </div>
-            @else
-            <div class="row eq-height-row">
-                @foreach($product_category as $product)
-                @php
+            @foreach($product_category as $product)
+            @php
                 if($product->enable_stock == 1)
-                    {
-                        $location_id = $business_location->id;
-                        $stock = $product->variations->flatMap->variation_location_details
-                        ->where('location_id', $location_id)
-                        ->sum('qty_available');
-                    } else {
-                        $stock = 100000;   
-                    }
-                @endphp
-                    <div class="col-md-3 eq-height-col col-xs-12">
-                        <div class="box box-solid product-box">
-                            <div class="box-body">
+                {
+                    $location_id = $business_location->id;
+                    $stock = $product->variations->flatMap->variation_location_details
+                    ->where('location_id', $location_id)
+                    ->sum('qty_available');
+                } else {
+                    $stock = 100000;   
+                }
+            @endphp
+                <div class="col-md-3 eq-height-col col-xs-12">
+                    <div class="box box-solid product-box">
+                        <div class="box-body">
+                            <a href="#" class="show-product-details" data-href="{{action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'],  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
+                            <img src="{{$product->image_url}}" class="img-responsive catalogue"></a>
+
+                            @php
+                                $discount = $discounts->firstWhere('brand_id', $product->brand_id);
+                                if(empty($discount)){
+                                    $discount = $discounts->firstWhere('category_id', $product->category_id);
+                                }
+                            @endphp
+
+                            @if(!empty($discount))
+                                <span class="label label-warning discount-badge">- {{($discount->discount_amount)}}%</span>
+                            @endif
+
+                            @php
+                                $max_price = $product->variations->max('sell_price_inc_tax');
+                                $min_price = $product->variations->min('sell_price_inc_tax');
+                            @endphp
+                            <h2 class="catalogue-title">
                                 <a href="#" class="show-product-details" data-href="{{action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'],  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
-                                    <img src="{{$product->image_url}}" class="img-responsive catalogue">
+                                    {{$product->name}}
                                 </a>
-
+                            </h2>
+                            <table class="table no-border product-info-table">
+                                <tr>
+                                    <th class="pb-0"> @lang('lang_v1.price'):</th>
+                                    <td class="pb-0">
+                                        <span class="display_currency" data-currency_symbol="true">{{($max_price)}}</span> @if($max_price != $min_price) - <span class="display_currency" data-currency_symbol="true">{{($min_price)}}</span> @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="pb-0"> @lang('product.sku'):</th>
+                                    <td class="pb-0">{{$product->sku}}</td>
+                                </tr>
+                            @if($product->type == 'variable')
                                 @php
-                                    $discount = $discounts->firstWhere('brand_id', $product->brand_id);
-                                    if(empty($discount)){
-                                        $discount = $discounts->firstWhere('category_id', $product->category_id);
-                                    }
+                                    $variations = $product->variations->groupBy('product_variation_id');
                                 @endphp
-
-                                @if(!empty($discount))
-                                    <span class="label label-warning discount-badge">- {{($discount->discount_amount)}}%</span>
+                                @foreach($variations as $product_variation)
+                                    <tr>
+                                        <th>{{$product_variation->first()->product_variation->name}}:</th>
+                                        <td>
+                                            <select class="form-control input-sm variant-selector" data-product-id="{{$product->id}}" 
+                                                onchange="updateVariationId(this)">
+                                                @foreach($product_variation as $variation)
+                                                    <option value="{{$variation->id}}" 
+                                                        data-price="{{($variation->sell_price_inc_tax)}}"
+                                                        data-name="{{$variation->name}}"
+                                                        data-sku="{{$variation->sub_sku}}">
+                                                        {{$variation->name}} ({{$variation->sub_sku}}) - {{($variation->sell_price_inc_tax)}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                           
+                                @if (($product->stock < 0 || empty($product->stock)) && $product->enable_stock)
+                                    <tr>
+                                        <td colspan="2">
+                                            <small class="text-muted">@lang('productcatalogue::lang.out_of_stock')</small>
+                                        </td>
+                                    </tr>
                                 @endif
 
-                                @php
-                                    $max_price = $product->variations->max('sell_price_inc_tax');
-                                    $min_price = $product->variations->min('sell_price_inc_tax');
-                                @endphp
-                                <h2 class="catalogue-title">
-                                    <a href="#" class="show-product-details" data-href="{{action([\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController::class, 'show'],  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
-                                        {{$product->name}}
-                                    </a>
-                                </h2>
+                                @if($stock > 0)
+                                <tr>
+                                    <th class="pb-0"> Quantity:</th>
+                                    <td class="pb-0">
+                                    <div class="quantity-container">
+                                        <button type="button" class="btn btn-outline-secondary" data-action="decrease">-</button>
+                                        <input type="text" name="quantity" class="quantity-input" value="1" readonly />
+                                        <button type="button" class="btn btn-outline-secondary" data-action="increase">+</button>
+                                    </div>
+                                    </td>
+                                </tr>
+                                @endif
 
-                                <form action="{{ route('cart.add') }}" method="POST">
-                                    <table class="table no-border product-info-table">
-                                        <tr>
-                                            <th class="pb-0"> @lang('lang_v1.price'):</th>
-                                            <td class="pb-0">
-                                                <span class="display_currency" data-currency_symbol="true">{{($max_price)}}</span> 
-                                                @if($max_price != $min_price) 
-                                                    - <span class="display_currency" data-currency_symbol="true">{{($min_price)}}</span> 
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="pb-0"> @lang('product.sku'):</th>
-                                            <td class="pb-0">{{$product->sku}}</td>
-                                        </tr>
-                                        @if($product->type == 'variable')
-                                        @php
-                                            $variations = $product->variations->groupBy('product_variation_id');
-                                        @endphp
-                                        @foreach($variations as $product_variation)
-                                            <tr>
-                                                <th>{{$product_variation->first()->product_variation->name}}:</th>
-                                                <td>
-                                                <select class="form-control input-sm variant-selector" data-product-id="{{$product->id}}" 
-                                                    onchange="updateVariationId(this)">
-                                                    @foreach($product_variation as $variation)
-                                                        <option value="{{$variation->id}}" 
-                                                            data-price="{{($variation->sell_price_inc_tax)}}"
-                                                            data-name="{{$variation->name}}"
-                                                            data-sku="{{$variation->sub_sku}}">
-                                                            {{$variation->name}} ({{$variation->sub_sku}}) - {{($variation->sell_price_inc_tax)}}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
+                                <input type="hidden" name="product_sku" value="{{$product->sku}}" />
+                                <input type="hidden" name="variation_id" 
+                                value="{{ $product->type == 'variable' ? '' : ($product->variations->isNotEmpty() ? $product->variations->first()->id : '') }}"
+                                class="selected-variation-id"/>
+                                
+                            </table>
 
-                                            </tr>
-                                        @endforeach
-                                    @endif
-
-                                        @if($stock > 0)
-                                        <tr>
-                                            <th class="pb-0"> Quantity:</th>
-                                            <td class="pb-0">
-                                            <div class="quantity-container">
-                                                <button type="button" class="btn btn-outline-secondary" data-action="decrease">-</button>
-                                                <input type="text" name="quantity" class="quantity-input" value="1" readonly />
-                                                <button type="button" class="btn btn-outline-secondary" data-action="increase">+</button>
-                                            </div>
-                                            </td>
-                                        </tr>
-                                        @endif
-
-                                        <input type="hidden" name="product_sku" value="{{$product->sku}}" />
-                                        <input type="hidden" name="variation_id" 
-                                        value="{{ $product->type == 'variable' ? '' : ($product->variations->isNotEmpty() ? $product->variations->first()->id : '') }}"
-                                        class="selected-variation-id"/>
-
-                                    </table>
-
-                                    @if($stock > 0)
-                                    <button type="button" class="btn btn-primary add-to-cart-btn"
-                                    data-product-id="{{$product->id}}"  
-                                    data-product-type="{{$product->type}}"
-                                    data-product-name="{{$product->name}}"
-                                    data-product-price="{{($max_price)}}"
-                                    data-stock-available="{{ $stock }}">Add to cart</button>
-
-                                    @else
-                                    <span style="font-size:20px;color:red;"> Out Of Stock </span>
-                                    @endif
-                                </form>
-                            </div>
+                            @if($stock > 0)
+                                <button type="button" class="btn btn-primary add-to-cart-btn"
+                                data-product-id="{{$product->id}}"  
+                                data-product-type="{{$product->type}}"
+                                data-product-name="{{$product->name}}"
+                                data-product-price="{{($max_price)}}"
+                                data-stock-available="{{ $stock }}">Add to cart</button>
+                            @endif
+                          
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @if($loop->iteration%4 == 0)
+                <div class="clearfix"></div>
             @endif
+            @endforeach
+            </div>
         @endforeach
     </div>
-
-    <div class="scrolltop no-print">
-        <div class="scroll icon"><i class="fas fa-angle-up"></i></div>
+    <div class='scrolltop no-print'>
+        <div class='scroll icon'><i class="fas fa-angle-up"></i></div>
     </div>
 
     <!-- Cart Icon -->
@@ -414,7 +327,8 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
         <button id="clrbtn" class="btn btn-danger btn-sm">Clear Cart</button>
     </div>
 </section>
-
+<!-- /.content -->
+<!-- Add currency related field-->
 <input type="hidden" id="__code" value="{{$business->currency->code}}">
 <input type="hidden" id="__symbol" value="{{$business->currency->symbol}}">
 <input type="hidden" id="__thousand" value="{{$business->currency->thousand_separator}}">
@@ -422,13 +336,15 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
 <input type="hidden" id="__symbol_placement" value="{{$business->currency->currency_symbol_placement}}">
 <input type="hidden" id="__precision" value="{{$business->currency_precision}}">
 <input type="hidden" id="__quantity_precision" value="{{$business->quantity_precision}}">
-
-<div class="modal fade product_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
-
+<div class="modal fade product_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
 @stop
 @section('javascript')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+<script type="text/javascript">
+
+
+document.addEventListener('DOMContentLoaded', function () {
         var cartDetails = document.getElementById('cart-details');
         var clearCartBtn = document.getElementById('clrbtn');
         
@@ -579,7 +495,6 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
             const productId = this.dataset.productId;
             const productType = this.dataset.productType;
             const stockAvailable = parseInt(this.dataset.stockAvailable); // Get the stock available
-
             // Get the existing quantity of the product in the cart
             const existingProductIndex = cart.findIndex(item => item.product_id === productId);
             const existingProductQuantity = existingProductIndex >= 0 ? cart[existingProductIndex].quantity : 0;
@@ -610,12 +525,13 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
             }
 
             const totalPrice = selectedVariantPrice * quantity;
+            const existingVarIndex = cart.findIndex(item => item.variant_id === variantId);
 
             // Check if product already exists in the cart
-            if (existingProductIndex >= 0) {
+            if (existingVarIndex >= 0) {
                 // Update the existing product quantity
-                cart[existingProductIndex].quantity += quantity;
-                cart[existingProductIndex].total = cart[existingProductIndex].quantity * selectedVariantPrice;
+                cart[existingVarIndex].quantity += quantity;
+                cart[existingProductIndex].total = cart[existingVarIndex].quantity * selectedVariantPrice;
             } else {
                 // Add new product to the cart
                 const product = {
@@ -633,66 +549,83 @@ $outofstock = request()->session()->get('business.hide_show_outofstock');
             updateCart();
         });
     });
-
-        // Handle add-to-cart button
-        // document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        //     button.addEventListener('click', function (e) {
-        //         e.preventDefault();
-
-        //         const productCard = this.closest('.box-body');
-        //         const productId = this.dataset.productId;
-        //         const productType = this.dataset.productType;
-
-        //         let variantId, selectedVariantName, selectedVariantPrice, quantityInput, quantity;
-
-        //         if (productType === 'single') {
-        //             variantId = productCard.querySelector('.selected-variation-id').value;
-        //             selectedVariantName = this.dataset.productName;
-        //             selectedVariantPrice = parseFloat(this.dataset.productPrice);
-        //             quantityInput = productCard.querySelector('.quantity-input');
-        //             quantity = parseInt(quantityInput.value) || 1;
-        //         } else {
-        //             const variantSelector = productCard.querySelector('.variant-selector');
-        //             const selectedOption = variantSelector.options[variantSelector.selectedIndex];
-        //             variantId = selectedOption.value;
-        //             selectedVariantName = selectedOption.textContent.trim();
-        //             selectedVariantPrice = parseFloat(selectedOption.dataset.price);
-        //             quantityInput = productCard.querySelector('.quantity-input');
-        //             quantity = parseInt(quantityInput.value) || 1;
-        //         }
-
-        //         const totalPrice = selectedVariantPrice * quantity;
-
-        //         // Check if product already exists in the cart
-        //         const existingProductIndex = cart.findIndex(item => item.product_id === productId && item.variant_id === variantId);
-                
-        //         if (existingProductIndex >= 0) {
-        //             // Update existing product quantity
-        //             cart[existingProductIndex].quantity += quantity;
-        //             cart[existingProductIndex].total = cart[existingProductIndex].quantity * selectedVariantPrice;
-        //         } else {
-        //             // Add new product to the cart
-        //             const product = {
-        //                 product_id: productId,
-        //                 variant_id: variantId,
-        //                 name: selectedVariantName,
-        //                 price: selectedVariantPrice,
-        //                 quantity: quantity,
-        //                 total: totalPrice
-        //             };
-
-        //             cart.push(product);
-        //         }
-
-        //         // Save cart to localStorage and update UI
-        //         updateCart();
-        //     });
-        // });
-
-        // Initialize
         updateCartIcon();
         showCartDetails();
     });
-</script>
-@stop
 
+    (function($) {
+    $(document).ready( function() {
+        //Set global currency to be used in the application
+        __currency_symbol = $('input#__symbol').val();
+        __currency_thousand_separator = $('input#__thousand').val();
+        __currency_decimal_separator = $('input#__decimal').val();
+        __currency_symbol_placement = $('input#__symbol_placement').val();
+        if ($('input#__precision').length > 0) {
+            __currency_precision = $('input#__precision').val();
+        } else {
+            __currency_precision = 2;
+        }
+
+        if ($('input#__quantity_precision').length > 0) {
+            __quantity_precision = $('input#__quantity_precision').val();
+        } else {
+            __quantity_precision = 2;
+        }
+
+        //Set page level currency to be used for some pages. (Purchase page)
+        if ($('input#p_symbol').length > 0) {
+            __p_currency_symbol = $('input#p_symbol').val();
+            __p_currency_thousand_separator = $('input#p_thousand').val();
+            __p_currency_decimal_separator = $('input#p_decimal').val();
+        }
+
+        __currency_convert_recursively($('.content'));
+    });
+
+    $(document).on('click', '.show-product-details', function(e){
+        e.preventDefault();
+        $.ajax({
+            url: $(this).data('href'),
+            dataType: 'html',
+            success: function(result) {
+                $('.product_modal')
+                    .html(result)
+                    .modal('show');
+                __currency_convert_recursively($('.product_modal'));
+            },
+        });
+    });
+
+    $(document).on('click', '.menu', function(e){
+        e.preventDefault();
+        $('.navbar-toggle').addClass('collapsed');
+        $('.navbar-collapse').removeClass('in');
+
+        var cat_id = $(this).attr('href');
+        if ($(cat_id).length) {
+            $('html, body').animate({
+                scrollTop: $(cat_id).offset().top
+            }, 1000);
+        }
+    });
+
+    })(jQuery);
+
+    $(window).scroll(function() {
+        var height = $(window).scrollTop();
+
+        if(height  > 180) {
+            $('nav').addClass('navbar-fixed-top');
+            $('.scrolltop:hidden').stop(true, true).fadeIn();
+        } else {
+            $('nav').removeClass('navbar-fixed-top');
+            $('.scrolltop').stop(true, true).fadeOut();
+        }
+    });
+
+    $(document).on('click', '.scroll', function(e){
+        $("html,body").animate({scrollTop:$("#top").offset().top},"1000");
+        return false;
+    });
+</script>
+@endsection

@@ -53,7 +53,6 @@
 							</span>
 						@endif
 					@endforeach
-					 
 
 					{{-- Price --}}
 					@if(!empty($print['price']))
@@ -71,7 +70,7 @@
 					<br>
 					@endif
 					@if(!empty($print['exp_date']) && !empty($page_product->exp_date))
-						 
+						
 						<span style="font-size: {{$print['exp_date_size']}}px">
 							<b>@lang('product.exp_date'):</b>
 							{{$page_product->exp_date}}
@@ -82,13 +81,13 @@
 					@endif
 
 					@if(!empty($print['packing_date']) && !empty($page_product->packing_date))
-						 <span style="font-size: {{$print['packing_date_size']}}px">
+						<span style="font-size: {{$print['packing_date_size']}}px">
 							<b>@lang('lang_v1.packing_date'):</b>
 							{{$page_product->packing_date}}
 						</span>
 					@endif
 					{{-- Barcode --}}
-					<img style="max-width:90% !important;height: {{$barcode_details->height*0.24}}in !important; display: block;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 1,30, array(0, 0, 0), false)}}">
+					<img style="max-width:90% !important;height: {{$barcode_details->height*0.24}}in !important; display: block;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 3,90, array(0, 0, 0), false)}}">
 					
 					<span style="font-size: 10px !important">
 						{{$page_product->sub_sku}}
@@ -105,7 +104,7 @@
 </table>
 
 <style type="text/css">
-	*{
+*{
 		font-family: sans-serif;
 	}
 	td{

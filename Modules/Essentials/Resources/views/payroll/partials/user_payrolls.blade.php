@@ -105,6 +105,7 @@
             my_payrolls_table = $('#my_payrolls').DataTable({
                     processing: true,
                     serverSide: true,
+                    fixedHeader:false,
                     ajax: {
                         url: "{{action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'getMyPayrolls'])}}"
                     },

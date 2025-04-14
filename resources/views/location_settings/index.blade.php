@@ -102,7 +102,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label('quotation_layout_id', __('invoice.quotation_layout') . ':*') !!} @show_tooltip(__('tooltip.quotation_layout'))
@@ -114,6 +113,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="col-sm-4">
                             <div class="form-group">

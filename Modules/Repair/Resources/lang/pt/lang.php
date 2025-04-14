@@ -185,4 +185,6 @@ return [
     'upload_job_sheet_docs' => 'Download documents from work sheet',
     'upload_docs' => 'Upload documents',
     'document' => 'Document',
+    'this_setting_applies_job_sheet_to_print_format_2_only' => 'Esta configuração aplica-se apenas à Ficha de Trabalho no Formato de Impressão 2',
+    'version_info' => 'Versão do módulo de reparo - <code> :version </code>',
 ];
