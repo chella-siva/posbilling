@@ -1191,13 +1191,13 @@ class ContactController extends Controller
                     }
 
                     //Mobile number
-                    // if (! empty(trim($value[13]))) {
+                    if (! empty(trim($value[13]))) {
                         $contact_array['mobile'] = $value[13];
-                    // } else {
-                    //     $is_valid = false;
-                    //     $error_msg = "Mobile number is required in row no. $row_no";
-                    //     break;
-                    // }
+                    } else {
+                        $is_valid = false;
+                        $error_msg = "Mobile number is required in row no. $row_no";
+                        break;
+                    }
 
                     //Alt contact number
                     $contact_array['alternate_number'] = $value[14];
