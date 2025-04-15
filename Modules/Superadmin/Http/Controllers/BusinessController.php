@@ -6,6 +6,7 @@ use App\Business;
 use App\Product;
 use App\Transaction;
 use App\User;
+use App\TaxRate;
 use App\Utils\BusinessUtil;
 use App\Utils\ModuleUtil;
 use App\VariationLocationDetails;
@@ -417,6 +418,8 @@ class BusinessController extends BaseController
                 VariationLocationDetails::whereIn('product_id', $products_id)->delete();
             }
             Transaction::where('business_id', $id)->delete();
+            DB::table('business')->where('id', $id)->update(['default_sales_tax' => null]);
+            TaxRate::where('business_id', $id)->delete();
 
             Business::where('id', $id)
                 ->delete();
