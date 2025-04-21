@@ -533,7 +533,7 @@ class BusinessUtil extends Util
      */
     public function defaultEmailSettings()
     {
-        return ['mail_host' => 'smtp.gmail.com', 'mail_port' => '465', 'mail_username' => 'your_mail_username', 'mail_password' => 'your_mail_password', 'mail_encryption' => 'SSL', 'mail_from_address' => 'Your_mail_id', 'mail_from_name' => 'business_name'];
+        return ['mail_host' => 'smtp', 'mail_port' => '465', 'mail_username' => 'your_mail_username', 'mail_password' => 'your_mail_password', 'mail_encryption' => 'SSL', 'mail_from_address' => 'Your_mail_id@mail.com', 'mail_from_name' => 'business_name'];
     }
 
     /**
