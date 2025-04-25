@@ -262,6 +262,7 @@ class ProductCatalogueController extends Controller
                 return view('clear-storage-redirect', [
                     'business_id' => $request->input('business_id'),
                     'location_id' => $request->input('location_id'),
+                    'invoice_no' => $invoice_no
                 ]);
 
 
