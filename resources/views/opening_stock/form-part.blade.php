@@ -70,12 +70,16 @@
 		@endif
 	</td>
 	<td>
-		<div class="input-group">
-		  {!! Form::text('stocks[' . $key . '][' . $variation->id . '][' . $sub_key . '][quantity]', @format_quantity($qty) , ['class' => 'form-control input-sm input_number purchase_quantity input_quantity', 'required']); !!}
-		  <span class="input-group-addon">
-		    {{ $product->unit->short_name }}
-		  </span>
+	<div class="input-group">
+		{!! Form::text('stocks[' . $key . '][' . $variation->id . '][' . $sub_key . '][quantity]', @format_quantity($qty), ['class' => 'form-control input-sm input_number purchase_quantity input_quantity', 'required', 'id' => 'quantity_'.$key.'_'.$variation->id.'_'.$sub_key]) !!}
+		<span class="input-group-addon">
+			{{ $product->unit->short_name }}
+		</span>
+		<span class="input-group-btn">
+			<button type="button" class="btn btn-sm btn-primary open-serial-modal" data-product-id="{{$variation->product_id}}" data-variation-id="{{$variation->id}}" data-key="{{$key}}" data-subkey="{{$sub_key}}"><i class="fa fa-barcode"></i> Serial No</button>
+		</span>
 		</div>
+
 		@if(!empty($product->second_unit))
 			<br>
             <span>
@@ -181,3 +185,191 @@
 		@endforelse
 	</div>
 </div>
+<!-- Serial No Modal -->
+<!-- Serial No Modal -->
+<div class="modal fade" id="serialNoModal" tabindex="-1" role="dialog" aria-labelledby="serialNoModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="serialNoModalLabel">Add Serial Numbers</h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-group mb-2">
+          <input type="text" id="serial-input" class="form-control" placeholder="Enter Serial No">
+          <div class="input-group-append">
+            <button class="btn btn-success btn-add-serial" type="button"><i class="fa fa-plus"></i></button>
+          </div>
+        </div>
+        <div id="serial-list" class="mt-2">
+          <!-- Serial numbers will appear here -->
+        </div>
+        <small class="text-muted">Press Enter or Click + to add serial numbers. Click (x) to remove.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary save-serials">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section('javascript')
+<!-- Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Load Bootstrap JS next (required for modal) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+var currentProductId, currentVariationId, currentKey, currentSubKey;
+var serials = []; // store serials here
+
+// When Serial No button is clicked
+$(document).on('click', '.open-serial-modal', function() {
+    currentProductId = $(this).data('product-id');
+    currentVariationId = $(this).data('variation-id');
+    currentKey = $(this).data('key');
+    currentSubKey = $(this).data('subkey');
+
+    serials = []; // reset serials
+    updateSerialDisplay();
+
+    // Fetch the serial numbers for this product and variation
+    $.ajax({
+        url: '{{ route("product_serials.get", ["product_id" => "__product_id__", "variation_id" => "__variation_id__"]) }}'
+            .replace('__product_id__', currentProductId)
+            .replace('__variation_id__', currentVariationId),
+        method: 'GET',
+        success: function(response) {
+            // Populate the serials array with the fetched serial numbers
+            serials = response.serials || [];
+            updateSerialDisplay(); // Update the display with fetched serials
+        },
+        error: function(xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while fetching serial numbers.'
+            });
+        }
+    });
+
+    $('#serialNoModal').modal('show');
+});
+
+// Function to update the serial numbers display in the modal
+function updateSerialDisplay() {
+    var html = '';
+    serials.forEach(function(serial, index){
+        html += '<span class="badge badge-primary m-1">'+serial+' <a href="#" class="text-white remove-serial" data-index="'+index+'">&times;</a></span>';
+    });
+    $('#serial-list').html(html);
+}
+
+// Remove serial number
+$(document).on('click', '.remove-serial', function(e){
+    e.preventDefault();
+    var index = $(this).data('index');
+    serials.splice(index, 1);
+    updateSerialDisplay();
+});
+
+// Add serial number on input enter or button click
+$(document).on('keypress', '#serial-input', function(e) {
+    if (e.which == 13) { // Enter key
+        e.preventDefault();
+        addSerial();
+    }
+});
+$(document).on('click', '.btn-add-serial', function() {
+    addSerial();
+});
+
+// Add serial to list
+function addSerial() {
+    var serial = $('#serial-input').val().trim();
+    if(serial !== ''){
+        serials.push(serial);
+        $('#serial-input').val('');
+        updateSerialDisplay();
+    }
+}
+
+// Update serial numbers display
+function updateSerialDisplay() {
+    var html = '';
+    serials.forEach(function(serial, index){
+        html += '<span class="badge badge-primary m-1">'+serial+' <a href="#" class="text-white remove-serial" data-index="'+index+'">&times;</a></span>';
+    });
+    $('#serial-list').html(html);
+}
+
+// Remove serial number
+$(document).on('click', '.remove-serial', function(e){
+    e.preventDefault();
+    var index = $(this).data('index');
+    serials.splice(index, 1);
+    updateSerialDisplay();
+});
+
+$(document).on('click', '.save-serials', function() {
+	if(serials.length > 0){
+        // update quantity based on serials count (Add instead of Replace)
+        // var quantityInput = $('#quantity_'+currentKey+'_'+currentVariationId+'_'+currentSubKey);
+        // var existingQuantity = parseFloat(quantityInput.val()) || 0;
+        // var newQuantity = existingQuantity + serials.length;
+        // quantityInput.val(newQuantity);
+		var quantityInput = $('#quantity_'+currentKey+'_'+currentVariationId+'_'+currentSubKey);
+        quantityInput.val(serials.length);
+
+        // Save into database via AJAX
+        $.ajax({
+            url: '{{ route("product_serials.store") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                product_id: currentProductId,
+                variation_id: currentVariationId,
+                serials: serials
+            },
+            success: function(response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Serial numbers saved successfully!'
+                });
+                $('#serialNoModal').modal('hide');
+            },
+            error: function(xhr){
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    let messages = Object.values(xhr.responseJSON.errors)
+                                          .flat()
+                                          .join('<br>');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: messages
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred while saving serial numbers.'
+                    });
+                }
+            }
+        });
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Serial Numbers',
+            text: 'Please enter at least one Serial No.'
+        });
+    }
+});
+
+
+</script>
+@endsection
+

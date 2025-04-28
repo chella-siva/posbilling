@@ -1585,7 +1585,6 @@ function get_recent_transactions(status, element_obj) {
 
 //variation_id is null when weighing_scale_barcode is used.
 function pos_product_row(variation_id = null, purchase_line_id = null, weighing_scale_barcode = null, quantity = 1) {
-
     //Get item addition method
     var item_addtn_method = 0;
     var add_via_ajax = true;
@@ -1735,6 +1734,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                         var new_row = $('table#pos_table tbody')
                             .find('tr')
                             .last();
+                        openSerialModal(new_row, result.serials_available); // You need to pass available serials here
                         new_row.find('.row_edit_product_price_model').modal('show');
                     }
 
@@ -1766,6 +1766,57 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
         });
     }
 }
+function openSerialModal(row, serials) {
+    let modalBody = $('#serial_modal_body');
+    modalBody.empty();
+
+    // Build checkbox list for serials
+    serials.forEach(function(serial) {
+        modalBody.append(`
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="serial_checkbox" value="${serial}"> ${serial}
+                </label>
+            </div>
+        `);
+    });
+
+    // Set the row in modal data
+    $('#serial_modal').data('row', row);
+
+    // Show the modal
+    $('#serial_modal').modal('show');
+}
+
+$('#save_serials_btn').click(function() {
+    var selectedSerials = [];
+    $('.serial_checkbox:checked').each(function() {
+        selectedSerials.push($(this).val());
+    });
+
+    var count = selectedSerials.length;
+    var row = $('#serial_modal').data('row');
+
+    // Debugging step: Log the row to see if it's correct
+    console.log('Row:', row);  // Check if row is valid
+
+    if (row && row.length > 0) {
+        var qtyInput = row.find('.pos_quantity');
+        console.log('Quantity Input:', qtyInput);  // Check if the quantity input is being found
+
+        // Update quantity
+        qtyInput.val(count);
+        qtyInput.trigger('change');
+    } else {
+        console.error('Row is invalid or not found.');
+    }
+
+    // Close the modal
+    $('#serial_modal').modal('hide');
+});
+
+
+
 
 //Update values for each row
 function pos_each_row(row_obj) {

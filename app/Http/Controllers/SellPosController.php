@@ -1939,6 +1939,24 @@ class SellPosController extends Controller
                 $is_serial_no = true;
             }
 
+            $variation = Variation::find($variation_id);
+            $product = Product::find($variation->product_id);
+            $business_id = $product->business_id;
+
+            $business = DB::table('business')
+                ->where('id', $business_id)
+                ->select('enabled_modules')
+                ->first();
+
+            $is_serial_no = false;
+            if ($business && !empty($business->enabled_modules)) {
+                $enabled_modules = json_decode($business->enabled_modules, true);
+
+                if (is_array($enabled_modules) && in_array('Serial_no', $enabled_modules)) {
+                    $is_serial_no = true;
+                }
+            }
+
             if ($variation_id == 'null' && !empty($weighing_barcode)) {
                 $product_details = $this->__parseWeighingBarcode($weighing_barcode);
                 if ($product_details['success']) {
@@ -1951,8 +1969,20 @@ class SellPosController extends Controller
                     return $output;
                 }
             }
+            
 
             $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $is_serial_no);
+
+            if ($is_serial_no) {
+                $serials = DB::table('product_serials')
+                            ->where('variation_id', $variation_id)
+                            ->pluck('serial_no')
+                            ->toArray();
+    
+                $output['serials_available'] = $serials;
+            }
+            $output['enable_sr_no'] = $is_serial_no;
+
 
             if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);

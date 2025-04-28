@@ -492,6 +492,7 @@ class ModuleUtil extends Util
                 'name' => __('restaurant.kitchen_for_restaurant'),
             ],
             'subscription' => ['name' => __('lang_v1.enable_subscription')],
+            'Serial_no' => ['name' => __('lang_v1.enable_serialno')],
             'types_of_service' => ['name' => __('lang_v1.types_of_service'),
                 'tooltip' => __('lang_v1.types_of_service_help_long'),
             ],

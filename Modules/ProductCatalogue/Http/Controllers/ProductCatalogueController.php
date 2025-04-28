@@ -265,9 +265,6 @@ class ProductCatalogueController extends Controller
                     'invoice_no' => $invoice_no
                 ]);
 
-
-
-
              } catch (\Exception $e) {
                  // Log the exception error
                  Log::error('Error processing transaction', [

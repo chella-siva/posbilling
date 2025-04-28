@@ -392,7 +392,9 @@ Route::post('/invoice/{invlayid}/remove-logoImage', [InvoiceLayoutController::cl
     Route::get('stock-transfers/print/{id}', [StockTransferController::class, 'printInvoice']);
     Route::post('stock-transfers/update-status/{id}', [StockTransferController::class, 'updateStatus']);
     Route::resource('stock-transfers', StockTransferController::class);
-
+// web.php
+    Route::post('/product-serials', [OpeningStockController::class, 'store'])->name('product_serials.store');
+    Route::get('/product_serials/get/{product_id}/{variation_id}', [OpeningStockController::class, 'getSerials'])->name('product_serials.get');
     Route::get('/opening-stock/add/{product_id}', [OpeningStockController::class, 'add']);
     Route::post('/opening-stock/save', [OpeningStockController::class, 'save']);
 

@@ -612,6 +612,7 @@ return [
     'subscribe' => 'Subscribe',
     'subscription_interval' => 'Subscription Interval',
     'enable_subscription' => 'Enable Subscription',
+    'enable_serialno' => 'Enable Serial No',
     'subscription_no' => 'Subscription No.',
     'start_subscription' => 'Start Subscription',
     'stop_subscription' => 'Stop Subscription',
