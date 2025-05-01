@@ -42,8 +42,8 @@
                 <thead>
                     <tr class="bg-gray">
                         <th>@lang('account.trial_balance')</th>
-                        <th>@lang('account.debit')</th>
                         <th>@lang('account.credit')</th>
+                        <th>@lang('account.debit')</th>
                     </tr>
                 </thead>
                 <tbody>
