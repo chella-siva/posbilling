@@ -335,7 +335,7 @@ class BusinessUtil extends Util
                         ->leftjoin('currencies AS cur', 'business.currency_id', 'cur.id')
                         ->select(
                             'business.*',
-                            'cur.code as currency_code',
+                            'cur.code as currency_code','cur.currency as currency_name',
                             'cur.symbol as currency_symbol',
                             'thousand_separator',
                             'decimal_separator',

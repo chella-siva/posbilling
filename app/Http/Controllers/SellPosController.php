@@ -378,6 +378,9 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
+         $receipt_details->currencyname = $business_details->currency_name;
+        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
+    
         $output['print_title'] = $receipt_details->invoice_no;
         //If print type browser - return the content, printer - return printer config data, and invoice format config
         if ($receipt_printer_type == 'printer') {
@@ -427,6 +430,9 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
+         $receipt_details->currencyname = $business_details->currency_name;
+        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
+    
         $output['print_title'] = $receipt_details->invoice_no;
         //If print type browser - return the content, printer - return printer config data, and invoice format config
         // if ($receipt_printer_type == 'printer') {
@@ -670,6 +676,8 @@ class SellPosController extends Controller
                     }
                     //update product stock
                     foreach ($input['products'] as $product) {
+                        $serials = $product['serial_nos'] ?? [];
+
                         $decrease_qty = $this->productUtil
                             ->num_uf($product['quantity']);
                         if (!empty($product['base_unit_multiplier'])) {
@@ -891,7 +899,8 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-
+         $receipt_details->currencyname = $business_details->currency_name;
+        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
         if ($is_package_slip) {
             $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
 
@@ -960,6 +969,9 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
+        $receipt_details->currencyname = $business_details->currency_name;
+       $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
+   
 
         return $receipt_details;
     }
@@ -1890,7 +1902,6 @@ class SellPosController extends Controller
                 ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line', 'is_serial_no'))
                 ->render();
         }
-
         return $output;
     }
 
@@ -1981,7 +1992,7 @@ class SellPosController extends Controller
     
                 $output['serials_available'] = $serials;
             }
-            $output['enable_sr_no'] = $is_serial_no;
+            $output['is_serialno'] = $is_serial_no;
 
 
             if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
@@ -3685,6 +3696,9 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
+        $receipt_details->currencyname = $business_details->currency_name;
+       $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
+   
         // if ($is_package_slip) {
         //     $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
         //     return $output;
