@@ -282,7 +282,34 @@ class OrderRequestController extends Controller
 
             $is_direct_sell = true;
 
+            $variation = Variation::find($variation_id);
+            $product = Product::find($variation->product_id);
+            $business_id = $product->business_id;
+
+            $business = DB::table('business')
+                ->where('id', $business_id)
+                ->select('enabled_modules')
+                ->first();
+
+            $is_serial_no = false;
+            if ($business && !empty($business->enabled_modules)) {
+                $enabled_modules = json_decode($business->enabled_modules, true);
+
+                if (is_array($enabled_modules) && in_array('Serial_no', $enabled_modules)) {
+                    $is_serial_no = true;
+                }
+            }
+
             $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
+            if ($is_serial_no) {
+                $serials = DB::table('product_serials')
+                            ->where('variation_id', $variation_id)
+                            ->pluck('serial_no')
+                            ->toArray();
+    
+                $output['serials_available'] = $serials;
+            }
+            $output['is_serialno'] = $is_serial_no;
         } catch (\Exception $e) {
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 

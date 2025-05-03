@@ -1067,20 +1067,62 @@ class PurchaseController extends Controller
                             ->get();
 
                 $last_purchase_line = $this->getLastPurchaseLine($variation_id, $location_id, $supplier_id);
-
-                return view('purchase.partials.purchase_entry_row')
-                    ->with(compact(
-                        'product',
-                        'variations',
-                        'row_count',
-                        'variation_id',
-                        'taxes',
-                        'currency_details',
-                        'hide_tax',
-                        'sub_units',
-                        'is_purchase_order',
-                        'last_purchase_line'
-                    ));
+                $is_serial_no = false;
+                $variation = Variation::find($variation_id);
+                $product = Product::find($variation->product_id);
+                $business_id = $product->business_id;
+    
+                $business = DB::table('business')
+                    ->where('id', $business_id)
+                    ->select('enabled_modules')
+                    ->first();
+                if ($business && !empty($business->enabled_modules)) {
+                    $enabled_modules = json_decode($business->enabled_modules, true);
+    
+                    if (is_array($enabled_modules) && in_array('Serial_no', $enabled_modules)) {
+                        $is_serial_no = true;
+                    }
+                }
+                if ($is_serial_no) {
+                    $serials = DB::table('product_serials')
+                                ->where('variation_id', $variation_id)
+                                ->pluck('serial_no')
+                                ->toArray();
+        
+                    $serials_available = $serials;
+                }
+                // return view('purchase.partials.purchase_entry_row')
+                //     ->with(compact(
+                //         'product',
+                //         'variations',
+                //         'row_count',
+                //         'variation_id',
+                //         'taxes',
+                //         'currency_details','serials_available',
+                //         'hide_tax',
+                //         'sub_units',
+                //         'is_purchase_order',
+                //         'last_purchase_line'
+                //     ));
+                return response()->json([
+                    'html' => view('purchase.partials.purchase_entry_row')
+                                ->with(compact(
+                                    'product',
+                                    'variations',
+                                    'row_count',
+                                    'variation_id',
+                                    'taxes',
+                                    'currency_details',
+                                    'serials_available',
+                                    'hide_tax',
+                                    'sub_units',
+                                    'is_purchase_order',
+                                    'last_purchase_line'
+                                ))->render(),
+                    'serials_available' => $serials_available
+                ]);
+                
+                
             }
         }
     }

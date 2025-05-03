@@ -1734,9 +1734,13 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                         var new_row = $('table#pos_table tbody')
                             .find('tr')
                             .last();
-                        openSerialModal(new_row, result.serials_available); // You need to pass available serials here
-                        new_row.find('.row_edit_product_price_model').modal('show');
+                        // openSerialModal(new_row, result.serials_available); // You need to pass available serials here
+                        // new_row.find('.row_edit_product_price_model').modal('show');
                     }
+                    var new_row1 = $('table#pos_table tbody')
+                    .find('tr')
+                    .last();
+                    openSerialModal(new_row1, result.serials_available); 
 
                     round_row_to_iraqi_dinnar(this_row);
                     __currency_convert_recursively(this_row);
@@ -1744,6 +1748,9 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                     $('input#search_product')
                         .focus()
                         .select();
+                        console.log("hi");
+                        console.log(result.html_content);
+
 
                     //Used in restaurant module
                     if (result.html_modifier) {
@@ -1787,7 +1794,6 @@ function openSerialModal(row, serials) {
     // Show the modal
     $('#serial_modal').modal('show');
 }
-
 $('#save_serials_btn').click(function() {
     var selectedSerials = [];
     $('.serial_checkbox:checked').each(function() {
@@ -1797,23 +1803,39 @@ $('#save_serials_btn').click(function() {
     var count = selectedSerials.length;
     var row = $('#serial_modal').data('row');
 
-    // Debugging step: Log the row to see if it's correct
-    console.log('Row:', row);  // Check if row is valid
-
     if (row && row.length > 0) {
         var qtyInput = row.find('.pos_quantity');
-        console.log('Quantity Input:', qtyInput);  // Check if the quantity input is being found
-
-        // Update quantity
         qtyInput.val(count);
         qtyInput.trigger('change');
-    } else {
-        console.error('Row is invalid or not found.');
+
+        // Remove old hidden serial inputs
+        row.find('input[name^="products["][name$="[serial_nos][]"]').remove();
+
+        // Append new hidden serial inputs
+        var productIndex = row.data('row_index');
+
+        selectedSerials.forEach(function(serial) {
+            var input = $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'products[' + productIndex + '][serial_nos][]')
+                .val(serial);
+            row.append(input);
+        });
+
+        // Remove old serial number display if present
+        row.find('.selected-serials-display').remove();
+
+        // Display selected serials under quantity input
+        var serialDisplay = $('<div>')
+            .addClass('selected-serials-display mt-2 text-sm text-primary')
+            .html('<strong>Serials:</strong> ' + selectedSerials.join(', '));
+
+        row.find('.input-group.input-number').after(serialDisplay);
     }
 
-    // Close the modal
     $('#serial_modal').modal('hide');
 });
+
 
 
 

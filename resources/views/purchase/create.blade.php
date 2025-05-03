@@ -579,6 +579,23 @@
 <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
 	@include('contact.create', ['quick_add' => true])
 </div>
+<div class="modal fade types_of_service_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+<div class="modal fade" id="serial_modal" tabindex="-1" role="dialog" aria-labelledby="serialModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="serialModalLabel">Select Serial Numbers</h4>
+      </div>
+      <div class="modal-body" id="serial_modal_body">
+        <!-- Serial checkboxes will come here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="save_serials_btn" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @include('purchase.partials.import_purchase_products_modal')
 <!-- /.content -->

@@ -676,7 +676,6 @@ class SellPosController extends Controller
                     }
                     //update product stock
                     foreach ($input['products'] as $product) {
-                        $serials = $product['serial_nos'] ?? [];
 
                         $decrease_qty = $this->productUtil
                             ->num_uf($product['quantity']);
@@ -903,7 +902,6 @@ class SellPosController extends Controller
         $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
         if ($is_package_slip) {
             $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
-
             return $output;
         }
 

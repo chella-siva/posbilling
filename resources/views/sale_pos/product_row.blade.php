@@ -14,7 +14,7 @@
 @endforeach
 
 <tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif>
-	@if(!empty($is_serial_no))
+	@if(!empty($is_serial_no1))
 		<td class="serial_no" ></td>
 	@endif
 	<td>

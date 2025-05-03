@@ -293,6 +293,10 @@ class TransactionUtil extends Util
         $combo_lines = [];
         $products_modified_combo = [];
         foreach ($products as $product) {
+            $serials = $product['serial_nos'] ?? [];
+
+            // Convert serial numbers array into JSON
+            $serials_json = json_encode($serials);
             $multiplier = 1;
             if (isset($product['sub_unit_id']) && $product['sub_unit_id'] == $product['product_unit_id']) {
                 unset($product['sub_unit_id']);
@@ -325,6 +329,7 @@ class TransactionUtil extends Util
                                         'product_id' => $product['modifier_set_id'][$key],
                                         'variation_id' => $value,
                                         'quantity' => $modifier_quantity,
+                                        'serial_nos' => $serials_json, // store as JSON
                                         'unit_price_before_discount' => $this_price,
                                         'unit_price' => $this_price,
                                         'unit_price_inc_tax' => $this_price,
@@ -370,6 +375,7 @@ class TransactionUtil extends Util
                     'product_id' => $product['product_id'],
                     'variation_id' => $product['variation_id'],
                     'quantity' => $uf_quantity * $multiplier,
+                    'serial_nos' => $serials_json, // store as JSON
                     'unit_price_before_discount' => $unit_price_before_discount,
                     'unit_price' => $unit_price,
                     'line_discount_type' => ! empty($product['line_discount_type']) ? $product['line_discount_type'] : null,
@@ -407,6 +413,7 @@ class TransactionUtil extends Util
                                     'product_id' => $product['modifier_set_id'][$key],
                                     'variation_id' => $value,
                                     'quantity' => $modifier_quantity,
+                                    'serial_nos' => $serials_json, // store as JSON
                                     'unit_price_before_discount' => $this_price,
                                     'unit_price' => $this_price,
                                     'unit_price_inc_tax' => $this_price,

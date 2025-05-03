@@ -144,8 +144,26 @@
 	</div>
 	
 	{!! Form::close() !!}
+	
 </section>
 
+<div class="modal fade types_of_service_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+<div class="modal fade" id="serial_modal" tabindex="-1" role="dialog" aria-labelledby="serialModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="serialModalLabel">Select Serial Numbers</h4>
+      </div>
+      <div class="modal-body" id="serial_modal_body">
+        <!-- Serial checkboxes will come here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="save_serials_btn" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 @include('sale_pos.partials.configure_search_modal')
 
 @stop
@@ -387,6 +405,7 @@ function or_product_row(variation_id = null, purchase_line_id = null, weighing_s
                             .find('tr')
                             .last();
                         new_row.find('.row_edit_product_price_model').modal('show');
+						openSerialModal(new_row, result.serials_available); // You need to pass available serials here
                     }
 
                     round_row_to_iraqi_dinnar(this_row);
@@ -417,6 +436,56 @@ function or_product_row(variation_id = null, purchase_line_id = null, weighing_s
         });
     }
 }
+
+function openSerialModal(row, serials) {
+    let modalBody = $('#serial_modal_body');
+    modalBody.empty();
+
+    // Build checkbox list for serials
+    serials.forEach(function(serial) {
+        modalBody.append(`
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="serial_checkbox" value="${serial}"> ${serial}
+                </label>
+            </div>
+        `);
+    });
+
+    // Set the row in modal data
+    $('#serial_modal').data('row', row);
+
+    // Show the modal
+    $('#serial_modal').modal('show');
+}
+
+$('#save_serials_btn').click(function() {
+    var selectedSerials = [];
+    $('.serial_checkbox:checked').each(function() {
+        selectedSerials.push($(this).val());
+    });
+
+    var count = selectedSerials.length;
+    var row = $('#serial_modal').data('row');
+
+    // Debugging step: Log the row to see if it's correct
+    console.log('Row:', row);  // Check if row is valid
+
+    if (row && row.length > 0) {
+        var qtyInput = row.find('.pos_quantity');
+        console.log('Quantity Input:', qtyInput);  // Check if the quantity input is being found
+
+        // Update quantity
+        qtyInput.val(count);
+        qtyInput.trigger('change');
+    } else {
+        console.error('Row is invalid or not found.');
+    }
+
+    // Close the modal
+    $('#serial_modal').modal('hide');
+});
+
 
             $('#shipping_documents').fileinput({
 		        showUpload: false,

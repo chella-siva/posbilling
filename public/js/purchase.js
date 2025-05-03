@@ -746,14 +746,73 @@ function get_purchase_entry_row(product_id, variation_id) {
         $.ajax({
             method: 'POST',
             url: '/purchases/get_purchase_entry_row',
-            dataType: 'html',
+            dataType: 'json',
             data: data,
             success: function(result) {
-                append_purchase_lines(result, row_count);
+                append_purchase_lines(result.html, row_count);
+                var new_row1 = $('table#purchase_entry_table tbody').find('tr').last();
+                openSerialModal(new_row1, result.serials_available); 
             },
+            // success: function(result) {
+            //     append_purchase_lines(result, row_count);
+            //     var new_row1 = $('table#purchase_entry_table tbody')
+            //     .find('tr')
+            //     .last();
+            //     openSerialModal(new_row1, result.serials_available); 
+            // },
         });
     }
 }
+
+function openSerialModal(row, serials) {
+    let modalBody = $('#serial_modal_body');
+    modalBody.empty();
+
+    // Build checkbox list for serials
+    serials.forEach(function(serial) {
+        modalBody.append(`
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="serial_checkbox" value="${serial}"> ${serial}
+                </label>
+            </div>
+        `);
+    });
+
+    // Set the row in modal data
+    $('#serial_modal').data('row', row);
+
+    // Show the modal
+    $('#serial_modal').modal('show');
+}
+
+$('#save_serials_btn').click(function() {
+    var selectedSerials = [];
+    $('.serial_checkbox:checked').each(function() {
+        selectedSerials.push($(this).val());
+    });
+
+    var count = selectedSerials.length;
+    var row = $('#serial_modal').data('row');
+
+    // Debugging step: Log the row to see if it's correct
+    console.log('Row:', row);  // Check if row is valid
+
+    if (row && row.length > 0) {
+        var qtyInput = row.find('.pos_quantity');
+        console.log('Quantity Input:', qtyInput);  // Check if the quantity input is being found
+
+        // Update quantity
+        qtyInput.val(count);
+        qtyInput.trigger('change');
+    } else {
+        console.error('Row is invalid or not found.');
+    }
+
+    // Close the modal
+    $('#serial_modal').modal('hide');
+});
+
 
 function append_purchase_lines(data, row_count, trigger_change = false) {
     $(data)
