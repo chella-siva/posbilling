@@ -332,6 +332,7 @@ class AccountController extends Controller
                                 'account_transactions.transaction_id',
                                 'account_transactions.id',
                                 'account_transactions.note',
+                                'tp.note as notes',
                                 'tp.is_advance',
                                 'tp.is_return',
                                 'tp.payment_ref_no',
@@ -374,6 +375,11 @@ class AccountController extends Controller
                             } else {
                                 return '';
                             }
+                        })
+                        ->addColumn('payment_note', function ($row) {
+                            $note = !empty($row->note) ? $row->note : $row->notes;
+                        
+                            return !empty($note) ? e($note) : '<span class="text-muted">—</span>';
                         })
                         ->addColumn('payment_details', function ($row) {
                             $arr = [];
@@ -472,7 +478,7 @@ class AccountController extends Controller
                             })
                             ->removeColumn('id')
                             ->removeColumn('is_closed')
-                            ->rawColumns(['credit', 'debit', 'balance', 'sub_type', 'action', 'payment_details'])
+                            ->rawColumns(['credit', 'debit', 'balance', 'sub_type', 'action', 'payment_details','payment_note'])
                             ->make(true);
         }
         $account = Account::where('business_id', $business_id)
