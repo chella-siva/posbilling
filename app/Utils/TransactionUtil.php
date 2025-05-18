@@ -293,10 +293,12 @@ class TransactionUtil extends Util
         $combo_lines = [];
         $products_modified_combo = [];
         foreach ($products as $product) {
-            $serials = $product['serial_nos'] ?? [];
+
+             $serials = $product['serial_nos'] ?? [];
 
             // Convert serial numbers array into JSON
             $serials_json = json_encode($serials);
+
             $multiplier = 1;
             if (isset($product['sub_unit_id']) && $product['sub_unit_id'] == $product['product_unit_id']) {
                 unset($product['sub_unit_id']);

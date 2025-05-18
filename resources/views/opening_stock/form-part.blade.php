@@ -70,16 +70,27 @@
 		@endif
 	</td>
 	<td>
-	<div class="input-group">
-		{!! Form::text('stocks[' . $key . '][' . $variation->id . '][' . $sub_key . '][quantity]', @format_quantity($qty), ['class' => 'form-control input-sm input_number purchase_quantity input_quantity', 'required', 'id' => 'quantity_'.$key.'_'.$variation->id.'_'.$sub_key]) !!}
-		<span class="input-group-addon">
-			{{ $product->unit->short_name }}
-		</span>
-		<span class="input-group-btn">
-			<button type="button" class="btn btn-sm btn-primary open-serial-modal" data-product-id="{{$variation->product_id}}" data-variation-id="{{$variation->id}}" data-key="{{$key}}" data-subkey="{{$sub_key}}"><i class="fa fa-barcode"></i> Serial No</button>
-		</span>
+		<div class="input-group">
+		  {!! Form::text('stocks[' . $key . '][' . $variation->id . '][' . $sub_key . '][quantity]', @format_quantity($qty) , ['class' => 'form-control input-sm input_number purchase_quantity input_quantity', 'required']); !!}
+		  <span class="input-group-addon">
+		    {{ $product->unit->short_name }}
+		  </span>
+		  	@php
+				$enabled_modules = $business->enabled_modules ?? [];
+			@endphp
+			
+			@if(in_array('product_serial_no', $enabled_modules))
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-sm btn-primary open-serial-modal"
+						data-product-id="{{ $variation->product_id }}"
+						data-variation-id="{{ $variation->id }}"
+						data-key="{{ $key }}"
+						data-subkey="{{ $sub_key }}">
+						<i class="fa fa-barcode"></i> Serial No
+					</button>
+				</span>
+			@endif
 		</div>
-
 		@if(!empty($product->second_unit))
 			<br>
             <span>
@@ -185,8 +196,7 @@
 		@endforelse
 	</div>
 </div>
-<!-- Serial No Modal -->
-<!-- Serial No Modal -->
+
 <div class="modal fade" id="serialNoModal" tabindex="-1" role="dialog" aria-labelledby="serialNoModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -213,37 +223,34 @@
   </div>
 </div>
 
-@section('javascript')
-<!-- Load jQuery first -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Load Bootstrap JS next (required for modal) -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
 var currentProductId, currentVariationId, currentKey, currentSubKey;
 var serials = []; // store serials here
 
-// When Serial No button is clicked
 $(document).on('click', '.open-serial-modal', function() {
     currentProductId = $(this).data('product-id');
     currentVariationId = $(this).data('variation-id');
-    currentKey = $(this).data('key');
+    currentKey = $(this).data('key'); // This is now location_id
     currentSubKey = $(this).data('subkey');
 
     serials = []; // reset serials
     updateSerialDisplay();
 
-    // Fetch the serial numbers for this product and variation
+    // Adjust route to include location_id
+    let url = '{{ route("product_serials.get", ["product_id" => "__product_id__", "variation_id" => "__variation_id__", "location_id" => "__location_id__"]) }}'
+        .replace('__product_id__', currentProductId)
+        .replace('__variation_id__', currentVariationId)
+        .replace('__location_id__', currentKey); // pass key as location_id
+
     $.ajax({
-        url: '{{ route("product_serials.get", ["product_id" => "__product_id__", "variation_id" => "__variation_id__"]) }}'
-            .replace('__product_id__', currentProductId)
-            .replace('__variation_id__', currentVariationId),
+        url: url,
         method: 'GET',
         success: function(response) {
-            // Populate the serials array with the fetched serial numbers
             serials = response.serials || [];
-            updateSerialDisplay(); // Update the display with fetched serials
+            updateSerialDisplay();
         },
         error: function(xhr) {
             Swal.fire({
@@ -256,6 +263,7 @@ $(document).on('click', '.open-serial-modal', function() {
 
     $('#serialNoModal').modal('show');
 });
+
 
 // Function to update the serial numbers display in the modal
 function updateSerialDisplay() {
@@ -330,6 +338,7 @@ $(document).on('click', '.save-serials', function() {
                 _token: '{{ csrf_token() }}',
                 product_id: currentProductId,
                 variation_id: currentVariationId,
+				location_id: currentKey,
                 serials: serials
             },
             success: function(response){
@@ -371,5 +380,3 @@ $(document).on('click', '.save-serials', function() {
 
 
 </script>
-@endsection
-

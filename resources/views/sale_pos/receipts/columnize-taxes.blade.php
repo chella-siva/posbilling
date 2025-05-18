@@ -459,6 +459,9 @@
                             		{!!$line['product_description']!!}
                             	</small>
                             @endif 
+							<small>
+                            		{!!$line['serial_nos']!!}
+                            	</small>
                             @if(!empty($line['sell_line_note']))
                             <br>
                             <small class="text-muted">

@@ -317,6 +317,10 @@
                         searchable: false
                     },
                     {
+                        data: 'serial_numbers',
+                        searchable: false
+                    },
+                    {
                         data: 'type',
                         name: 'products.type'
                     },
@@ -337,6 +341,7 @@
                         data: 'sku',
                         name: 'products.sku'
                     },
+
                     {
                         data: 'product_custom_field1',
                         name: 'products.product_custom_field1',

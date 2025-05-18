@@ -248,6 +248,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/import-sales/preview', [ImportSalesController::class, 'preview']);
     Route::post('/import-sales', [ImportSalesController::class, 'import']);
     Route::get('/revert-sale-import/{batch}', [ImportSalesController::class, 'revertSaleImport']);
+    Route::get('/get-serials', [ProductController::class, 'getSerials']);
 
     Route::get('/sells/pos/get_product_row/{variation_id}/{location_id}', [SellPosController::class, 'getProductRow']);
     Route::post('/sells/pos/get_payment_row', [SellPosController::class, 'getPaymentRow']);
@@ -392,11 +393,11 @@ Route::post('/invoice/{invlayid}/remove-logoImage', [InvoiceLayoutController::cl
     Route::get('stock-transfers/print/{id}', [StockTransferController::class, 'printInvoice']);
     Route::post('stock-transfers/update-status/{id}', [StockTransferController::class, 'updateStatus']);
     Route::resource('stock-transfers', StockTransferController::class);
-// web.php
-    Route::post('/product-serials', [OpeningStockController::class, 'store'])->name('product_serials.store');
-    Route::get('/product_serials/get/{product_id}/{variation_id}', [OpeningStockController::class, 'getSerials'])->name('product_serials.get');
+
     Route::get('/opening-stock/add/{product_id}', [OpeningStockController::class, 'add']);
     Route::post('/opening-stock/save', [OpeningStockController::class, 'save']);
+    Route::get('/product_serials/get/{product_id}/{variation_id}/{location_id}', [OpeningStockController::class, 'getSerials'])->name('product_serials.get');
+    Route::post('/product-serials', [OpeningStockController::class, 'store'])->name('product_serials.store');
 
     //Customer Groups
     Route::resource('customer-group', CustomerGroupController::class);

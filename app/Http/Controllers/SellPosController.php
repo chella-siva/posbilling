@@ -378,9 +378,6 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-         $receipt_details->currencyname = $business_details->currency_name;
-        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
-    
         $output['print_title'] = $receipt_details->invoice_no;
         //If print type browser - return the content, printer - return printer config data, and invoice format config
         if ($receipt_printer_type == 'printer') {
@@ -430,9 +427,6 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-         $receipt_details->currencyname = $business_details->currency_name;
-        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
-    
         $output['print_title'] = $receipt_details->invoice_no;
         //If print type browser - return the content, printer - return printer config data, and invoice format config
         // if ($receipt_printer_type == 'printer') {
@@ -676,7 +670,6 @@ class SellPosController extends Controller
                     }
                     //update product stock
                     foreach ($input['products'] as $product) {
-
                         $decrease_qty = $this->productUtil
                             ->num_uf($product['quantity']);
                         if (!empty($product['base_unit_multiplier'])) {
@@ -898,10 +891,10 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-         $receipt_details->currencyname = $business_details->currency_name;
-        $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
+
         if ($is_package_slip) {
             $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
+
             return $output;
         }
 
@@ -967,9 +960,6 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-        $receipt_details->currencyname = $business_details->currency_name;
-       $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
-   
 
         return $receipt_details;
     }
@@ -1897,9 +1887,10 @@ class SellPosController extends Controller
             }
 
             $output['html_content'] = view('sale_pos.product_row')
-                ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line', 'is_serial_no'))
+                ->with(compact('product','location_id', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line', 'is_serial_no'))
                 ->render();
         }
+
         return $output;
     }
 
@@ -1948,24 +1939,6 @@ class SellPosController extends Controller
                 $is_serial_no = true;
             }
 
-            $variation = Variation::find($variation_id);
-            $product = Product::find($variation->product_id);
-            $business_id = $product->business_id;
-
-            $business = DB::table('business')
-                ->where('id', $business_id)
-                ->select('enabled_modules')
-                ->first();
-
-            $is_serial_no = false;
-            if ($business && !empty($business->enabled_modules)) {
-                $enabled_modules = json_decode($business->enabled_modules, true);
-
-                if (is_array($enabled_modules) && in_array('Serial_no', $enabled_modules)) {
-                    $is_serial_no = true;
-                }
-            }
-
             if ($variation_id == 'null' && !empty($weighing_barcode)) {
                 $product_details = $this->__parseWeighingBarcode($weighing_barcode);
                 if ($product_details['success']) {
@@ -1978,20 +1951,8 @@ class SellPosController extends Controller
                     return $output;
                 }
             }
-            
 
             $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $is_serial_no);
-
-            if ($is_serial_no) {
-                $serials = DB::table('product_serials')
-                            ->where('variation_id', $variation_id)
-                            ->pluck('serial_no')
-                            ->toArray();
-    
-                $output['serials_available'] = $serials;
-            }
-            $output['is_serialno'] = $is_serial_no;
-
 
             if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);
@@ -3694,9 +3655,6 @@ class SellPosController extends Controller
             'decimal_separator' => $business_details->decimal_separator,
         ];
         $receipt_details->currency = $currency_details;
-        $receipt_details->currencyname = $business_details->currency_name;
-       $receipt_details->total_in_words = ucwords($receipt_details->total_in_words).' ' . $receipt_details->currencyname .' Only';
-   
         // if ($is_package_slip) {
         //     $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
         //     return $output;

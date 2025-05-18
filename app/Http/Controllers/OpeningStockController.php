@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\BusinessLocation;
 use App\Product;
+use App\Business;
 use App\PurchaseLine;
 use App\Transaction;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\ProductSerial;
-use Illuminate\Validation\Rule;
 
 class OpeningStockController extends Controller
 {
@@ -40,6 +39,81 @@ class OpeningStockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+public function getSerials($product_id, $variation_id, $location_id)
+{
+
+    // Fetch serial numbers from variation_location_details table with business_id
+    $records = DB::table('variation_location_details')
+                ->where('product_id', $product_id)
+                ->where('variation_id', $variation_id)
+                ->where('location_id', $location_id)
+                ->whereNotNull('serial_nos')
+                ->pluck('serial_nos');
+
+    $serials = [];
+
+    foreach ($records as $serialJson) {
+        $decoded = json_decode($serialJson, true);
+        if (is_array($decoded)) {
+            $serials = array_merge($serials, $decoded);
+        } else {
+            $serials = array_merge($serials, explode(',', $serialJson));
+        }
+    }
+
+    // Remove duplicates and trim
+    $serials = array_unique(array_map('trim', $serials));
+
+    return response()->json(['serials' => $serials]);
+}
+
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'product_id' => 'required|integer',
+        'variation_id' => 'required|integer',
+        'location_id' => 'required|integer',
+        'serials' => 'required|array',
+        'serials.*' => [
+            'required',
+            'string',
+            'distinct',
+        ],
+    ], [
+        'serials.*.distinct' => 'Duplicate serial numbers are not allowed.',
+        'serials.*.required' => 'Serial number is required.',
+    ]);
+
+
+    // Find the target variation_location_details record
+    $record = DB::table('variation_location_details')
+        ->where('product_id', $validated['product_id'])
+        ->where('variation_id', $validated['variation_id'])
+        ->where('location_id', $validated['location_id'])
+        ->first();
+
+    if (!$record) {
+        return response()->json([
+            'error' => 'Record not found for the given product, variation, and location.'
+        ], 404);
+    }
+
+    // Save serial numbers as JSON or comma-separated string
+    $serialsJson = json_encode($validated['serials']);
+
+    // Update the record
+    DB::table('variation_location_details')
+        ->where('id', $record->id)
+        ->update([
+            'serial_nos' => $serialsJson,
+            'updated_at' => now(),
+        ]);
+
+    return response()->json(['success' => true]);
+}
+
+
     public function add($product_id)
     {
         if (! auth()->user()->can('product.opening_stock')) {
@@ -47,6 +121,7 @@ class OpeningStockController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
 
         //Get the product
         $product = Product::where('business_id', $business_id)
@@ -58,9 +133,6 @@ class OpeningStockController extends Controller
                                 'second_unit',
                             ])
                             ->first();
-
-        
-
         if (! empty($product) && $product->enable_stock == 1) {
             //Get Opening Stock Transactions for the product if exists
             $transactions = Transaction::where('business_id', $business_id)
@@ -79,15 +151,9 @@ class OpeningStockController extends Controller
                         $k = 0;
                         $purchase_lines[$purchase_line->variation_id] = [];
                     }
-                    $serial_quantity = DB::table('product_serials')
-                        ->where('product_id', $product_id)
-                        ->where('variation_id', $purchase_line->variation_id)
-                        ->count();
 
                     //Show only remaining quantity for editing opening stock.
-                    // $purchase_lines[$purchase_line->variation_id][$k]['quantity'] = $purchase_line->quantity_remaining;
-                    $purchase_lines[$purchase_line->variation_id][$k]['quantity'] = $serial_quantity;
-
+                    $purchase_lines[$purchase_line->variation_id][$k]['quantity'] = $purchase_line->quantity_remaining;
                     $purchase_lines[$purchase_line->variation_id][$k]['purchase_price'] = $purchase_line->purchase_price;
                     $purchase_lines[$purchase_line->variation_id][$k]['purchase_line_id'] = $purchase_line->id;
                     $purchase_lines[$purchase_line->variation_id][$k]['exp_date'] = $purchase_line->exp_date;
@@ -126,7 +192,8 @@ class OpeningStockController extends Controller
                         'locations',
                         'purchases',
                         'enable_expiry',
-                        'enable_lot'
+                        'enable_lot',
+                        'business'
                     ));
             }
 
@@ -136,81 +203,11 @@ class OpeningStockController extends Controller
                         'locations',
                         'purchases',
                         'enable_expiry',
-                        'enable_lot'
+                        'enable_lot',
+                        'business'
                     ));
         }
     }
-
-    public function getSerials($productId, $variationId)
-{
-    // Retrieve serial numbers from the database or any storage
-    $serials = ProductSerial::where('product_id', $productId)
-                            ->where('variation_id', $variationId)
-                            ->pluck('serial_no')
-                            ->toArray();
-
-    return response()->json(['serials' => $serials]);
-}
-
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'product_id' => 'required|integer',
-        'variation_id' => 'nullable|integer',
-        'serials' => 'required|array',
-        'serials.*' => [
-            'required',
-            'string',
-            'distinct',
-            Rule::unique('product_serials', 'serial_no')->where(function ($query) use ($request) {
-                return $query->where('product_id', '!=', $request->input('product_id'))
-                             ->where('variation_id', '!=', $request->input('variation_id'));
-            }),
-        ],
-    ], [
-        'serials.*.unique' => 'This serial number has already been taken.',
-        'serials.*.distinct' => 'Duplicate serial numbers are not allowed.',
-        'serials.*.required' => 'Serial number is required.',
-    ]);
-
-    // Delete existing records for the same product_id and variation_id
-    ProductSerial::where('product_id', $validated['product_id'])
-        ->where('variation_id', $validated['variation_id'])
-        ->delete();
-
-    // Prepare data for insertion
-    $serialsData = [];
-    foreach ($validated['serials'] as $serial) {
-        // Check if the serial number already exists for other products/variations
-        $existingSerial = ProductSerial::where('serial_no', $serial)
-            ->where('product_id', '!=', $validated['product_id'])
-            ->where('variation_id', '!=', $validated['variation_id'])
-            ->first();
-
-        if ($existingSerial) {
-            // Serial number already exists for other products/variations, handle the error
-            return response()->json([
-                'error' => 'Serial number ' . $serial . ' already exists.'
-            ], 400);
-        }
-
-        // If serial does not exist, prepare for insertion
-        $serialsData[] = [
-            'product_id' => $validated['product_id'],
-            'variation_id' => $validated['variation_id'],
-            'serial_no' => $serial,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-    }
-
-    // Insert all the new serials in one go
-    if (!empty($serialsData)) {
-        ProductSerial::insert($serialsData);
-    }
-
-    return response()->json(['success' => true]);
-}
 
     /**
      * Update the specified resource in storage.

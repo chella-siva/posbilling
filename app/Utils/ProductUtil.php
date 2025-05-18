@@ -1122,78 +1122,104 @@ class ProductUtil extends Util
      * @param  int  $user_id
      * @return void
      */
-    public function addSingleProductOpeningStock($business_id, $product, $input, $transaction_date, $user_id)
-    {
-        $locations = BusinessLocation::forDropdown($business_id)->toArray();
+ public function addSingleProductOpeningStock($business_id, $product, $input, $transaction_date, $user_id)
+{
+    $locations = BusinessLocation::forDropdown($business_id)->toArray();
 
-        $tax_percent = ! empty($product->product_tax->amount) ? $product->product_tax->amount : 0;
-        $tax_id = ! empty($product->product_tax->id) ? $product->product_tax->id : null;
+    $tax_percent = !empty($product->product_tax->amount) ? $product->product_tax->amount : 0;
+    $tax_id = !empty($product->product_tax->id) ? $product->product_tax->id : null;
 
-        foreach ($input as $key => $value) {
-            $location_id = $key;
-            $purchase_total = 0;
-            //Check if valid location
-            if (array_key_exists($location_id, $locations)) {
-                $purchase_lines = [];
+    foreach ($input as $key => $value) {
+        $location_id = $key;
+        $purchase_total = 0;
 
-                $purchase_price = $this->num_uf(trim($value['purchase_price']));
-                $item_tax = $this->calc_percentage($purchase_price, $tax_percent);
-                $purchase_price_inc_tax = $purchase_price + $item_tax;
-                $qty = $this->num_uf(trim($value['quantity']));
+        // Check if valid location
+        if (array_key_exists($location_id, $locations)) {
+            $purchase_lines = [];
 
-                $exp_date = null;
-                if (! empty($value['exp_date'])) {
-                    $exp_date = \Carbon::createFromFormat('d-m-Y', $value['exp_date'])->format('Y-m-d');
+            $purchase_price = $this->num_uf(trim($value['purchase_price']));
+            $item_tax = $this->calc_percentage($purchase_price, $tax_percent);
+            $purchase_price_inc_tax = $purchase_price + $item_tax;
+            $qty = $this->num_uf(trim($value['quantity']));
+
+            $exp_date = null;
+            if (!empty($value['exp_date'])) {
+                $exp_date = \Carbon::createFromFormat('d-m-Y', $value['exp_date'])->format('Y-m-d');
+            }
+
+            $lot_number = null;
+            if (!empty($value['lot_number'])) {
+                $lot_number = $value['lot_number'];
+            }
+
+            if ($qty > 0) {
+                $qty_formated = $this->num_f($qty);
+                // Calculate transaction total
+                $purchase_total += ($purchase_price_inc_tax * $qty);
+                $variation_id = $product->variations->first()->id;
+
+                // Save or update variation_location_details record
+                $variationLocationDetail = VariationLocationDetails::firstOrNew([
+                    'product_id' => $product->id,
+                    'product_variation_id' => $variation_id,
+                    'variation_id' => $variation_id,
+                    'location_id' => $location_id,
+                ]);
+
+                $variationLocationDetail->qty_available = $qty_formated;
+
+                // Save serials if available
+                if (!empty($value['serials'])) {
+                    $serials = $value['serials'];
+
+                    if (is_string($serials)) {
+                        $serials = json_decode($serials, true);
+                    }
+
+                    if (is_array($serials)) {
+                        $variationLocationDetail->serial_nos = json_encode($serials);
+                    }
                 }
 
-                $lot_number = null;
-                if (! empty($value['lot_number'])) {
-                    $lot_number = $value['lot_number'];
-                }
+                $variationLocationDetail->save();
 
-                if ($qty > 0) {
-                    $qty_formated = $this->num_f($qty);
-                    //Calculate transaction total
-                    $purchase_total += ($purchase_price_inc_tax * $qty);
-                    $variation_id = $product->variations->first()->id;
+                $purchase_line = new PurchaseLine();
+                $purchase_line->product_id = $product->id;
+                $purchase_line->variation_id = $variation_id;
+                $purchase_line->item_tax = $item_tax;
+                $purchase_line->tax_id = $tax_id;
+                $purchase_line->quantity = $qty;
+                $purchase_line->pp_without_discount = $purchase_price;
+                $purchase_line->purchase_price = $purchase_price;
+                $purchase_line->purchase_price_inc_tax = $purchase_price_inc_tax;
+                $purchase_line->exp_date = $exp_date;
+                $purchase_line->lot_number = $lot_number;
+                $purchase_lines[] = $purchase_line;
 
-                    $purchase_line = new PurchaseLine();
-                    $purchase_line->product_id = $product->id;
-                    $purchase_line->variation_id = $variation_id;
-                    $purchase_line->item_tax = $item_tax;
-                    $purchase_line->tax_id = $tax_id;
-                    $purchase_line->quantity = $qty;
-                    $purchase_line->pp_without_discount = $purchase_price;
-                    $purchase_line->purchase_price = $purchase_price;
-                    $purchase_line->purchase_price_inc_tax = $purchase_price_inc_tax;
-                    $purchase_line->exp_date = $exp_date;
-                    $purchase_line->lot_number = $lot_number;
-                    $purchase_lines[] = $purchase_line;
+                // Update product quantity helper if needed
+                $this->updateProductQuantity($location_id, $product->id, $variation_id, $qty_formated);
+            }
 
-                    $this->updateProductQuantity($location_id, $product->id, $variation_id, $qty_formated);
-                }
-
-                //create transaction & purchase lines
-                if (! empty($purchase_lines)) {
-                    $transaction = Transaction::create(
-                        [
-                            'type' => 'opening_stock',
-                            'opening_stock_product_id' => $product->id,
-                            'status' => 'received',
-                            'business_id' => $business_id,
-                            'transaction_date' => $transaction_date,
-                            'total_before_tax' => $purchase_total,
-                            'location_id' => $location_id,
-                            'final_total' => $purchase_total,
-                            'payment_status' => 'paid',
-                            'created_by' => $user_id,
-                        ]
-              );
-                    $transaction->purchase_lines()->saveMany($purchase_lines);
-                }
+            // Create transaction & purchase lines
+            if (!empty($purchase_lines)) {
+                $transaction = Transaction::create([
+                    'type' => 'opening_stock',
+                    'opening_stock_product_id' => $product->id,
+                    'status' => 'received',
+                    'business_id' => $business_id,
+                    'transaction_date' => $transaction_date,
+                    'total_before_tax' => $purchase_total,
+                    'location_id' => $location_id,
+                    'final_total' => $purchase_total,
+                    'payment_status' => 'paid',
+                    'created_by' => $user_id,
+                ]);
+                $transaction->purchase_lines()->saveMany($purchase_lines);
             }
         }
     }
+}
+
 
     /**
      * Add/Edit transaction purchase lines
@@ -1276,6 +1302,38 @@ class ProductUtil extends Util
 
                 $this->updateProductFromPurchase($variation_data);
             }
+
+            if (!empty($data['serials']) && is_array($data['serials'])) {
+                $serials = array_map('trim', $data['serials']); // Clean whitespace
+                $serials = array_filter($serials); // Remove empty values
+
+                if (!empty($serials)) {
+                    // Find or create the variation_location_details row
+                    $vld = \App\Models\VariationLocationDetails::firstOrNew([
+                        'variation_id' => $data['variation_id'],
+                        'location_id' => $transaction->location_id,
+                    ]);
+
+                    // Merge with existing serials (avoid overwriting old ones)
+                    $existing_serials = [];
+                    if (!empty($vld->serial_nos)) {
+                        $existing_serials = json_decode($vld->serial_nos, true) ?? [];
+                    }
+
+                    // Merge and keep unique serials
+                    $merged_serials = array_unique(array_merge($existing_serials, $serials));
+                    $vld->serial_nos = json_encode(array_values($merged_serials));
+
+                    // Set product_id if needed
+                    if (empty($vld->product_id)) {
+                        $vld->product_id = $data['product_id'];
+                    }
+
+                    // Save the changes
+                    $vld->save();
+                }
+            }
+
 
             if ($transaction->type == 'purchase_order') {
                 //Update purchase requisition line quantity received

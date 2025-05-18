@@ -911,18 +911,25 @@
 <div class="modal fade quick_add_product_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle"></div>
 
 <div class="modal fade types_of_service_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
-<div class="modal fade" id="serial_modal" tabindex="-1" role="dialog" aria-labelledby="serialModalLabel">
-  <div class="modal-dialog" role="document">
+
+<!-- Serial No. Modal -->
+<div class="modal fade" id="serialModal" tabindex="-1" role="dialog" aria-labelledby="serialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="serialModalLabel">Select Serial Numbers</h4>
+        <h5 class="modal-title">Select Serial Numbers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
       </div>
-      <div class="modal-body" id="serial_modal_body">
-        <!-- Serial checkboxes will come here -->
+      <div class="modal-body">
+        <form id="serialForm">
+          <div id="serialList"></div>
+        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" id="save_serials_btn" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" id="saveSerialSelection" class="btn btn-success">Save Selection</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -934,6 +941,68 @@
 @stop
 
 @section('javascript')
+<script>
+$(document).on('click', '.open-serial-modal', function() {
+    const productId = $(this).data('product-id');
+    const variationId = $(this).data('variation-id');
+    const locationId = $(this).data('location-id');
+	$('#serialModal').data('product-id', productId);
+
+    $.ajax({
+        url: '/get-serials',
+        method: 'GET',
+        data: {
+            product_id: productId,
+            variation_id: variationId,
+            location_id: locationId
+        },
+        success: function(response) {
+            let serialHtml = '';
+
+            if (response.serials.length === 0) {
+                serialHtml = '<p>No serial numbers found.</p>';
+            } else {
+                response.serials.forEach(function(serial, index) {
+                    serialHtml += `
+                        <div class="form-check">
+                            <input class="form-check-input serial-check" type="checkbox" value="${serial}" id="serial_${index}">
+                            <label class="form-check-label" for="serial_${index}">${serial}</label>
+                        </div>`;
+                });
+            }
+
+            $('#serialList').html(serialHtml);
+            $('#serialModal').modal('show');
+        },
+        error: function() {
+            alert('Failed to fetch serials');
+        }
+    });
+});
+
+</script>
+<script>
+$('#saveSerialSelection').click(function() {
+    let selectedSerials = [];
+    $('.serial-check:checked').each(function() {
+        selectedSerials.push($(this).val());
+    });
+
+    let qty = selectedSerials.length;
+    const productId = $('#serialModal').data('product-id');
+
+    // Update quantity input related to product
+    // You can use a class/id tied to product_id for targeting
+    $(`#qty_input_${productId}`).val(qty);
+       // ✅ Update hidden serial input with correct name structure
+    $(`#serial_nos_${productId}`).val(selectedSerials.join(','));
+
+    // Optional: store in localStorage for safety
+    localStorage.setItem(`product_${productId}_serials`, JSON.stringify(selectedSerials));
+    $('#serialModal').modal('hide');
+});
+</script>
+
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>

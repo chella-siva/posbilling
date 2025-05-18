@@ -157,7 +157,7 @@
                                 {data: 'sub_type', name: 'sub_type'},
                                 {data: 'method', name: 'tp.method'},
                                 {data: 'payment_details', name: 'tp.payment_ref_no'},
-                                {data: 'payment_note', name: 'note'},
+                                {data: 'note', name: 'note'},
                                 {data: 'added_by', name: 'added_by'},
                                 {data: 'credit', name: 'amount', searchable: false},
                                 {data: 'debit', name: 'amount', searchable: false},

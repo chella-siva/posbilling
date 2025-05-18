@@ -14,7 +14,7 @@
 @endforeach
 
 <tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif>
-	@if(!empty($is_serial_no1))
+	@if(!empty($is_serial_no))
 		<td class="serial_no" ></td>
 	@endif
 	<td>
@@ -238,6 +238,15 @@
   		<textarea class="form-control" name="products[{{$row_count}}][sell_line_note]" rows="2">{{$sell_line_note}}</textarea>
   		<p class="help-block"><small>@lang('lang_v1.sell_line_description_help')</small></p>
 	@endif
+
+	<button type="button" class="btn btn-sm btn-primary open-serial-modal" data-location-id="{{ $location_id }}" data-variation-id="{{$product->variation_id}}" data-product-id="{{ $product->product_id }}">
+    Add Serial No.
+</button>
+<input type="hidden" name="products[{{$row_count}}][serial_nos]" id="serial_nos_{{ $product->product_id }}">
+
+
+
+
 	</td>
 
 	<td>

@@ -1,5 +1,5 @@
-@foreach( $variations as $variation)
-    <tr @if(!empty($purchase_order_line)) data-purchase_order_id="{{$purchase_order_line->transaction_id}}" @endif @if(!empty($purchase_requisition_line)) data-purchase_requisition_id="{{$purchase_requisition_line->transaction_id}}" @endif>
+@foreach($variations as $index => $variation)
+    <tr id="product_row_{{ $variation->id }}" data-row-index="{{ $index }}" @if(!empty($purchase_order_line)) data-purchase_order_id="{{$purchase_order_line->transaction_id}}" @endif @if(!empty($purchase_requisition_line)) data-purchase_requisition_id="{{$purchase_requisition_line->transaction_id}}" @endif>
         <td><span class="sr_number"></span></td>
         <td>
             {{ $product->name }} ({{$variation->sub_sku}})
@@ -55,6 +55,15 @@
                     data-msg-max-value="{{__('lang_v1.max_quantity_quantity_allowed', ['quantity' => $max_quantity])}}" 
                 @endif
             >
+            <button type="button" class="btn btn-sm btn-info open-serial-modal" 
+                data-variation-id="{{ $variation->id }}"  data-row-id="product_row_{{ $variation->id }}"
+                data-product-name="{{ $product->name }}" 
+                data-row-index="{{ $row_count }}">
+                Serial No.
+            </button>
+            <div class="serial-container" id="serial_container_{{ $variation->id }}">
+            <!-- hidden inputs will be added here -->
+            </div>
 
 
             <input type="hidden" class="base_unit_cost" value="{{$variation->default_purchase_price}}">
@@ -238,3 +247,5 @@
 @endforeach
 
 <input type="hidden" id="row_count" value="{{ $row_count }}">
+
+

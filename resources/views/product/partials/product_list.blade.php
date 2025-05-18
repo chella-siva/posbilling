@@ -24,6 +24,7 @@
             @endcan
             <th>@lang('lang_v1.mrp_price')</th>
             <th>@lang('report.current_stock')</th>
+            <th>serial nos</th>
             <th>@lang('product.product_type')</th>
             <th>@lang('product.category')</th>
             <th>@lang('product.brand')</th>

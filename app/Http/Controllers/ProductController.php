@@ -166,7 +166,11 @@ class ProductController extends Controller
                 DB::raw('MAX(v.dpp_inc_tax) as max_purchase_price'),
                 DB::raw('MIN(v.dpp_inc_tax) as min_purchase_price'),
                 DB::raw('MAX(v.mrp) as max_mrp'),
-                DB::raw('MIN(v.mrp) as min_mrp')
+                DB::raw('MIN(v.mrp) as min_mrp'),
+                DB::raw("GROUP_CONCAT(
+                    REPLACE(REPLACE(REPLACE(vld.serial_nos, '[\"', ''), '\"]', ''), '\",\"', ', ')
+                    SEPARATOR ', '
+                ) as serial_numbers")
                 );
 
             //if woocomerce enabled add field to query
@@ -302,6 +306,9 @@ class ProductController extends Controller
                 })
                 ->editColumn('image', function ($row) {
                     return '<div style="display: flex;"><img src="'.$row->image_url.'" alt="Product image" class="product-thumbnail-small"></div>';
+                })
+                ->addColumn('serial_numbers', function ($row) {
+                    return $row->serial_numbers ? e($row->serial_numbers) : '--';
                 })
                 ->editColumn('type', '@lang("lang_v1." . $type)')
                 ->addColumn('mass_delete', function ($row) {
@@ -1594,6 +1601,31 @@ class ProductController extends Controller
 
         return $output;
     }
+
+   public function getSerials(Request $request)
+{
+    $productId = $request->query('product_id');
+    $variationId = $request->query('variation_id');
+    $locationId = $request->query('location_id');
+
+    $serials = \DB::table('variation_location_details')
+        ->where('product_id', $productId)
+        ->where('variation_id', $variationId)
+        ->where('location_id', $locationId)
+        ->pluck('serial_nos');
+
+    $serialList = [];
+
+    foreach ($serials as $serialJson) {
+        if ($serialJson) {
+            $serialList = array_merge($serialList, json_decode($serialJson, true));
+        }
+    }
+
+    return response()->json(['serials' => $serialList]);
+}
+
+
 
     /**
      * Display the specified resource.
