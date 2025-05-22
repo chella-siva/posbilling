@@ -1,5 +1,5 @@
 @foreach($variations as $index => $variation)
-    <tr id="product_row_{{ $variation->id }}" data-row-index="{{ $index }}" @if(!empty($purchase_order_line)) data-purchase_order_id="{{$purchase_order_line->transaction_id}}" @endif @if(!empty($purchase_requisition_line)) data-purchase_requisition_id="{{$purchase_requisition_line->transaction_id}}" @endif>
+    <tr id="product_row_{{ $variation->id }}" data-row-index="{{ $row_count }}" @if(!empty($purchase_order_line)) data-purchase_order_id="{{$purchase_order_line->transaction_id}}" @endif @if(!empty($purchase_requisition_line)) data-purchase_requisition_id="{{$purchase_requisition_line->transaction_id}}" @endif>
         <td><span class="sr_number"></span></td>
         <td>
             {{ $product->name }} ({{$variation->sub_sku}})

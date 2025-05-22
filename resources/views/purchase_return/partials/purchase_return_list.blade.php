@@ -6,6 +6,8 @@
                 <th>@lang('purchase.ref_no')</th>
                 <th>@lang('lang_v1.parent_purchase')</th>
                 <th>@lang('purchase.location')</th>
+                <!--<th>serial nos</th>-->
+                <!--<th> return serial nos</th>-->
                 <th>@lang('purchase.supplier')</th>
                 <th>@lang('purchase.payment_status')</th>
                 <th>@lang('purchase.grand_total')</th>

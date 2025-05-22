@@ -12,7 +12,7 @@
 <section class="content">
 	{!! Form::open(['url' => action([\App\Http\Controllers\OpeningStockController::class, 'save']), 'method' => 'post', 'id' => 'add_opening_stock_form' ]) !!}
 	{!! Form::hidden('product_id', $product->id); !!}
-	@include('opening_stock.form-part')
+	@include('opening_stock.form-part1')
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<button type="submit" class="btn btn-primary btn-big">@lang('messages.save')</button>
@@ -23,6 +23,7 @@
 </section>
 @stop
 @section('javascript')
+
 	<script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
 	<script type="text/javascript">
 		$(document).ready( function(){

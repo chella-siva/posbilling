@@ -616,6 +616,7 @@
 
 @section('javascript')
 	<script src="{{ asset('js/purchase.js?v=' . $asset_v) }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 	<script type="text/javascript">
 		let serialStorageKey = 'variation_serial_numbers';
@@ -787,6 +788,8 @@
         let allSerials = JSON.parse(localStorage.getItem(serialStorageKey)) || {};
         allSerials[variationId] = newSerials;
         localStorage.setItem(serialStorageKey, JSON.stringify(allSerials));
+        // Update quantity input for this row
+        document.querySelector(`input[name="purchases[${rowIndex}][quantity]"]`).value = newSerials.length;
 
         // Remove old hidden inputs
         document.querySelectorAll(`.serial-hidden-${variationId}`).forEach(el => el.remove());

@@ -749,6 +749,7 @@ function get_purchase_entry_row(product_id, variation_id) {
             dataType: 'html',
             data: data,
             success: function(result) {
+                console.log("gv");
                 append_purchase_lines(result, row_count);
             },
         });
@@ -760,6 +761,7 @@ function append_purchase_lines(data, row_count, trigger_change = false) {
         .find('.purchase_quantity')
         .each(function() {
             row = $(this).closest('tr');
+                            console.log('ghjkn');
 
             $('#purchase_entry_table tbody').append(
                 update_purchase_entry_row_values(row)
@@ -797,6 +799,7 @@ function update_purchase_entry_row_values(row) {
         var tax_rate = parseFloat(
             $('option:selected', row.find('.purchase_line_tax_id')).attr('data-tax_amount')
         );
+        console.log(row);
 
         var unit_product_tax = __calculate_amount('percentage', tax_rate, unit_cost_price);
 

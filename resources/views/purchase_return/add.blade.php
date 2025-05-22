@@ -50,8 +50,10 @@
 			            </tr>
 			        </thead>
 			        <tbody>
+			            @php $retunrserials = [];  @endphp
 			          	@foreach($purchase->purchase_lines as $purchase_line)
 			          	@php
+                            $retunrserials = json_decode($purchase_line->return_serial_nos, true) ?? [];
 			          		$unit_name = $purchase_line->product->unit->short_name;
 
 			          		$check_decimal = 'false';
@@ -90,15 +92,31 @@
 					                    $check_decimal = 'true';
 					                }
 					            @endphp
-					            <input type="text" name="returns[{{$purchase_line->id}}]" value="{{@format_quantity($purchase_line->quantity_returned)}}"
-					            class="form-control input-sm input_number return_qty input_quantity"
-					            data-rule-abs_digit="{{$check_decimal}}" 
-					            data-msg-abs_digit="@lang('lang_v1.decimal_value_not_allowed')"
-					            @if($purchase_line->product->enable_stock) 
-			              			data-rule-max-value="{{$qty_available}}"
-			              			data-msg-max-value="@lang('validation.custom-messages.quantity_not_available', ['qty' => $purchase_line->formatted_qty_available, 'unit' => $unit_name ])" 
-			              		@endif
-					            >
+					           <div class="input-group">
+                                <input type="text"
+                                    name="returns[{{$purchase_line->id}}]"
+                                    id="return_qty_{{$purchase_line->id}}"
+                                    value="{{ @format_quantity($purchase_line->quantity_returned) }}"
+                                    class="form-control input-sm input_number return_qty input_quantity"
+                                    data-rule-abs_digit="{{ $check_decimal }}" 
+                                    data-msg-abs_digit="@lang('lang_v1.decimal_value_not_allowed')"
+                                    @if($purchase_line->product->enable_stock)
+                                        data-rule-max-value="{{ $qty_available }}"
+                                        data-msg-max-value="@lang('validation.custom-messages.quantity_not_available', ['qty' => $purchase_line->formatted_qty_available, 'unit' => $unit_name ])"
+                                    @endif
+                                >
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-info btn-sm select-serials-btn" data-purchase-line-id="{{ $purchase_line->id }}">
+                                        Serial No.
+                                    </button>
+                                </span>
+                                <input type="hidden" name="return_serials[{{$purchase_line->id}}]"  id="return_serials_{{$purchase_line->id}}">
+
+                            </div>
+                            
+                            <!-- Hidden input to store selected serials -->
+                            <input type="hidden" name="serials[{{$purchase_line->id}}]" class="selected-serials" id="selected_serials_{{$purchase_line->id}}" value="{{ $purchase_line->serial_nos }}">
+
 					            <input type="hidden" class="unit_price" value="{{@num_format($purchase_line->purchase_price_inc_tax)}}">
 			              	</td>
 			              	<td>
@@ -142,6 +160,27 @@
 
 	{!! Form::close() !!}
 
+		<!-- Serial Numbers Modal -->
+<div class="modal fade" id="serialModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Select Serial Numbers</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="serialSearch" class="form-control mb-3" placeholder="Search Serial No.">
+        <div id="serialModalBody" class="row"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="applySelectedSerials">Apply</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </section>
 @stop
 @section('javascript')
@@ -172,4 +211,121 @@
 		$('span#net_return').text(__currency_trans_from_en(net_return_inc_tax, true));
 	}
 </script>
+<script>
+$(document).ready(function () {
+    let returnserverSerialsRaw = @json($retunrserials ?? '[]'); // might be stringified JSON or array
+    let returnserverSerials = [];
+
+    try {
+        if (typeof returnserverSerialsRaw === 'string') {
+            returnserverSerials = JSON.parse(returnserverSerialsRaw);
+        } else {
+            returnserverSerials = returnserverSerialsRaw;
+        }
+    } catch(e) {
+        returnserverSerials = [];
+        console.error('Error parsing returnserverSerials', e);
+    }
+
+    console.log('Parsed returnserverSerials:', returnserverSerials);
+
+    // selectedSerialsMap: map lineId => array of serials selected
+    let selectedSerialsMap = {};
+
+    // If returnserverSerials is a plain array, we don't know which lineId to assign to.
+    // So, leave selectedSerialsMap empty initially,
+    // or if you can, populate it here with lineIds.
+
+    let currentLineId = null;
+
+    $('.select-serials-btn').click(function () {
+    currentLineId = $(this).data('purchase-line-id');
+
+    $.ajax({
+        method: 'GET',
+        url: '/get-serials-for-return/' + currentLineId,
+        success: function (response) {
+            if (response.success) {
+                let html = '';
+                // Use returnserverSerials globally (ignores per-line)
+                // const alreadySelected = selectedSerialsMap[currentLineId] || [];
+
+              // Merge arrays (avoid duplicates)
+                const mergedSerials = [...new Set([...response.serials, ...returnserverSerials])];
+                console.log(mergedSerials);
+                
+               mergedSerials.forEach(serial => {
+                  const isChecked = returnserverSerials.includes(serial) ? 'checked' : '';
+                  html += `
+                    <div class="col-md-3 serial-box">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" class="serial-checkbox" value="${serial}" ${isChecked}> ${serial}
+                      </label>
+                    </div>`;
+                });
+
+
+                $('#serialModalBody').html(html);
+                $('#serialModal').modal('show');
+            } else {
+                alert('Failed to load serials.');
+            }
+        },
+        error: function () {
+            alert('Error fetching serials.');
+        }
+    });
+});
+
+
+$('#applySelectedSerials').click(function () {
+    let selected = [];
+    let allSerials = [];
+
+    $('.serial-checkbox').each(function () {
+        const value = $(this).val().replace(/^"(.*)"$/, '$1');
+        allSerials.push(value);
+
+        if ($(this).is(':checked')) {
+            selected.push(value);
+            console.log('Selected serial:', value);
+        }
+    });
+
+    console.log('Current Line ID:', currentLineId);
+    
+    // Store selected serials (checked)
+    selectedSerialsMap[currentLineId] = selected;
+
+    // Update hidden inputs
+    $('#return_serials_' + currentLineId).val(selected.join(',')); // for return_serials[]
+    $('#return_qty_' + currentLineId).val(selected.length).trigger('change');
+
+    // NEW: also store all serials (checked + unchecked)
+    $('#selected_serials_' + currentLineId).val(JSON.stringify(allSerials)); // for serials[]
+
+    console.log(`Line ${currentLineId} - Selected Serials:`, selected);
+    console.log(`Line ${currentLineId} - All Serials:`, allSerials);
+
+    $('#serialModal').modal('hide');
+});
+
+
+
+$('#confirm_serial_selection').on('click', function () {
+    const row_index = $(this).data('row_index');
+    const checked = $(`.serial-checkbox[data-row="${row_index}"]:checked`);
+    const serials = checked.map(function () {
+        return this.value;
+    }).get();
+
+    selected_serials[row_index] = serials;
+
+    $(`#qty_${row_index}`).val(serials.length); // update qty
+
+    $('#serialModal').modal('hide');
+});
+});
+		</script>
+	
 @endsection

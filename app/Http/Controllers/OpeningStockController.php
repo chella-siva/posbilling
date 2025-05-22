@@ -67,7 +67,6 @@ public function getSerials($product_id, $variation_id, $location_id)
     return response()->json(['serials' => $serials]);
 }
 
-
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -81,12 +80,30 @@ public function store(Request $request)
             'distinct',
         ],
     ], [
-        'serials.*.distinct' => 'Duplicate serial numbers are not allowed.',
+        // 'serials.*.distinct' => 'Duplicate serial numbers are not allowed.',
         'serials.*.required' => 'Serial number is required.',
     ]);
 
+    // Step 1: Get all serial numbers already stored for the same location
+    $existingSerials = DB::table('variation_location_details')
+        ->where('location_id', $validated['product_id'])
+        ->whereNotNull('serial_nos')
+        ->whereNot('product_id',$validated['product_id'])
+        ->pluck('serial_nos')
+        ->flatMap(function ($item) {
+            return json_decode($item, true) ?: [];
+        })
+        ->all();
 
-    // Find the target variation_location_details record
+    // Step 2: Check if submitted serials already exist
+    $duplicates = array_intersect($validated['serials'], $existingSerials);
+    if (!empty($duplicates)) {
+        return response()->json([
+            'error' => 'Duplicate serial numbers found for this location: ' . implode(', ', $duplicates)
+        ], 422);
+    }
+
+    // Step 3: Find the matching record
     $record = DB::table('variation_location_details')
         ->where('product_id', $validated['product_id'])
         ->where('variation_id', $validated['variation_id'])
@@ -99,10 +116,9 @@ public function store(Request $request)
         ], 404);
     }
 
-    // Save serial numbers as JSON or comma-separated string
+    // Step 4: Save the serial numbers (overwrite old)
     $serialsJson = json_encode($validated['serials']);
 
-    // Update the record
     DB::table('variation_location_details')
         ->where('id', $record->id)
         ->update([
@@ -112,6 +128,7 @@ public function store(Request $request)
 
     return response()->json(['success' => true]);
 }
+
 
 
     public function add($product_id)

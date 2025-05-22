@@ -566,12 +566,16 @@ class PurchaseController extends Controller
                         'purchase_lines.purchase_order_line'
                     )
                     ->first();
-
+        $serialData = [];
         foreach ($purchase->purchase_lines as $key => $value) {
             if (! empty($value->sub_unit_id)) {
                 $formated_purchase_line = $this->productUtil->changePurchaseLineUnit($value, $business_id);
                 $purchase->purchase_lines[$key] = $formated_purchase_line;
             }
+            if (!empty($value->serial_nos)) {
+                    $serialData[$value->variation_id] = $value->serial_nos; // Assuming serials is a JSON or array
+               }
+               $purchase_variation_id = $value->variation_id;
         }
 
         $orderStatuses = $this->productUtil->orderStatuses();
@@ -617,7 +621,7 @@ class PurchaseController extends Controller
 
         return view('purchase.edit')
             ->with(compact(
-                'taxes',
+                'taxes','serialData','purchase_variation_id',
                 'purchase',
                 'orderStatuses',
                 'business_locations',

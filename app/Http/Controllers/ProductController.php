@@ -89,6 +89,62 @@ class ProductController extends Controller
             return response()->json(['success' => false, 'message' => 'Server Error.']);
         }
     }
+public function getSerialsForReturn($purchase_line_id)
+{
+    $line = DB::table('purchase_lines')->where('id', $purchase_line_id)->first();
+
+    $serials = [];
+
+    if ($line && !empty($line->serial_nos)) {
+        // Decode JSON if possible
+        $decoded = json_decode($line->serial_nos, true);
+
+        if (is_array($decoded)) {
+            // Clean each serial by trimming quotes and whitespace
+            $serials = array_map(function($serial) {
+                return trim($serial, "\"' ");
+            }, $decoded);
+        } else {
+            // If not JSON, treat as comma-separated string
+            $serials = explode(',', $line->serial_nos);
+            $serials = array_map(function($serial) {
+                return trim($serial, "\"' ");
+            }, $serials);
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'purchase_line_id' => $purchase_line_id,
+        'serials' => $serials
+    ]);
+}
+
+public function getSerialsForReturnsell($purchase_line_id)
+{
+    $line = DB::table('transaction_sell_lines')
+                ->where('id', $purchase_line_id)
+                ->first();
+
+    $serials = [];
+
+    if ($line && !empty($line->serial_nos)) {
+        // Assuming comma-separated string in serial_nos
+        $serials = explode(',', $line->serial_nos);
+
+        // Clean each serial number by trimming quotes and whitespace
+        $serials = array_map(function($serial) {
+            return trim($serial, "\"' ");
+        }, $serials);
+    }
+
+    return response()->json([
+        'success' => true,
+        'purchase_line_id' => $purchase_line_id,
+        'serials' => $serials
+    ]);
+}
+
 
     public function index()
     {
@@ -1602,28 +1658,86 @@ class ProductController extends Controller
         return $output;
     }
 
-   public function getSerials(Request $request)
+    public function getSerials(Request $request)
 {
     $productId = $request->query('product_id');
     $variationId = $request->query('variation_id');
     $locationId = $request->query('location_id');
+    $transactionSellId = $request->query('transaction_sell_id'); // Only passed during edit
 
-    $serials = \DB::table('variation_location_details')
-        ->where('product_id', $productId)
-        ->where('variation_id', $variationId)
-        ->where('location_id', $locationId)
-        ->pluck('serial_nos');
+$serials = \DB::table('variation_location_details')
+    ->where('product_id', $productId)
+    ->where('variation_id', $variationId)
+    ->where('location_id', $locationId)
+    ->pluck('serial_nos');
 
-    $serialList = [];
-
-    foreach ($serials as $serialJson) {
-        if ($serialJson) {
-            $serialList = array_merge($serialList, json_decode($serialJson, true));
+$serialList = [];
+foreach ($serials as $serialJson) {
+    if ($serialJson) {
+        $decoded = json_decode($serialJson, true);
+        if (is_array($decoded)) {
+            $serialList = array_merge($serialList, $decoded);
         }
     }
-
-    return response()->json(['serials' => $serialList]);
 }
+$serialList = array_unique($serialList);
+
+// 2. Get all used serials from transaction_sell_lines (exclude current transaction)
+$usedSerialsQuery = \DB::table('transaction_sell_lines')
+    ->where('product_id', $productId)
+    ->where('variation_id', $variationId);
+
+if (!empty($transactionSellId)) {
+    $usedSerialsQuery->where('transaction_id', '!=', $transactionSellId);
+}
+
+$usedSerialsRaw = $usedSerialsQuery->pluck('serial_nos')->toArray();
+
+$usedSerials = [];
+foreach ($usedSerialsRaw as $serialsStr) {
+    if ($serialsStr) {
+        // Assuming comma separated strings in transaction_sell_lines.serial_nos
+        $parts = explode(',', $serialsStr);
+        $parts = array_map('trim', $parts);
+        $usedSerials = array_merge($usedSerials, $parts);
+    }
+}
+$usedSerials = array_unique($usedSerials);
+$usedSerials = array_map(function($item) {
+    // Remove surrounding quotes and trim any whitespace
+    return trim($item, "\" \t\n\r\0\x0B");
+}, $usedSerials);
+
+// 3. If editing, get serials in current transaction
+$currentSerials = [];
+if (!empty($transactionSellId)) {
+    $currentSerialsRaw = \DB::table('transaction_sell_lines')
+        ->where('product_id', $productId)
+        ->where('variation_id', $variationId)
+        ->where('transaction_id', $transactionSellId)
+        ->pluck('serial_nos')
+        ->toArray();
+
+    foreach ($currentSerialsRaw as $serialsStr) {
+        if ($serialsStr) {
+            $parts = explode(',', $serialsStr);
+            $parts = array_map('trim', $parts);
+            $currentSerials = array_merge($currentSerials, $parts);
+        }
+    }
+    $currentSerials = array_unique($currentSerials);
+}
+
+// 4. Filter to only serials available (exclude used but include current transaction serials)
+$availableSerials = array_values(array_unique(array_merge(
+    array_diff($serialList, $usedSerials),
+    $currentSerials
+)));
+
+return response()->json(['serials' => $availableSerials]);
+
+}
+
 
 
 
@@ -1669,13 +1783,30 @@ class ProductController extends Controller
             if ($product->type == 'combo') {
                 $combo_variations = $this->productUtil->__getComboProductDetails($product['variations'][0]->combo_variations, $business_id);
             }
+            
+            $groupedSerials = [];
 
+            $location_ids = $product->product_locations->pluck('id')->toArray();
+           
+         $serialsData = DB::table('variation_location_details')
+            ->join('business_locations', 'variation_location_details.location_id', '=', 'business_locations.id')
+            ->where('variation_location_details.product_id', $id)
+            ->whereIn('variation_location_details.location_id', $location_ids)
+            ->whereNotNull('serial_nos')
+            ->select(
+                'variation_location_details.location_id',
+                'business_locations.name as location_name',
+                'variation_location_details.serial_nos'
+            )
+            ->get()
+            ->groupBy('location_name');
+                
             return view('product.view-modal')->with(compact(
                 'product',
                 'rack_details',
                 'allowed_group_prices',
                 'group_price_details',
-                'combo_variations'
+                'combo_variations','serialsData'
             ));
         } catch (\Exception $e) {
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());

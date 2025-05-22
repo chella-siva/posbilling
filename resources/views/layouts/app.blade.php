@@ -182,5 +182,20 @@
 
 
 </style>
+<script>
+  $(document).ready(function () {
+    Object.keys(localStorage).forEach(function(key) {
+        if (key.startsWith('product_') && key.endsWith('_serials')) {
+            localStorage.removeItem(key);
+            console.log('Cleared key:', key);
+        }
+    });
+        localStorage.removeItem('variation_serial_numbers');
 
+});
+// Object.keys(localStorage).forEach(function(key) {
+//     console.log(key + ' =>', localStorage.getItem(key));
+// });
+
+</script>
 </html>

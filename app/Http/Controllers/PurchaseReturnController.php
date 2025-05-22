@@ -49,41 +49,30 @@ class PurchaseReturnController extends Controller
 
         if (request()->ajax()) {
             $purchases_returns = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-                    ->join(
-                        'business_locations AS BS',
-                        'transactions.location_id',
-                        '=',
-                        'BS.id'
-                    )
-                    ->leftJoin(
-                        'transactions AS T',
-                        'transactions.return_parent_id',
-                        '=',
-                        'T.id'
-                    )
-                    ->leftJoin(
-                        'transaction_payments AS TP',
-                        'transactions.id',
-                        '=',
-                        'TP.transaction_id'
-                    )
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'purchase_return')
-                    ->select(
-                        'transactions.id',
-                        'transactions.transaction_date',
-                        'transactions.ref_no',
-                        'contacts.name',
-                        'contacts.supplier_business_name',
-                        'transactions.status',
-                        'transactions.payment_status',
-                        'transactions.final_total',
-                        'transactions.return_parent_id',
-                        'BS.name as location_name',
-                        'T.ref_no as parent_purchase',
-                        DB::raw('SUM(TP.amount) as amount_paid')
-                    )
-                    ->groupBy('transactions.id');
+        ->join('business_locations AS BS', 'transactions.location_id', '=', 'BS.id')
+        ->leftJoin('transactions AS T', 'transactions.return_parent_id', '=', 'T.id')
+        ->leftJoin('transaction_payments AS TP', 'transactions.id', '=', 'TP.transaction_id')
+        ->leftJoin('purchase_lines AS PL', 'transactions.id', '=', 'PL.transaction_id') // <-- JOIN ADDED
+        ->where('transactions.business_id', $business_id)
+        ->where('transactions.type', 'purchase_return')
+        ->select(
+            'transactions.id',
+            'transactions.transaction_date',
+            'transactions.ref_no',
+            'contacts.name',
+            'contacts.supplier_business_name',
+            'transactions.status',
+            'transactions.payment_status',
+            'transactions.final_total',
+            'transactions.return_parent_id',
+            'BS.name as location_name',
+            'T.ref_no as parent_purchase',
+            DB::raw('SUM(TP.amount) as amount_paid'),
+            DB::raw('GROUP_CONCAT(PL.serial_nos) as serial_nos'), // <-- CONCAT SERIALS
+            DB::raw('GROUP_CONCAT(PL.return_serial_nos) as return_serial_nos') // <-- CONCAT RETURN SERIALS
+        )
+        ->groupBy('transactions.id');
+
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
@@ -150,6 +139,13 @@ class PurchaseReturnController extends Controller
 
                     return $name.' '.$row->supplier_business_name;
                 })
+                ->addColumn('serial_numbers', function ($row) {
+                    return $row->serial_nos;
+                })
+                ->addColumn('returned_serial_numbers', function ($row) {
+                    return $row->return_serial_nos;
+                })
+
                 ->editColumn(
                     'payment_status',
                     '<a href="{{ action([\App\Http\Controllers\TransactionPaymentController::class, \'show\'], [$id])}}" class="view_payment_modal payment-status payment-status-label" data-orig-value="{{$payment_status}}" data-status-name="@if($payment_status != "paid"){{__(\'lang_v1.\' . $payment_status)}}@else{{__("lang_v1.received")}}@endif"><span class="label @payment_status($payment_status)">@if($payment_status != "paid"){{__(\'lang_v1.\' . $payment_status)}} @else {{__("lang_v1.received")}} @endif
@@ -242,6 +238,9 @@ class PurchaseReturnController extends Controller
                         ->findOrFail($request->input('transaction_id'));
 
             $return_quantities = $request->input('returns');
+            $return_serials = $request->input('return_serials');
+            $serials = $request->input('serials');
+
             $return_total = 0;
 
             DB::beginTransaction();
@@ -250,14 +249,69 @@ class PurchaseReturnController extends Controller
                 $old_return_qty = $purchase_line->quantity_returned;
 
                 $return_quantity = ! empty($return_quantities[$purchase_line->id]) ? $this->productUtil->num_uf($return_quantities[$purchase_line->id]) : 0;
+                
+                // Get serial numbers (may be string or array)
+                $serial_nos_raw = isset($serials[$purchase_line->id]) && !empty($serials[$purchase_line->id])
+                    ? $serials[$purchase_line->id]
+                    : $purchase_line->serial_nos;
+
+                
+                // Convert to array if it's a JSON string
+                if (is_string($serial_nos_raw)) {
+                    $serial_nos_array = json_decode($serial_nos_raw, true);
+                } else {
+                    $serial_nos_array = $serial_nos_raw;
+                }
+                
+                $serial_nos_array = is_array($serial_nos_array) ? array_map('trim', $serial_nos_array) : [];
+                
+                $return_serial_nos_raw = !empty($return_serials[$purchase_line->id])
+                    ? $return_serials[$purchase_line->id]
+                    : null;
+                
+                $return_serial_array = [];
+                
+                if (!empty($return_serial_nos_raw)) {
+                    if (is_array($return_serial_nos_raw)) {
+                        $return_serial_array = array_map('trim', $return_serial_nos_raw);
+                    } else {
+                        $return_serial_array = array_map('trim', explode(',', $return_serial_nos_raw));
+                    }
+                }
+                
+                 $return_serial_array1 = array_intersect($serial_nos_array, $return_serial_array);
+                $updated_serial_array = array_values(array_diff($serial_nos_array, $return_serial_array1));
+
+                // $updated_serial_array = array_values(array_diff($serial_nos_array, $return_serial_array));
+                $purchase_line->serial_nos = json_encode($updated_serial_array);
+                $purchase_line->return_serial_nos = json_encode($return_serial_array);
+
+
+                //  $serial_nos = isset($serials[$purchase_line->id]) && !empty($serials[$purchase_line->id])
+                //     ? $serials[$purchase_line->id]
+                //     : $purchase_line->serial_nos;
+                
+                // $return_serial_nos = !empty($return_serials[$purchase_line->id])
+                //     ? $return_serials[$purchase_line->id]
+                //     : null;
+                
+                // // Convert to arrays
+                // $serial_array = !empty($serial_nos) ? explode(',', $serial_nos) : [];
+                // $return_serial_array = !empty($return_serial_nos) ? explode(',', $return_serial_nos) : [];
+                
+                // // Remove returned serials from original
+                // $updated_serial_array = array_values(array_diff($serial_array, $return_serial_array));
+                // $updated_serial_nos = implode(',', $updated_serial_array);
+                // print_R($updated_serial_array);die;
 
                 $multiplier = 1;
                 if (! empty($purchase_line->sub_unit->base_unit_multiplier)) {
                     $multiplier = $purchase_line->sub_unit->base_unit_multiplier;
                     $return_quantity = $return_quantity * $multiplier;
                 }
-
                 $purchase_line->quantity_returned = $return_quantity;
+                // $purchase_line->serial_nos = $updated_serial_nos;
+                // $purchase_line->return_serial_nos = $return_serial_nos;
                 $purchase_line->save();
                 $return_total += $purchase_line->purchase_price_inc_tax * $purchase_line->quantity_returned;
 

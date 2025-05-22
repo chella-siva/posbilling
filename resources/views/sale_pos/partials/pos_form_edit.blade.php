@@ -219,6 +219,7 @@
 
 				@include('sale_pos.product_row', 
 					['product' => $sell_line, 
+					'location_id'=>$transaction->location_id,
 					'row_count' => $loop->index, 
 					'tax_dropdown' => $taxes, 
 					'sub_units' => !empty($sell_line->unit_details) ? $sell_line->unit_details : [],

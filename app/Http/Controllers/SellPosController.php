@@ -1069,7 +1069,7 @@ class SellPosController extends Controller
                 'units.short_name as unit',
                 'units.allow_decimal as unit_allow_decimal',
                 'u.short_name as second_unit',
-                'transaction_sell_lines.secondary_unit_quantity',
+                'transaction_sell_lines.secondary_unit_quantity','transaction_sell_lines.serial_nos',
                 'transaction_sell_lines.tax_id as tax_id',
                 'transaction_sell_lines.item_tax as item_tax',
                 'transaction_sell_lines.unit_price as default_sell_price',
@@ -1091,10 +1091,22 @@ class SellPosController extends Controller
                 DB::raw('IF(vld.qty_available > 0, vld.qty_available + transaction_sell_lines.quantity, transaction_sell_lines.quantity) AS qty_available')
             )
             ->get();
+            $serialArrays = [];
         if (!empty($sell_details)) {
             foreach ($sell_details as $key => $value) {
                 $variation = Variation::with('media')->findOrFail($value->variation_id);
                 $sell_details[$key]->media = $variation->media;
+                $serialdt[$value->product_id] = $value->serial_nos;
+                // Clean up each serial number
+
+                foreach ($serialdt as $asp => $serialString) {
+                    if (!empty($serialString)) {
+                        // Remove outer quotes and extra whitespace
+                        $cleanString = trim($serialString, "\"' ");
+                        $serialArrays[$asp] = array_map('trim', explode(',', $cleanString));
+                    }
+                }
+
 
                 //If modifier or combo sell line then unset
                 if (!empty($sell_details[$key]->parent_sell_line_id)) {
@@ -1271,7 +1283,7 @@ class SellPosController extends Controller
         $only_payment = request()->segment(2) == 'payment';
 
         return view('sale_pos.edit')
-            ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer',
+            ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer','serialArrays',
                 'sell_details', 'transaction', 'payment_lines', 'location_printer_type', 'shortcuts',
                 'commission_agent', 'categories', 'pos_settings', 'change_return', 'types', 'customer_groups',
                 'brands', 'accounts', 'waiters', 'redeem_details', 'edit_price', 'edit_discount',

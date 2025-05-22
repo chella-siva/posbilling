@@ -44,8 +44,8 @@
         </thead>
         <tbody>
     <?php $row_count = 0; ?>
-    @foreach($purchase->purchase_lines as $purchase_line)
-        <tr @if(!empty($purchase_line->purchase_order_line) && !empty($common_settings['enable_purchase_order'])) data-purchase_order_id="{{$purchase_line->purchase_order_line->transaction_id}}" @endif  @if(!empty($purchase_line->purchase_requisition_line) && !empty($common_settings['enable_purchase_requisition'])) data-purchase_requisition_id="{{$purchase_line->purchase_requisition_line->transaction_id}}" @endif>
+    @foreach($purchase->purchase_lines as $index => $purchase_line)
+        <tr id="product_row_{{ $purchase_line->id }}" data-row-index="{{ $index }}" @if(!empty($purchase_line->purchase_order_line) && !empty($common_settings['enable_purchase_order'])) data-purchase_order_id="{{$purchase_line->purchase_order_line->transaction_id}}" @endif  @if(!empty($purchase_line->purchase_requisition_line) && !empty($common_settings['enable_purchase_requisition'])) data-purchase_requisition_id="{{$purchase_line->purchase_requisition_line->transaction_id}}" @endif>
             <td><span class="sr_number"></span></td>
             <td>
                 {{ $purchase_line->product->name }} ({{$purchase_line->variations->sub_sku}})
@@ -92,6 +92,16 @@
                     data-msg-max-value="{{__('lang_v1.max_quantity_quantity_allowed', ['quantity' => $max_quantity])}}" 
                 @endif
                 >
+
+                  <button type="button" class="btn btn-sm btn-info open-serial-modal" 
+                data-variation-id="{{ $purchase_line->id }}"  data-row-id="product_row_{{ $purchase_line->id }}"
+                data-product-name="{{ $purchase_line->product->name }}" 
+                data-row-index="{{ $row_count }}">
+                Serial No.
+            </button>
+            <div class="serial-container" id="serial_container_{{ $purchase_line->id }}">
+            <!-- hidden inputs will be added here -->
+            </div>
 
                 <input type="hidden" class="base_unit_cost" value="{{$purchase_line->variations->default_purchase_price}}">
                 @if(!empty($purchase_line->sub_units_options))

@@ -172,6 +172,29 @@
 	      		</div>
       		@endif
       	</div>
+      	
+      	@if(!empty($serialsData) && count($serialsData))
+            <div class="row">
+                <div class="col-md-12">
+                    <h4><strong>Serial Numbers By Location</strong></h4>
+                   @foreach($serialsData as $locationName => $entries)
+                        <h5 class="text-info"><u>{{ $locationName }}</u></h5>
+                        @php
+                            $all_serials = [];
+                            foreach ($entries as $entry) {
+                                $serials = array_filter(array_map('trim', explode(',', $entry->serial_nos)));
+                                $all_serials = array_merge($all_serials, $serials);
+                            }
+                        @endphp
+                        <p>{{ implode(', ', $all_serials) }}</p>
+                    @endforeach
+
+                </div>
+            </div>
+        @endif
+
+      	
+      	
       	<div class="modal-footer">
       		<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white no-print" 
 	        aria-label="Print" 

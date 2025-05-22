@@ -603,7 +603,7 @@ class TransactionPaymentController extends Controller
             $tp = $this->transactionUtil->payContact($request);
 
             $pos_settings = ! empty(session()->get('business.pos_settings')) ? json_decode(session()->get('business.pos_settings'), true) : [];
-            $enable_cash_denomination_for_payment_methods = ! empty($pos_settings['enable_cash_denomination_for_payment_methods']) ? $pos_settings['enable_cash_denomination_for_payment_methods'] : [];
+            $enable_cash_denomination_for_payment_methods = $enable_cash_denomination_for_payment_methods = $pos_settings['enable_cash_denomination_for_payment_methods'] ?? [];
             //add cash denomination
             if (in_array($tp->method, $enable_cash_denomination_for_payment_methods) && ! empty($request->input('denominations')) && ! empty($pos_settings['enable_cash_denomination_on']) && $pos_settings['enable_cash_denomination_on'] == 'all_screens') {
                 $denominations = [];

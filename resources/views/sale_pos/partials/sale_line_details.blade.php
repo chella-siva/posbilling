@@ -20,8 +20,12 @@
         <th>{{ __('sale.price_inc_tax') }}</th>
         <th>@lang('lang_v1.mrp_price')</th>
         <th>{{ __('sale.subtotal') }}</th>
+         <th>Serial Nos</th>
     </tr>
     @foreach($sell->sell_lines as $sell_line)
+    @php
+    $sno = $sell_line->serial_nos; 
+    @endphp
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td>
@@ -125,6 +129,8 @@
                     <span class="display_currency" data-currency_symbol="true">{{ $sell_line->quantity * $sell_line->unit_price_inc_tax }}</span>
                 @endif
             </td>
+                            <td> {{ $sno }}</td>
+
         </tr>
         @if(!empty($sell_line->modifiers))
         @foreach($sell_line->modifiers as $modifier)

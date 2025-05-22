@@ -525,25 +525,270 @@
         </div>
     </div>
 {!! Form::close() !!}
+
 </section>
 <!-- /.content -->
 <!-- quick product modal -->
 <div class="modal fade quick_add_product_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle"></div>
 <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-  @include('contact.create', ['quick_add' => true])
+
+@include('contact.create', ['quick_add' => true])
 </div>
+
+
+<input type="hidden" id="currentVariationId">
+
+<!-- Serial Number Modal -->
+<div class="modal fade" id="serialModal" tabindex="-1" role="dialog" aria-labelledby="serialNoModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="serialNoModalLabel">Add Serial Numbers</h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-group mb-2">
+          <input type="text" id="serial-input" class="form-control" placeholder="Enter Serial No">
+          <div class="input-group-append">
+            <button class="btn btn-success btn-add-serial" type="button"><i class="fa fa-plus"></i></button>
+          </div>
+        </div>
+        <div id="serial-list" class="mt-2">
+          <!-- Serial numbers appear here -->
+        </div>
+        <small class="text-muted">Press Enter or Click + to add serial numbers. Click (×) to remove.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary save-serials">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+ 
 @include('purchase.partials.import_purchase_products_modal')
 @endsection
+
+
 
 @section('javascript')
   <script src="{{ asset('js/purchase.js?v=' . $asset_v) }}"></script>
   <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+<script>
+  const serverSerials = @json($serialData ?? []);
+  const purchaselineid = {{ $purchase_variation_id }};
+</script>
+
   <script type="text/javascript">
+    let serialStorageKey = 'variation_serial_numbers';
+		var currentProductId, currentVariationId, currentKey,currentRowId, currentSubKey;
+		var serials = [];
+    
     $(document).ready( function(){
+        console.log(serverSerials);
       update_table_total();
       update_grand_total();
       __page_leave_confirmation('#add_purchase_form');
     });
+
+    	$(document).on('click', '.open-serial-modal', function () {
+				let variationId = $(this).data('variation-id');
+				currentVariationId = $(this).data('variation-id');
+				let productName = $(this).data('product-name');
+				currentRowId = $(this).data('row-id');
+
+				// $('#modalProductName').text(productName);
+				$('#currentVariationId').val(variationId);
+
+				serials = getSerials(variationId);
+			
+               let oldSerials = [];
+
+                if (serverSerials[purchaselineid]) {
+                  try {
+                    oldSerials = JSON.parse(serverSerials[purchaselineid]);
+                  } catch (e) {
+                    console.error('Failed to parse serials:', e);
+                    oldSerials = [];
+                  }
+                }
+                
+                oldSerials.forEach(serial => {
+                  if (!serials.includes(serial)) {
+                    serials.push(serial);
+                  }
+                });
+
+				updateSerialDisplay();
+
+				$('#serialModal').modal('show');
+			});
+
+
+		$(document).on('click', '.btn-add-serial', function() {
+			addSerial();
+		});
+		// Add serial on Enter key press
+		document.getElementById('serial-input').addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				e.preventDefault(); // prevent form submission
+				addSerial();
+			}
+		});
+
+
+		
+		// Add serial to list
+		function addSerial() {
+			var serial = $('#serial-input').val().trim();
+			if(serial !== ''){
+				serials.push(serial);
+				$('#serial-input').val('');
+				updateSerialDisplay();
+			}
+		}
+
+		// Update serial numbers display
+		function updateSerialDisplay() {
+			var html = '';
+			serials.forEach(function(serial, index){
+				html += '<span class="badge badge-primary m-1">'+serial+' <a href="#" class="text-white remove-serial" data-index="'+index+'">&times;</a></span>';
+			});
+			$('#serial-list').html(html);
+		}
+
+		// Remove serial from display and array — FIXED to use delegated handler
+		$(document).on('click', '.remove-serial', function (e) {
+			e.preventDefault();
+			const index = $(this).data('index');
+			serials.splice(index, 1); // Remove from array
+			updateSerialDisplay();    // Re-render list
+		});
+
+
+		function getSerials(variationId) {
+			const stored = localStorage.getItem(serialStorageKey);
+			if (!stored) return [];
+			const parsed = JSON.parse(stored);
+			return parsed[variationId] || [];
+		}
+
+		// Save serials back to localStorage
+		
+	// Save serials to localStorage
+	function saveSerials(variationId, serials) {
+		let allSerials = JSON.parse(localStorage.getItem(serialStorageKey)) || {};
+		allSerials[variationId] = serials;
+		localStorage.setItem(serialStorageKey, JSON.stringify(allSerials));
+	}
+
+	// Update the serial list UI
+	function updateSerialList(variationId) {
+		const serials = (JSON.parse(localStorage.getItem(serialStorageKey)) || {})[variationId] || [];
+		const list = document.getElementById(`serial_list_${variationId}`);
+		if (!list) return; // prevent error if element doesn't exist
+
+		list.innerHTML = '';
+
+		serials.forEach((serial, index) => {
+			const li = document.createElement('li');
+			li.textContent = serial + ' ';
+			const removeBtn = document.createElement('button');
+			removeBtn.textContent = '×';
+			removeBtn.onclick = () => removeSerial(variationId, index);
+			li.appendChild(removeBtn);
+			list.appendChild(li);
+		});
+	}
+
+
+	// Remove a serial
+	function removeSerial(variationId, index) {
+		let allSerials = JSON.parse(localStorage.getItem(serialStorageKey)) || {};
+		let serials = allSerials[variationId] || [];
+
+		serials.splice(index, 1);
+		allSerials[variationId] = serials;
+		localStorage.setItem(serialStorageKey, JSON.stringify(allSerials));
+		updateSerialList(variationId);
+	}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Load from server if editing
+    if (typeof serverSerials !== 'undefined' && Object.keys(serverSerials).length > 0) {
+        localStorage.setItem(serialStorageKey, JSON.stringify(serverSerials));
+    }
+
+    // Inject hidden fields into the form
+    for (const [variationId, serials] of Object.entries(serverSerials)) {
+        let container = document.getElementById('add_purchase_form');
+        serials.forEach((serial, index) => {
+            let input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `purchases[${variationId}][serials][]`;
+            input.value = serial;
+            input.classList.add(`serial-hidden-${variationId}`);
+            container.appendChild(input);
+        });
+
+        // Also update the quantity field if needed
+        let qtyInput = document.querySelector(`input[data-variation-id="${variationId}"][name$="[quantity]"]`);
+        if (qtyInput) {
+            qtyInput.value = serials.length;
+        }
+    }
+});
+
+
+
+	document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('save-serials')) {
+        const variationId = document.getElementById('currentVariationId').value;
+
+        if (!currentVariationId || !currentRowId) {
+            alert('Missing variation ID or row ID');
+            return;
+        }
+		console.log(currentRowId);
+        // Get the row index for this product
+        let rowIndex = $(`#${currentRowId}`).data('row-index'); // You must set this in HTML
+        if (typeof rowIndex === 'undefined') {
+            alert('Missing row index');
+            return;
+        }
+
+        // Get all serials from modal display
+        let newSerials = [];
+        document.querySelectorAll('#serial-list .badge').forEach(function (badge) {
+            const text = badge.childNodes[0].textContent.trim(); // get serial value
+            if (text !== '') newSerials.push(text);
+        });
+
+        // Save to localStorage
+        let allSerials = JSON.parse(localStorage.getItem(serialStorageKey)) || {};
+        allSerials[variationId] = newSerials;
+        localStorage.setItem(serialStorageKey, JSON.stringify(allSerials));
+        // Update quantity input for this row
+        document.querySelector(`input[name="purchases[${rowIndex}][quantity]"]`).value = newSerials.length;
+
+        // Remove old hidden inputs
+        document.querySelectorAll(`.serial-hidden-${variationId}`).forEach(el => el.remove());
+
+        // Add new hidden inputs inside the form
+        let container = document.getElementById('add_purchase_form');
+        newSerials.forEach(serial => {
+            let input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `purchases[${rowIndex}][serials][]`; // 👈 Nesting inside purchase
+            input.value = serial;
+            input.classList.add(`serial-hidden-${variationId}`);
+            container.appendChild(input);
+        });
+
+        $('#serialModal').modal('hide');
+    }
+});
   </script>
   @include('purchase.partials.keyboard_shortcuts')
 @endsection

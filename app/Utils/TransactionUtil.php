@@ -596,10 +596,15 @@ class TransactionUtil extends Util
                 $line_discount_amount = $line_discount_amount / $multiplier;
             }
         }
+         $serials = $product['serial_nos'] ?? [];
+
+            // Convert serial numbers array into JSON
+        $serials_json = json_encode($serials);
 
         //Update sell lines.
         $sell_line->fill(['product_id' => $product['product_id'],
             'variation_id' => $product['variation_id'],
+            'serial_nos' => $serials_json,
             'quantity' => $uf_data ? $this->num_uf($product['quantity']) * $multiplier : $product['quantity'] * $multiplier,
             'unit_price_before_discount' => $unit_price_before_discount,
             'unit_price' => $unit_price,
@@ -3032,6 +3037,7 @@ class TransactionUtil extends Util
                 //Field for 2nd column
                 'quantity' => $this->num_f($line->quantity, false, $business_details, true),
                 'quantity_uf' => $line->quantity,
+                'serial_nos' => $line->serial_nos,
                 'units' => $unit_name,
 
                 'base_unit_name' => $base_unit_name,
@@ -3255,6 +3261,7 @@ class TransactionUtil extends Util
                 //Field for 2nd column
                 'quantity' => $this->num_f($line->quantity_returned, false, $business_details, true),
                 'units' => $unit_name,
+                 'return_serial_nos' => $line->return_serial_nos,
 
                 'unit_price' => $this->num_f($line->unit_price, false, $business_details),
                 'tax' => $this->num_f($line->item_tax, false, $business_details),
@@ -5310,6 +5317,7 @@ class TransactionUtil extends Util
             $sell_line->orig_quantity = $sell_line->quantity;
             $sell_line->multiplier = $multiplier;
             $sell_line->quantity = $sell_line->quantity / $multiplier;
+            $sell_line->return_serial_nos = $sell_line->return_serial_nos;
             $sell_line->unit_price_before_discount = $sell_line->unit_price_before_discount * $multiplier;
             $sell_line->unit_price = $sell_line->unit_price * $multiplier;
             $sell_line->unit_price_inc_tax = $sell_line->unit_price_inc_tax * $multiplier;
@@ -7079,6 +7087,8 @@ class TransactionUtil extends Util
         $productUtil = new \App\Utils\ProductUtil();
 
         $input['tax_id'] = $input['tax_id'] ?? null;
+        $return_serials = $input['return_serials'] ?? null;
+        $serials = $input['serials'] ?? null;
 
         $invoice_total = $productUtil->calculateInvoiceTotal($input['products'], $input['tax_id'], $discount, $uf_number);
 
@@ -7163,6 +7173,39 @@ class TransactionUtil extends Util
                 if (! empty($sell_line->sub_unit)) {
                     $multiplier = $sell_line->sub_unit->base_unit_multiplier;
                 }
+                  $serial_nos_raw = isset($serials[$sell_line->id]) && !empty($serials[$sell_line->id])
+                    ? $serials[$sell_line->id]
+                    : $sell_line->serial_nos;
+                
+                // Convert to array if it's a JSON string
+                if (is_string($serial_nos_raw)) {
+                    $serial_nos_array = json_decode($serial_nos_raw, true);
+                } else {
+                    $serial_nos_array = $serial_nos_raw;
+                }
+                
+                $serial_nos_array = is_array($serial_nos_array) ? array_map('trim', $serial_nos_array) : [];
+
+                $return_serial_nos_raw = !empty($return_serials[$sell_line->id])
+                    ? $return_serials[$sell_line->id]
+                    : null;
+                
+                $return_serial_array = [];
+                
+                if (!empty($return_serial_nos_raw)) {
+                    if (is_array($return_serial_nos_raw)) {
+                        $return_serial_array = array_map('trim', $return_serial_nos_raw);
+                    } else {
+                        $return_serial_array = array_map('trim', explode(',', $return_serial_nos_raw));
+                    }
+                }
+                $return_serial_array1 = array_intersect($serial_nos_array, $return_serial_array);
+                $updated_serial_array = array_values(array_diff($serial_nos_array, $return_serial_array1));
+
+                // $updated_serial_array = array_values(array_diff($serial_nos_array, $return_serial_array));
+
+                $sell_line->serial_nos = json_encode($updated_serial_array);
+                $sell_line->return_serial_nos = json_encode($return_serial_array);
 
                 $quantity = $returns[$sell_line->id] * $multiplier;
 

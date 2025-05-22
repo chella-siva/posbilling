@@ -976,7 +976,7 @@ class SellController extends Controller
                             'units.short_name as unit',
                             'units.allow_decimal as unit_allow_decimal',
                             'u.short_name as second_unit',
-                            'transaction_sell_lines.secondary_unit_quantity',
+                            'transaction_sell_lines.secondary_unit_quantity','transaction_sell_lines.serial_nos',
                             'transaction_sell_lines.tax_id as tax_id',
                             'transaction_sell_lines.item_tax as item_tax',
                             'transaction_sell_lines.unit_price as default_sell_price',
@@ -997,12 +997,23 @@ class SellController extends Controller
                             DB::raw('vld.qty_available + transaction_sell_lines.quantity AS qty_available')
                         )
                         ->get();
+            $serialArrays = [];
 
         if (! empty($sell_details)) {
             foreach ($sell_details as $key => $value) {
 
                 $variation = Variation::with('media')->findOrFail($value->variation_id);
                 $sell_details[$key]->media = $variation->media;
+                   $serialdt[$value->product_id] = $value->serial_nos;
+                // Clean up each serial number
+
+                foreach ($serialdt as $asp => $serialString) {
+                    if (!empty($serialString)) {
+                        // Remove outer quotes and extra whitespace
+                        $cleanString = trim($serialString, "\"' ");
+                        $serialArrays[$asp] = array_map('trim', explode(',', $cleanString));
+                    }
+                }
 
                 //If modifier or combo sell line then unset
                 if (! empty($sell_details[$key]->parent_sell_line_id)) {
@@ -1195,7 +1206,7 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         return view('sell.edit')
-            ->with(compact('business_details', 'taxes', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return', 'is_order_request_enabled', 'customer_due', 'users'));
+            ->with(compact('business_details', 'taxes','serialArrays', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return', 'is_order_request_enabled', 'customer_due', 'users'));
     }
 
     /**

@@ -923,10 +923,13 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="serialForm">
-          <div id="serialList"></div>
-        </form>
-      </div>
+		<form id="serialForm">
+			<div class="form-group">
+			<input type="text" id="serialSearch" class="form-control" placeholder="Search serial numbers...">
+			</div>
+			<div id="serialList"></div>
+		</form>
+		</div>
       <div class="modal-footer">
         <button type="button" id="saveSerialSelection" class="btn btn-success">Save Selection</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -941,7 +944,105 @@
 @stop
 
 @section('javascript')
+
 <script>
+let allSerials = []; // To store serials globally for searching
+let selectedSerialsTemp = []; // To track temporary selections before saving
+
+$(document).on('click', '.open-serial-modal', function() {
+    const productId = $(this).data('product-id');
+    const variationId = $(this).data('variation-id');
+    const locationId = $(this).data('location-id');
+    $('#serialModal').data('product-id', productId);
+
+    // Reset temp selection on opening modal, load saved serials from localStorage if any
+    selectedSerialsTemp = JSON.parse(localStorage.getItem(`product_${productId}_serials`)) || [];
+
+    $.ajax({
+        url: '/get-serials',
+        method: 'GET',
+        data: {
+            product_id: productId,
+            variation_id: variationId,
+            location_id: locationId
+        },
+        success: function(response) {
+            allSerials = response.serials || [];
+            renderSerials(allSerials); // Initial render
+            $('#serialModal').modal('show');
+        },
+        error: function() {
+            alert('Failed to fetch serials');
+        }
+    });
+});
+
+function renderSerials(serialsToRender) {
+    let serialHtml = '';
+    const productId = $('#serialModal').data('product-id');
+
+    // Use the temporary selectedSerialsTemp to decide which checkboxes are checked
+    const savedSerials = selectedSerialsTemp;
+
+    if (!serialsToRender || serialsToRender.length === 0) {
+        serialHtml = '<p>No serial numbers found.</p>';
+    } else {
+        serialsToRender.forEach(function(serial, index) {
+            const isChecked = savedSerials.includes(serial) ? 'checked' : '';
+            serialHtml += `
+                <div class="form-check">
+                    <input class="form-check-input serial-check" type="checkbox" value="${serial}" id="serial_${index}" ${isChecked}>
+                    <label class="form-check-label" for="serial_${index}">${serial}</label>
+                </div>`;
+        });
+    }
+
+    $('#serialList').html(serialHtml);
+}
+
+// Update selectedSerialsTemp live as user checks/unchecks boxes
+$(document).on('change', '.serial-check', function() {
+    const val = $(this).val();
+    if ($(this).is(':checked')) {
+        if (!selectedSerialsTemp.includes(val)) {
+            selectedSerialsTemp.push(val);
+        }
+    } else {
+        selectedSerialsTemp = selectedSerialsTemp.filter(s => s !== val);
+    }
+});
+
+$(document).on('input', '#serialSearch', function() {
+    const query = $(this).val().toLowerCase();
+
+    // Filter based on allSerials
+    const filtered = allSerials.filter(serial => serial.toLowerCase().includes(query));
+
+    renderSerials(filtered);
+});
+
+$('#saveSerialSelection').click(function() {
+    let selectedSerials = selectedSerialsTemp; // Already tracked live
+
+    let qty = selectedSerials.length;
+    const productId = $('#serialModal').data('product-id');
+
+    // Update quantity input related to product
+    $(`#qty_input_${productId}`).val(qty);
+
+    // Update hidden serial input with correct name structure
+    $(`#serial_nos_${productId}`).val(selectedSerials.join(','));
+
+    // Store in localStorage for persistence
+    localStorage.setItem(`product_${productId}_serials`, JSON.stringify(selectedSerials));
+
+    $('#serialModal').modal('hide');
+});
+
+</script>
+
+
+<!-- <script>
 $(document).on('click', '.open-serial-modal', function() {
     const productId = $(this).data('product-id');
     const variationId = $(this).data('variation-id');
@@ -1001,7 +1102,7 @@ $('#saveSerialSelection').click(function() {
     localStorage.setItem(`product_${productId}_serials`, JSON.stringify(selectedSerials));
     $('#serialModal').modal('hide');
 });
-</script>
+</script> -->
 
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>

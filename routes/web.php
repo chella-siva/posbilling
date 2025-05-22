@@ -249,6 +249,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/import-sales', [ImportSalesController::class, 'import']);
     Route::get('/revert-sale-import/{batch}', [ImportSalesController::class, 'revertSaleImport']);
     Route::get('/get-serials', [ProductController::class, 'getSerials']);
+    Route::get('/get-serials-for-return/{purchase_line_id}', [ProductController::class, 'getSerialsForReturn']);
+    Route::get('/get-serials-for-returnsell/{purchase_line_id}', [ProductController::class, 'getSerialsForReturnsell']);
 
     Route::get('/sells/pos/get_product_row/{variation_id}/{location_id}', [SellPosController::class, 'getProductRow']);
     Route::post('/sells/pos/get_payment_row', [SellPosController::class, 'getPaymentRow']);

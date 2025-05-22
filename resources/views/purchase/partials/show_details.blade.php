@@ -169,6 +169,7 @@
               @endif
               @endif
               <th class="text-right">@lang('sale.subtotal')</th>
+              <th> Serial Nos</th>
             </tr>
           </thead>
           @php 
@@ -239,6 +240,7 @@
               @endif
               @endif
               <td class="text-right"><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax * $purchase_line->quantity }}</span></td>
+           <td>{{ $purchase_line->serial_nos }}</td>
             </tr>
             @php 
               $total_before_tax += ($purchase_line->quantity * $purchase_line->purchase_price);

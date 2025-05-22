@@ -11,5 +11,6 @@ class VariationLocationDetails extends Model
      *
      * @var array
      */
+         protected $table = 'variation_location_details'; // if not default
     protected $guarded = ['id'];
 }

@@ -1271,6 +1271,7 @@ class ProductUtil extends Util
             }
 
             $purchase_line->quantity = $new_quantity;
+            $purchase_line->serial_nos = !empty($data['serials']) ? json_encode($data['serials']) : null;
             $purchase_line->pp_without_discount = ($this->num_uf($data['pp_without_discount'], $currency_details) * $exchange_rate) / $multiplier;
             $purchase_line->discount_percent = $this->num_uf($data['discount_percent'], $currency_details);
             $purchase_line->purchase_price = ($this->num_uf($data['purchase_price'], $currency_details) * $exchange_rate) / $multiplier;
@@ -1309,7 +1310,7 @@ class ProductUtil extends Util
 
                 if (!empty($serials)) {
                     // Find or create the variation_location_details row
-                    $vld = \App\Models\VariationLocationDetails::firstOrNew([
+                    $vld = VariationLocationDetails::firstOrNew([
                         'variation_id' => $data['variation_id'],
                         'location_id' => $transaction->location_id,
                     ]);
